@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>GCash Transactions Pro v3.5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        const savedTheme = localStorage.getItem('gcashTheme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+            --primary: #3b82f6; 
+            --primary-contrast: #ffffff;
+            --danger: #f85149;
+            --success: #2ea043;
+            --warning: #d29922;
+            --header-bg: rgba(13, 17, 23, 0.85);
+            --row-bg: #21262d; 
+            --row-hover: #30363d;
+            --border-subtle: rgba(240, 246, 252, 0.1);
+            --shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.4), 0 10px 15px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f0f2f5; 
+            --card-bg: #f8f9fa;
+            --text-main: #1c1e21;
+            --text-muted: #65676b;
+            --primary: #3b82f6; 
+            --primary-contrast: #ffffff;
+            --danger: #d1242f;
+            --success: #1a7f37;
+            --warning: #bf8700;
+            --header-bg: rgba(240, 242, 245, 0.85);
+            --row-bg: #ffffff; 
+            --row-hover: #e4e6eb;
+            --border-subtle: rgba(0, 0, 0, 0.08);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        * { 
+            box-sizing: border-box; margin: 0; padding: 0; 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+        
+        body { 
+            background-color: var(--bg-color); color: var(--text-main); 
+            padding-bottom: 40px; padding-top: 88px; font-size: 15px; 
+            overflow-x: hidden; overscroll-behavior-y: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        header {
+            position: fixed; top: 0; left: 0; right: 0; 
+            padding: calc(env(safe-area-inset-top, 0px) + 20px) 24px 20px;
+            background-color: var(--header-bg); 
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            display: flex; justify-content: space-between; align-items: center; 
+            z-index: 1000; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-title { font-weight: 800; font-size: 1.4rem; letter-spacing: -0.03em; }
+        .pro-badge { background: rgba(59, 130, 246, 0.15); color: var(--primary); font-size: 0.6rem; padding: 2px 6px; border-radius: 8px; font-weight: 800; text-transform: uppercase; margin-left: 4px;}
+
+        .header-actions { display: flex; gap: 8px; }
+        .header-actions button {
+            background: var(--row-bg); border: none; width: 40px; height: 40px; 
+            border-radius: 12px; display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; color: var(--text-main); transition: transform 0.2s ease;
+        }
+        .header-actions button:active { transform: scale(0.9); }
+
+        .container { padding: 0 20px; max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+
+        .card {
+            background-color: var(--card-bg); border-radius: 24px; padding: 24px; border: none;
+            box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 16px;
+        }
+
+        .profile-section { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
+        .avatar-wrapper { position: relative; width: 64px; height: 64px; flex-shrink: 0; cursor: pointer; }
+        .profile-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; position: absolute; z-index: 2; background-color: var(--card-bg); display: none; }
+        .profile-initials { width: 100%; height: 100%; border-radius: 50%; background: var(--primary); color: var(--primary-contrast); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 700; position: absolute; z-index: 1; }
+        .user-name { font-size: 1.6rem; font-weight: 800; outline: none; }
+        
+        .balance-section { border-top: 1px solid rgba(128,128,128,0.15); padding-top: 16px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
+        .welcome-balance { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em; }
+        .cash-flow-breakdown { font-size: 0.95rem; font-weight: 600; font-family: 'JetBrains Mono', monospace; margin-top: 6px; white-space: nowrap; }
+        .val-in { color: var(--success); }
+        .val-out { color: var(--danger); }
+
+        .balance-actions { display: flex; gap: 12px; align-items: center; flex: 1 1 100%; margin-top: 4px; }
+        .icon-btn-large { background: var(--row-bg); border: none; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--text-main); cursor: pointer; }
+        .add-btn { background-color: var(--primary); color: var(--primary-contrast); border: none; border-radius: 12px; padding: 12px 16px; font-weight: 600; cursor: pointer; flex: 1; display: flex; justify-content: center; align-items: center; gap: 8px; }
+
+        .search-container { position: relative; }
+        .search-container input { width: 100%; padding: 14px 14px 14px 44px; border-radius: 16px; border: none; background: var(--row-bg); color: var(--text-main); font-weight: 500; }
+        .search-container svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 20px; color: var(--text-muted); }
+
+        .month-tabs { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; padding-bottom: 8px; }
+        .month-tab { background: var(--row-bg); color: var(--text-muted); padding: 10px 20px; border-radius: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; border: none; }
+        .month-tab.active { background: var(--primary); color: var(--primary-contrast); }
+
+        .date-group-header { font-size: 0.9rem; font-weight: 800; color: var(--primary); margin-top: 12px; text-transform: uppercase; padding-left: 8px; }
+        .data-row { padding: 16px; background: var(--row-bg); border-radius: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; cursor: pointer; margin-top: 12px; }
+        .row-title { font-weight: 700; font-size: 1.2rem; }
+        .row-dates { display: flex; gap: 12px; font-size: 0.9rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; color: var(--text-muted); }
+        .row-earnings { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 1.25rem; }
+
+        /* --- iOS OPTIMIZED MODAL --- */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; padding: 12px; }
+        .modal-overlay.show { display: flex; opacity: 1; }
+        .modal-content { background: var(--card-bg); padding: 24px 16px; border-radius: 28px; width: 94%; max-width: 400px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s ease; max-height: 85vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .modal-overlay.show .modal-content { transform: scale(1); }
+
+        .form-row { display: flex; gap: 12px; width: 100%; }
+        .form-group { flex: 1 1 calc(50% - 6px); margin-bottom: 16px; min-width: 0; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; }
+        .form-group input { width: 100%; padding: 12px 10px; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--row-bg); color: var(--text-main); font-size: 0.9rem; min-width: 0; }
+        
+        input[type="date"] { -webkit-appearance: none; min-height: 44px; display: flex; align-items: center; }
+        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+        .quick-tap-row { display: flex; gap: 4px; margin-top: 8px; }
+        .quick-tap-btn { flex: 1; padding: 6px 0; border-radius: 10px; border: none; font-weight: 800; font-size: 0.72rem; cursor: pointer; white-space: nowrap; }
+        .quick-tap-btn.out { color: var(--danger); background: rgba(248, 81, 73, 0.1); }
+        .quick-tap-btn.in { color: var(--success); background: rgba(46, 160, 67, 0.1); }
+
+        .calc-pill { background: rgba(59, 130, 246, 0.1); padding: 14px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
+        .btn-row { display: flex; gap: 10px; margin-top: 24px; }
+        .btn { flex: 1; padding: 14px 8px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 0.9rem; }
+        .btn-save { background: var(--primary); color: var(--primary-contrast); }
+        .btn-cancel { background: var(--row-hover); color: var(--text-main); }
+        .btn-delete { background: rgba(248, 81, 73, 0.1); color: var(--danger); flex: 0.35; display: flex; align-items: center; justify-content: center; }
+
+        #status-bubble { position: fixed; top: 100px; left: 50%; transform: translateX(-50%); padding: 12px 24px; border-radius: 20px; background: var(--success); color: white; z-index: 2001; font-weight: 600; display: none; }
+        
+        .positive { color: var(--success); }
+        .negative { color: var(--danger); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-title">GCash<span class="pro-badge">PRO</span></div>
+        <div class="header-actions">
+            <button onclick="toggleTheme()" id="theme-btn"></button>
+            <button onclick="resetData()" class="danger-btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+            <input type="file" id="profileImageInput" accept="image/*" style="display: none;" onchange="handleProfileImageUpload(event)">
+            <input type="file" id="importFile" accept=".csv" style="display: none;" onchange="handleImport(event)">
+            <button onclick="document.getElementById('importFile').click()"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
+            <button onclick="exportData()"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg></button>
+        </div>
+    </header>
+
+    <div id="status-bubble">Saved!</div>
+
+    <div class="container">
+        <div class="card">
+            <div class="profile-section">
+                <div class="avatar-wrapper" onclick="document.getElementById('profileImageInput').click()">
+                    <div id="profile-initials" class="profile-initials"></div>
+                    <img id="profile-img-display" src="" class="profile-img" onerror="this.style.display='none'">
+                </div>
+                <div>
+                    <div style="color: var(--text-muted); font-size: 0.9rem;">Welcome Back,</div>
+                    <div class="user-name" contenteditable="true" spellcheck="false" onblur="updateUserName(this)" id="user-name-display">User</div>
+                </div>
+            </div>
+            <div class="balance-section">
+                <div>
+                    <div style="font-size: 0.9rem; color: var(--text-muted);">Earnings (<span id="active-month-label">All</span>)</div>
+                    <div class="welcome-balance" id="month-earnings">₱0.00</div>
+                    <div class="cash-flow-breakdown">
+                        <span>In: <span class="val-in" id="month-in">₱0.00</span></span> &nbsp;|&nbsp;
+                        <span>Out: <span class="val-out" id="month-out">₱0.00</span></span>
+                    </div>
+                </div>
+                <div class="balance-actions">
+                    <button class="icon-btn-large" onclick="copySummary()"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+                    <button class="add-btn" onclick="openEntryModal()">New Transaction</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="search-container">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="searchInput" placeholder="Global search clients..." onkeyup="renderAll()">
+            </div>
+            <div class="month-tabs" id="tabBar"></div>
+            <div id="listBody"></div>
+        </div>
+    </div>
+
+    <div id="entry-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="em-title" style="margin-bottom: 20px;">Add Transaction</h3>
+            <input type="hidden" id="em-id">
+            <div class="form-group" style="width: 100%; flex: 1 1 100%;">
+                <label>Client Name</label>
+                <input type="text" id="em-name" placeholder="Enter Name">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label style="color: var(--danger);">Cash Out</label>
+                    <input type="number" id="em-cashOut" inputmode="decimal" placeholder="0.00" oninput="calcEarnings()">
+                    <div class="quick-tap-row">
+                        <button type="button" class="quick-tap-btn out" onclick="addQuickAmount('em-cashOut', 100)">+100</button>
+                        <button type="button" class="quick-tap-btn out" onclick="addQuickAmount('em-cashOut', 500)">+500</button>
+                        <button type="button" class="quick-tap-btn out" onclick="addQuickAmount('em-cashOut', 1000)">+1k</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label style="color: var(--success);">Cash In</label>
+                    <input type="number" id="em-cashIn" inputmode="decimal" placeholder="0.00" oninput="calcEarnings()">
+                    <div class="quick-tap-row">
+                        <button type="button" class="quick-tap-btn in" onclick="addQuickAmount('em-cashIn', 100)">+100</button>
+                        <button type="button" class="quick-tap-btn in" onclick="addQuickAmount('em-cashIn', 500)">+500</button>
+                        <button type="button" class="quick-tap-btn in" onclick="addQuickAmount('em-cashIn', 1000)">+1k</button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Date Out</label>
+                    <input type="date" id="em-dateOut" oninput="calcEarnings()">
+                </div>
+                <div class="form-group">
+                    <label>Date In</label>
+                    <input type="date" id="em-dateIn" oninput="calcEarnings()">
+                </div>
+            </div>
+            <div class="calc-pill">
+                <span style="font-weight: 700; color: var(--primary);">Net Profit</span>
+                <strong id="em-earnings-display" style="font-family: 'JetBrains Mono';">₱0.00</strong>
+                <input type="hidden" id="em-earnings-val" value="0">
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-delete" id="em-btn-delete" onclick="deleteEntry()" style="display:none;"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>
+                <button class="btn btn-cancel" onclick="closeModal('entry-modal')">Cancel</button>
+                <button class="btn btn-save" onclick="saveEntry()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sunSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2m-7.07-17.07l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2m-15.36 5.66l-1.41 1.41m11.32-11.32l-1.41 1.41"/></svg>`;
+        const moonSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`;
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const target = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', target);
+            localStorage.setItem('gcashTheme', target);
+            document.getElementById('theme-btn').innerHTML = target === 'dark' ? sunSvg : moonSvg;
+        }
+        document.getElementById('theme-btn').innerHTML = document.documentElement.getAttribute('data-theme') === 'dark' ? sunSvg : moonSvg;
+
+        let appData = JSON.parse(localStorage.getItem('gcash_v3_data')) || { userName: 'User', profilePic: '', entries: [] };
+        let activeMonth = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
+
+        function updateProfileInitials() {
+            const name = appData.userName.trim() || 'User';
+            const parts = name.split(' ').filter(p => p);
+            let initials = parts[0][0];
+            if (parts.length > 1) initials += parts[parts.length - 1][0]; 
+            document.getElementById('profile-initials').innerText = initials.toUpperCase();
+        }
+        
+        function loadProfilePic() {
+            const img = document.getElementById('profile-img-display');
+            if (appData.profilePic) { img.src = appData.profilePic; img.style.display = 'block'; }
+            else img.style.display = 'none';
+        }
+
+        document.getElementById('user-name-display').innerText = appData.userName;
+        updateProfileInitials(); loadProfilePic();
+
+        function handleProfileImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const MAX = 150; let w = img.width, h = img.height;
+                    if (w > h) { if (w > MAX) { h *= MAX / w; w = MAX; } } 
+                    else { if (h > MAX) { w *= MAX / h; h = MAX; } }
+                    canvas.width = w; canvas.height = h;
+                    ctx.drawImage(img, 0, 0, w, h);
+                    appData.profilePic = canvas.toDataURL('image/jpeg', 0.8);
+                    saveData(); loadProfilePic(); showStatus('Profile updated!');
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveData() { localStorage.setItem('gcash_v3_data', JSON.stringify(appData)); }
+        function showStatus(msg) { const b = document.getElementById('status-bubble'); b.innerText = msg; b.style.display = 'block'; setTimeout(() => b.style.display = 'none', 2500); }
+        function updateUserName(el) { appData.userName = el.innerText.trim(); saveData(); updateProfileInitials(); }
+
+        const fmt = (n) => '₱' + parseFloat(n).toLocaleString('en-US', { minimumFractionDigits: 2 });
+        const parseNum = (s) => parseFloat(String(s).replace(/[^0-9.-]+/g,"")) || 0;
+        const formatDate = (ds) => ds ? ds.substring(5).replace('-', '/') : '--/--';
+
+        function renderAll() {
+            const listBody = document.getElementById('listBody');
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const isSearching = searchInput !== '';
+            
+            const months = [...new Set(appData.entries.map(e => e.monthLabel))].sort((a,b) => new Date(a) - new Date(b));
+            if (months.length > 0 && !months.includes(activeMonth)) activeMonth = months[0];
+            
+            const tabBar = document.getElementById('tabBar');
+            tabBar.innerHTML = '';
+            months.forEach(m => {
+                tabBar.innerHTML += `<button class="month-tab ${m === activeMonth ? 'active' : ''}" onclick="activeMonth='${m}'; renderAll();">${m}</button>`;
+            });
+
+            let monthEntries = appData.entries.filter(e => e.monthLabel === activeMonth);
+            let totalE = 0, totalIn = 0, totalOut = 0;
+            monthEntries.forEach(e => { totalE += e.earnings; totalIn += e.cashIn; totalOut += e.cashOut; });
+
+            document.getElementById('month-earnings').innerText = fmt(totalE);
+            document.getElementById('month-earnings').className = `welcome-balance ${totalE >= 0 ? 'positive' : 'negative'}`;
+            document.getElementById('month-in').innerText = fmt(totalIn);
+            document.getElementById('month-out').innerText = fmt(totalOut);
+            document.getElementById('active-month-label').innerText = isSearching ? "Global Search" : activeMonth;
+
+            let displayEntries = isSearching ? appData.entries.filter(e => e.name.toLowerCase().includes(searchInput)) : monthEntries;
+            displayEntries.sort((a,b) => new Date(b.dateOut || b.dateIn || 0) - new Date(a.dateOut || a.dateIn || 0));
+
+            if (displayEntries.length === 0) {
+                listBody.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:40px 0;">No entries found.</div>';
+            } else {
+                let html = '', currentGroup = null;
+                const todayStr = new Date().toDateString();
+                const yesterdayStr = new Date(Date.now() - 864e5).toDateString();
+
+                displayEntries.forEach(e => {
+                    const d = new Date(e.dateOut || e.dateIn || 0);
+                    const dStr = d.toDateString();
+                    let header = isSearching ? d.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'}) : d.toLocaleDateString('en-US', {month:'long', day:'numeric'});
+                    if (dStr === todayStr) header = "Today"; else if (dStr === yesterdayStr) header = "Yesterday";
+
+                    if (header !== currentGroup) { html += `<div class="date-group-header">${header}</div>`; currentGroup = header; }
+                    html += `
+                    <div class="data-row" onclick="openEntryModal(${e.id})">
+                        <div>
+                            <div class="row-title">${e.name}</div>
+                            <div class="row-dates">Out: ${formatDate(e.dateOut)} | In: ${formatDate(e.dateIn)}</div>
+                        </div>
+                        <div class="row-earnings ${e.earnings >= 0 ? 'positive' : 'negative'}">${e.earnings >= 0 ? '+' : ''}${fmt(e.earnings)}</div>
+                    </div>`;
+                });
+                listBody.innerHTML = html;
+            }
+        }
+
+        function addQuickAmount(fid, amt) { const el = document.getElementById(fid); el.value = (parseFloat(el.value) || 0) + amt; calcEarnings(); }
+        function calcEarnings() {
+            const out = parseNum(document.getElementById('em-cashOut').value);
+            const inn = parseNum(document.getElementById('em-cashIn').value);
+            const earn = inn - out;
+            document.getElementById('em-earnings-val').value = earn;
+            document.getElementById('em-earnings-display').innerText = (earn >= 0 ? '+' : '') + fmt(earn);
+            document.getElementById('em-earnings-display').className = earn >= 0 ? 'positive' : 'negative';
+        }
+
+        function openEntryModal(id = null) {
+            const isEdit = !!id;
+            document.getElementById('em-title').innerText = isEdit ? 'Edit Entry' : 'New Transaction';
+            document.getElementById('em-btn-delete').style.display = isEdit ? 'flex' : 'none';
+            document.getElementById('em-id').value = id || '';
+            const obj = isEdit ? appData.entries.find(x => x.id === id) : { name: '', cashOut: '', cashIn: '', dateOut: '', dateIn: '' };
+            document.getElementById('em-name').value = obj.name;
+            document.getElementById('em-cashOut').value = obj.cashOut || '';
+            document.getElementById('em-cashIn').value = obj.cashIn || '';
+            document.getElementById('em-dateOut').value = obj.dateOut;
+            document.getElementById('em-dateIn').value = obj.dateIn;
+            calcEarnings();
+            const m = document.getElementById('entry-modal'); m.style.display = 'flex'; setTimeout(() => m.classList.add('show'), 10);
+        }
+
+        function saveEntry() {
+            const id = document.getElementById('em-id').value;
+            const name = document.getElementById('em-name').value.trim();
+            if (!name) return alert('Name required');
+            const dOut = document.getElementById('em-dateOut').value;
+            const dIn = document.getElementById('em-dateIn').value;
+            const entry = {
+                id: id ? Number(id) : Date.now(), name, dateOut: dOut, dateIn: dIn,
+                cashOut: parseNum(document.getElementById('em-cashOut').value),
+                cashIn: parseNum(document.getElementById('em-cashIn').value),
+                earnings: parseNum(document.getElementById('em-earnings-val').value),
+                monthLabel: new Date(dOut || dIn || Date.now()).toLocaleString('default', { month: 'long', year: 'numeric' })
+            };
+            if (id) { const i = appData.entries.findIndex(x => x.id === entry.id); appData.entries[i] = entry; } 
+            else appData.entries.unshift(entry);
+            activeMonth = entry.monthLabel; saveData(); renderAll(); closeModal('entry-modal'); showStatus('Saved!');
+        }
+
+        function deleteEntry() { if (confirm('Delete?')) { appData.entries = appData.entries.filter(x => x.id !== Number(document.getElementById('em-id').value)); saveData(); renderAll(); closeModal('entry-modal'); } }
+        function closeModal(id) { const m = document.getElementById(id); m.classList.remove('show'); setTimeout(() => m.style.display = 'none', 300); }
+
+        function exportData() {
+            let csv = "Category,Type/Date,Value 1,Value 2\n\nPROFILE\nName\n\"" + (appData.userName || 'User').replace(/"/g, '""') + "\"\n\nTRANSACTIONS\nID,Name,Date Out,Cash Out,Date In,Cash In,Earnings,Month\n";
+            appData.entries.forEach(e => { csv += `${e.id},"${e.name.replace(/"/g, '""')}",${e.dateOut},${e.cashOut},${e.dateIn},${e.cashIn},${e.earnings},"${e.monthLabel}"\n`; });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.setAttribute("download", `GCash_Pro_Backup.csv`); link.click();
+        }
+
+        function handleImport(ev) {
+            const file = ev.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const lines = e.target.result.split('\n').map(l => l.trim());
+                const newData = { userName: appData.userName, profilePic: appData.profilePic, entries: [] };
+                let currentSec = '';
+                lines.forEach(line => {
+                    if (!line || line.startsWith('Category,')) return;
+                    if (line === 'PROFILE') { currentSec = 'profile'; return; }
+                    if (line === 'TRANSACTIONS') { currentSec = 'transactions'; return; }
+                    const parts = []; let p = '', inQ = false;
+                    for (let c of line) { if (c === '"') inQ = !inQ; else if (c === ',' && !inQ) { parts.push(p); p = ''; } else p += c; }
+                    parts.push(p);
+                    const clean = (s) => s.replace(/^"|"$/g, '').replace(/""/g, '"').trim();
+                    if (currentSec === 'profile' && parts[0] && parts[0] !== 'Name') newData.userName = clean(parts[0]);
+                    else if (currentSec === 'transactions' && parts.length >= 8) {
+                        newData.entries.push({ id: Number(parts[0]), name: clean(parts[1]), dateOut: parts[2], cashOut: parseFloat(parts[3]), dateIn: parts[4], cashIn: parseFloat(parts[5]), earnings: parseFloat(parts[6]), monthLabel: clean(parts[7]) });
+                    }
+                });
+                if (confirm(`Import ${newData.entries.length} entries?`)) { appData = newData; saveData(); document.getElementById('user-name-display').innerText = appData.userName; updateProfileInitials(); renderAll(); showStatus('Imported!'); }
+                ev.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        renderAll();
+    </script>
+</body>
+</html>
