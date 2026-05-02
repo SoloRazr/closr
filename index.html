@@ -594,7 +594,7 @@
           Add Media
         </button>
         <button class="btn" id="share-btn" style="flex: 1.5;">
-          ${Icons ? '' : ''}
+          
           <svg class="icon-sm" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
           Share
         </button>
@@ -818,6 +818,14 @@
       if (commentsUnsubscribe) commentsUnsubscribe();
       activePostId = null;
     };
+
+const handleOutsideTap = (e) => {
+      if (e.target.classList.contains('post-modal-overlay')) window.closePostModal();
+      if (e.target.classList.contains('small-modal')) window.closeSmallModals();
+    };
+    
+    window.addEventListener('mousedown', handleOutsideTap);
+    window.addEventListener('touchstart', handleOutsideTap);
 
     // ---- PROFILE SAVE ----
     document.getElementById('save-profile-btn').addEventListener('click', async () => {
