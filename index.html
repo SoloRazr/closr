@@ -282,42 +282,44 @@
     .c-action:active { opacity: 0.7; }
 
     /* ===================== Emoji Reaction Button ===================== */
-    .reaction-wrap {
-      position: absolute;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
     .emoji-bar {
       position: absolute;
-      bottom: calc(100% + 8px);
-      left: 50%;
-      transform: translateX(-50%) scale(0.85);
-      transform-origin: bottom center;
+      bottom: calc(100% + 10px);
+      
+      /* FIX: Align to the start of the icon (0) instead of centering (50%) */
+      /* This prevents the bar from overflowing the left boundary. */
+      left: 0; 
+      
+      transform: scale(0.85); 
+      transform-origin: bottom left; 
       background: var(--card-bg);
       backdrop-filter: blur(18px) saturate(1.4);
       -webkit-backdrop-filter: blur(18px) saturate(1.4);
-      border: 1.5px solid var(--card-border);
+      
+      /* Visual Refinement: Removing hard borders for a cleaner look */
+      border: none; 
       border-radius: 999px;
-      padding: 6px 10px;
-      display: flex; gap: 4px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.14);
-      opacity: 0; pointer-events: none;
+      padding: 8px 14px;
+      display: flex; 
+      gap: 10px; /* Better spacing for the 5 emojis */
+      
+      /* Soft, diffused shadow for a minimalist depth */
+      box-shadow: 0 12px 42px rgba(0, 0, 0, 0.12); 
+      
+      opacity: 0; 
+      pointer-events: none;
       transition: opacity 0.18s, transform 0.18s;
-      z-index: 50; white-space: nowrap;
+      z-index: 50; 
+      white-space: nowrap;
     }
+
     .reaction-wrap:hover .emoji-bar,
     .reaction-wrap.show-emojis .emoji-bar {
-      opacity: 1; pointer-events: auto;
-      transform: translateX(-50%) scale(1);
+      opacity: 1; 
+      pointer-events: auto;
+      /* Removed translateX(-50%) to maintain the left-edge anchor */
+      transform: scale(1); 
     }
-    .emoji-opt {
-      font-size: 1.4rem; cursor: pointer;
-      padding: 4px 5px; border-radius: 50%;
-      transition: transform 0.15s;
-      line-height: 1;
-    }
-    .emoji-opt:hover, .emoji-opt:active { transform: scale(1.35); }
 
     /* ===================== Post Detail Modal ===================== */
     .post-modal-overlay {
