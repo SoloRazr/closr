@@ -2,133 +2,147 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>CLOSR</title>
   <style>
-    /* CSS Variables for Light & Dark Theme */
+    /* CSS Variables for Light & Dark Theme[cite: 1] */
     :root {
       --bg: #f8fafc;
-      --text: #1e293b;
+      --text: #0f172a;
       --text-muted: #64748b;
       --primary: #3b82f6;
-      --primary-hover: #2563eb;
-      --card-bg: rgba(255, 255, 255, 0.8);
-      --card-border: rgba(255, 255, 255, 0.5);
-      /* Minimalist diffused shadows */
-      --glass-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
-      --input-bg: rgba(255, 255, 255, 0.5);
-      --blob-1: rgba(59, 130, 246, 0.12);
-      --blob-2: rgba(167, 139, 250, 0.12);
-      --radius: 24px; /* Squircle design preference */
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: rgba(255, 255, 255, 0.6);
+      /* Soft, diffused box-shadows instead of hard borders[cite: 1] */
+      --glass-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.08);
+      --input-bg: rgba(255, 255, 255, 0.6);
+      --radius: 24px;
+      --spacing: 20px;
     }
 
     body.dark {
-      --bg: #0f172a;
-      --text: #f1f5f9;
+      --bg: #020617;
+      --text: #f8fafc;
       --text-muted: #94a3b8;
       --primary: #60a5fa;
-      --primary-hover: #3b82f6;
-      --card-bg: rgba(30, 41, 59, 0.7);
-      --card-border: rgba(255, 255, 255, 0.05);
-      --glass-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
-      --input-bg: rgba(15, 23, 42, 0.6);
-      --blob-1: rgba(59, 130, 246, 0.08);
-      --blob-2: rgba(167, 139, 250, 0.08);
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --card-border: rgba(255, 255, 255, 0.06);
+      --glass-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.6);
+      --input-bg: rgba(30, 41, 59, 0.5);
     }
 
     body { 
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      font-family: system-ui, -apple-system, sans-serif; 
       background-color: var(--bg); 
-      background-image: radial-gradient(at 0% 0%, var(--blob-1) 0px, transparent 40%), radial-gradient(at 100% 100%, var(--blob-2) 0px, transparent 40%);
+      background-image: radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 40%), radial-gradient(at 100% 100%, rgba(167, 139, 250, 0.08) 0px, transparent 40%);
       background-attachment: fixed;
       color: var(--text); 
       margin: 0; padding: 0; min-height: 100vh;
-      transition: background-color 0.4s, color 0.4s;
+      transition: background-color 0.4s;
       -webkit-tap-highlight-color: transparent;
     }
     
-    .container { max-width: 600px; margin: 0 auto; padding: 20px; padding-bottom: 100px; display: none; }
+    /* Layout Container[cite: 1] */
+    .container { 
+      max-width: 600px; 
+      margin: 0 auto; 
+      padding: max(20px, env(safe-area-inset-top)) 20px calc(100px + env(safe-area-inset-bottom)); 
+      display: none; 
+    }
     
     .glass {
       background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--card-border);
       box-shadow: var(--glass-shadow);
       border-radius: var(--radius);
     }
 
-    .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding: 10px 0; }
-    .nav-title { font-size: 1.6rem; font-weight: 900; margin: 0; letter-spacing: -0.02em; }
-    .icon-btn { background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text); width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s; box-shadow: var(--glass-shadow); }
-    .icon-btn:active { transform: scale(0.9); }
+    /* Typography & Spacing[cite: 1] */
+    .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding: 10px 0; }
+    .nav-title { font-size: 1.8rem; font-weight: 900; margin: 0; letter-spacing: -0.04em; }
 
-    .profile-header { padding: 16px 20px; margin-bottom: 28px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: transform 0.2s; }
-    .profile-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); padding: 2px; }
+    .profile-header { padding: 20px; margin-bottom: 32px; display: flex; align-items: center; gap: 18px; cursor: pointer; }
+    .profile-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); padding: 3px; background: var(--bg); }
+    .profile-name { font-weight: 800; font-size: 1.2em; }
 
-    .post { padding: 20px; margin-bottom: 24px; position: relative; border: none; }
-    .post-header { margin-bottom: 14px; display: flex; align-items: center; gap: 12px; }
-    .author-name { font-weight: 700; font-size: 1em; }
-    .timestamp { color: var(--text-muted); font-size: 0.8em; }
-    .post-content { line-height: 1.6; margin-bottom: 16px; font-size: 1.05rem; white-space: pre-wrap; }
-    .post-media { width: 100%; border-radius: 18px; margin-bottom: 16px; max-height: 400px; object-fit: cover; box-shadow: var(--glass-shadow); }
+    /* Post Layout[cite: 1] */
+    .post { padding: 24px; margin-bottom: 28px; border: none; }
+    .post-header { margin-bottom: 18px; display: flex; align-items: center; gap: 14px; }
+    .author-name { font-weight: 700; font-size: 1.05em; }
+    .timestamp { color: var(--text-muted); font-size: 0.85em; }
+    .post-content { line-height: 1.7; margin-bottom: 20px; font-size: 1.1rem; white-space: pre-wrap; }
+    .post-media { width: 100%; border-radius: 20px; margin-bottom: 20px; box-shadow: var(--glass-shadow); }
 
-    .post-actions { display: flex; gap: 15px; border-top: 1px solid var(--card-border); padding-top: 15px; margin-top: 10px; }
-    .action-item { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 0.9em; font-weight: 700; color: var(--text-muted); transition: color 0.2s; }
-    .action-item:hover { color: var(--primary); }
+    /* Action Bar Breathing Room[cite: 1] */
+    .post-actions { display: flex; gap: 24px; border-top: 1px solid var(--card-border); padding-top: 20px; margin-top: 12px; }
+    .action-item { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.95em; font-weight: 700; color: var(--text-muted); }
     
-    .reaction-summary { display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap; }
-    .mini-pill { background: var(--input-bg); padding: 4px 10px; border-radius: 99px; font-size: 0.75em; border: 1px solid var(--card-border); display: flex; align-items: center; gap: 4px; font-weight: 600; }
+    .reaction-summary { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .mini-pill { background: var(--input-bg); padding: 6px 12px; border-radius: 99px; font-size: 0.85em; border: 1px solid var(--card-border); display: flex; align-items: center; gap: 6px; font-weight: 600; }
 
-    .fab { position: fixed; bottom: max(24px, env(safe-area-inset-bottom)); right: 24px; width: 64px; height: 64px; border-radius: 50%; background: var(--primary); color: white; display: none; justify-content: center; align-items: center; box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4); cursor: pointer; z-index: 900; transition: transform 0.2s; }
-    .fab:active { transform: scale(0.9); }
+    /* FAB Position[cite: 1] */
+    .fab { 
+      position: fixed; 
+      bottom: max(32px, env(safe-area-inset-bottom)); 
+      right: 24px; 
+      width: 68px; height: 68px; 
+      border-radius: 50%; 
+      background: var(--primary); 
+      color: white; 
+      display: none; 
+      justify-content: center; align-items: center; 
+      box-shadow: 0 16px 32px rgba(59, 130, 246, 0.4); 
+      cursor: pointer; z-index: 900; 
+    }
 
-    .small-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 2000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(8px); }
-    .post-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; justify-content: center; align-items: flex-end; backdrop-filter: blur(8px); }
-    .post-modal-card { width: 100%; max-height: 92vh; display: flex; flex-direction: column; background: var(--bg); border-radius: 32px 32px 0 0; overflow: hidden; }
+    /* Modal Tweaks[cite: 1] */
+    .small-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(12px); }
+    .post-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: flex-end; backdrop-filter: blur(12px); }
+    .post-modal-card { width: 100%; max-height: 94vh; display: flex; flex-direction: column; background: var(--bg); border-radius: 36px 36px 0 0; overflow: hidden; }
     
     @media (min-width: 600px) { 
       .post-modal-overlay { align-items: center; padding: 20px; }
-      .post-modal-card { max-width: 500px; border-radius: 32px; height: 85vh; } 
+      .post-modal-card { max-width: 520px; border-radius: 36px; height: 85vh; } 
     }
 
-    .btn { background: var(--primary); color: white; border: none; padding: 14px 28px; border-radius: 999px; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3); }
-    .btn-outline { background: var(--input-bg); color: var(--text); border: 1px solid var(--card-border); padding: 10px 18px; border-radius: 999px; cursor: pointer; font-weight: 700; flex: 1; text-align: center; }
-    .input-field { width: 100%; background: var(--input-bg); color: var(--text); border: 1px solid var(--card-border); border-radius: 16px; padding: 14px; font-size: 16px; margin-bottom: 12px; box-sizing: border-box; outline: none; }
+    /* Buttons[cite: 1] */
+    .btn { background: var(--primary); color: white; border: none; padding: 16px 32px; border-radius: 999px; cursor: pointer; font-weight: 800; font-size: 1rem; box-shadow: 0 10px 24px rgba(59, 130, 246, 0.3); }
+    .input-field { width: 100%; background: var(--input-bg); color: var(--text); border: 1px solid var(--card-border); border-radius: 18px; padding: 16px; font-size: 16px; margin-bottom: 16px; box-sizing: border-box; outline: none; }
 
-    .admin-bar { display: flex; gap: 10px; margin-top: 15px; border-top: 1px dashed var(--card-border); padding-top: 15px; }
-    .tool-btn { font-size: 0.8em; font-weight: 800; padding: 6px 12px; border-radius: 8px; cursor: pointer; background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text-muted); }
-    .tool-btn.del { color: #ef4444; }
+    .admin-bar { display: flex; gap: 12px; margin-top: 20px; border-top: 1px dashed var(--card-border); padding-top: 20px; }
+    .tool-btn { font-size: 0.85em; font-weight: 800; padding: 8px 16px; border-radius: 12px; cursor: pointer; background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text-muted); }
 
-    #login-screen { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 3000; }
+    #login-screen { position: fixed; inset: 0; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 3000; }
   </style>
 </head>
 <body>
 
   <script>
     const Icons = {
-      comment: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`,
-      plus: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
-      heart: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`,
-      send: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>`
+      comment: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`,
+      plus: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
+      heart: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`,
+      send: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>`
     };
     const Emojis = ['❤️', '😂', '🙌', '😮', '🙏'];
   </script>
 
   <div id="login-screen">
-    <div class="glass" style="padding: 40px; text-align: center; max-width: 320px; width: 90%;">
-      <h2 style="margin-top: 0; font-weight: 900; font-size: 2.2rem; letter-spacing: -0.04em;">CLOSR</h2>
-      <p style="color: var(--text-muted); margin-bottom: 32px; font-size: 0.95em;">Your family's private space.</p>
-      <button class="btn" id="google-signin-btn" style="width: 100%;">Sign In with Google</button>
+    <div class="glass" style="padding: 48px; text-align: center; max-width: 340px; width: 90%;">
+      <h2 style="margin-top: 0; font-weight: 900; font-size: 2.5rem; letter-spacing: -0.05em;">CLOSR</h2>
+      <p style="color: var(--text-muted); margin-bottom: 40px; font-size: 1rem;">Family. Connected.</p>
+      <button class="btn" id="google-signin-btn" style="width: 100%;">Enter Private Space</button>
     </div>
   </div>
 
   <div class="container" id="app-container">
     <div class="nav-header">
-      <h1 class="nav-title">CLOSR <span id="user-badge" style="font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-left: 8px; vertical-align: middle;"></span></h1>
-      <button id="theme-toggle" class="icon-btn">
+      <h1 class="nav-title">CLOSR <span id="user-badge" style="font-size: 10px; font-weight: 900; color: var(--primary); text-transform: uppercase; margin-left: 10px; border: 1.5px solid; padding: 2px 6px; border-radius: 6px;"></span></h1>
+      <button id="theme-toggle" class="icon-btn" style="border-radius: 50%; width: 44px; height: 44px; background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text);">
         <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
       </button>
     </div>
@@ -137,7 +151,7 @@
       <img id="main-profile-avatar" class="profile-avatar" src="" alt="">
       <div class="profile-info">
         <div class="profile-name" id="main-profile-name">...</div>
-        <div class="profile-bio" id="main-profile-bio">Family member</div>
+        <div class="profile-bio" id="main-profile-bio">...</div>
       </div>
     </div>
 
@@ -146,63 +160,56 @@
 
   <div id="fab-compose" class="fab"></div>
 
-  <!-- COMPOSE MODAL -->
+  <!-- MODALS[cite: 1] -->
   <div id="compose-modal" class="small-modal">
-    <div class="glass" style="width: 100%; max-width: 450px; padding: 24px;">
-      <h3 style="margin-top:0; font-weight: 800;">New Spark</h3>
-      <textarea id="postInput" rows="4" placeholder="What's happening?" style="width: 100%; background: transparent; border: none; outline: none; color: var(--text); font-size: 1.1rem; resize: none; margin-bottom: 10px;"></textarea>
+    <div class="glass" style="width: 100%; max-width: 480px; padding: 32px;">
+      <h3 style="margin-top:0; font-weight: 900; font-size: 1.5rem;">New Spark</h3>
+      <textarea id="postInput" rows="4" placeholder="Share a moment..." style="width: 100%; background: transparent; border: none; outline: none; color: var(--text); font-size: 1.2rem; resize: none; margin-bottom: 20px;"></textarea>
       
-      <div id="image-url-container" style="display: none;">
-        <input type="text" id="post-image-url" class="input-field" placeholder="Paste image link (.jpg, .png)...">
-      </div>
-      <div id="video-url-container" style="display: none;">
-        <input type="text" id="post-video-url" class="input-field" placeholder="YouTube or Video link...">
-      </div>
+      <div id="image-url-container" style="display: none;"><input type="text" id="post-image-url" class="input-field" placeholder="Image Link (.jpg, .png)"></div>
+      <div id="video-url-container" style="display: none;"><input type="text" id="post-video-url" class="input-field" placeholder="YouTube or Video Link"></div>
 
-      <div style="display: flex; gap: 10px;">
-        <button class="btn-outline" onclick="toggleInput('image')">Photo</button>
-        <button class="btn-outline" onclick="toggleInput('video')">Video</button>
+      <div style="display: flex; gap: 12px; margin-top: 10px;">
+        <button class="btn" style="background: var(--input-bg); color: var(--text); flex: 1; box-shadow: none;" onclick="toggleInput('image')">Photo</button>
+        <button class="btn" style="background: var(--input-bg); color: var(--text); flex: 1; box-shadow: none;" onclick="toggleInput('video')">Video</button>
         <button class="btn" id="share-btn" style="flex: 1.5;">Share</button>
       </div>
     </div>
   </div>
 
-  <!-- POST DETAIL MODAL -->
   <div id="post-detail-modal" class="post-modal-overlay">
     <div class="post-modal-card glass">
-      <div style="padding: 20px 24px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; background: var(--card-bg);">
-        <span style="font-weight: 800;">Conversation</span>
-        <span onclick="closePostModal()" style="cursor: pointer; font-weight: 700; opacity: 0.6;">Done</span>
+      <div style="padding: 24px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; background: var(--card-bg);">
+        <span style="font-weight: 900; font-size: 1.1rem;">Conversation</span>
+        <span onclick="closePostModal()" style="cursor: pointer; font-weight: 800; opacity: 0.5;">Close</span>
       </div>
       <div style="flex: 1; overflow-y: auto; padding: 24px;">
         <div id="pm-content"></div>
-        <div id="pm-reactions" style="display: flex; justify-content: space-around; background: var(--input-bg); border-radius: 99px; padding: 12px; margin: 24px 0; border: 1px solid var(--card-border);"></div>
+        <div id="pm-reactions" style="display: flex; justify-content: space-around; background: var(--input-bg); border-radius: 99px; padding: 16px; margin: 32px 0; border: 1px solid var(--card-border);"></div>
         <div id="pm-comments"></div>
       </div>
-      <div style="padding: 16px 20px; border-top: 1px solid var(--card-border); display: flex; gap: 12px; align-items: center; background: var(--card-bg);">
-        <input type="text" id="comment-input" class="input-field" style="margin-bottom:0; border-radius: 99px;" placeholder="Write a comment...">
-        <button class="icon-btn" onclick="submitComment()" style="background: var(--primary); color: white; border: none; flex-shrink: 0;">
+      <div style="padding: 20px; border-top: 1px solid var(--card-border); display: flex; gap: 14px; align-items: center; background: var(--card-bg); padding-bottom: max(20px, env(safe-area-inset-bottom));">
+        <input type="text" id="comment-input" class="input-field" style="margin-bottom:0; border-radius: 99px; padding: 14px 24px;" placeholder="Add to the talk...">
+        <button class="icon-btn" onclick="submitComment()" style="background: var(--primary); color: white; border: none; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
           <script>document.write(Icons.send)</script>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- EDIT MODAL -->
   <div id="edit-modal" class="small-modal">
-    <div class="glass" style="width: 100%; max-width: 400px; padding: 24px;">
-      <h3 style="margin-top:0; font-weight: 800;">Edit Spark</h3>
-      <textarea id="edit-textarea" rows="4" class="input-field" style="background: transparent; min-height: 120px;"></textarea>
+    <div class="glass" style="width: 100%; max-width: 440px; padding: 32px;">
+      <h3 style="margin-top:0; font-weight: 900;">Update Story</h3>
+      <textarea id="edit-textarea" rows="4" class="input-field" style="background: transparent; min-height: 140px; font-size: 1.1rem;"></textarea>
       <button class="btn" id="save-edit-btn" style="width: 100%;">Save Changes</button>
     </div>
   </div>
 
-  <!-- PROFILE MODAL -->
   <div id="profile-modal" class="small-modal">
-    <div class="glass" style="width: 100%; max-width: 400px; padding: 24px;">
-      <h3 style="margin-top:0; text-align: center; font-weight: 800;">My Profile</h3>
-      <input type="text" id="edit-profile-name" class="input-field" placeholder="Name">
-      <input type="text" id="edit-profile-bio" class="input-field" placeholder="Bio">
+    <div class="glass" style="width: 100%; max-width: 400px; padding: 32px;">
+      <h3 style="margin-top:0; text-align: center; font-weight: 900;">Your Identity</h3>
+      <input type="text" id="edit-profile-name" class="input-field" placeholder="Full Name">
+      <input type="text" id="edit-profile-bio" class="input-field" placeholder="Brief Bio">
       <input type="text" id="edit-profile-avatar-url" class="input-field" placeholder="Avatar URL">
       <button class="btn" id="save-profile-btn" style="width: 100%;">Update Profile</button>
     </div>
@@ -240,8 +247,6 @@
         currentUser = user;
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app-container').style.display = 'block';
-        
-        // CONVERSATIONAL UPGRADE: Allow everyone to post[cite: 1]
         document.getElementById('fab-compose').style.display = 'flex';
         
         const isAdm = user.email === ADMIN_EMAIL;
@@ -251,8 +256,8 @@
         const docSnap = await getDoc(userRef);
         userProfile = docSnap.exists() ? docSnap.data() : { 
           name: user.displayName || "Family Member", 
-          bio: "Happy to be here!", 
-          avatarUrl: user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}` 
+          bio: "Just joined CLOSR!", 
+          avatarUrl: user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}&background=random` 
         };
         if(!docSnap.exists()) await setDoc(userRef, userProfile);
         
@@ -296,7 +301,6 @@
           });
           reactionHTML += '</div>';
 
-          // ADMIN PROTECTION: Only show Edit/Delete if user is Admin[cite: 1]
           const isAdm = currentUser && currentUser.email === ADMIN_EMAIL;
           const adminTools = isAdm ? `
             <div class="admin-bar">
@@ -307,7 +311,7 @@
           feed.insertAdjacentHTML('beforeend', `
             <div class="post glass" onclick="window.openPostModal('${data.id}')">
               <div class="post-header">
-                <img src="${data.authorAvatar}" class="profile-avatar" style="width:36px; height:36px;">
+                <img src="${data.authorAvatar}" class="profile-avatar" style="width:40px; height:40px; border-width:2px;">
                 <div style="display:flex; flex-direction:column;">
                   <span class="author-name">${data.authorName}</span>
                   <span class="timestamp">${data.createdAt ? data.createdAt.toDate().toLocaleDateString() : 'Just now'}</span>
@@ -318,10 +322,10 @@
               ${reactionHTML}
               <div class="post-actions">
                 <div class="action-item" onclick="event.stopPropagation(); window.quickReact('${data.id}')">
-                  ${Icons.heart} Quick Heart
+                  ${Icons.heart} Love
                 </div>
                 <div class="action-item">
-                  ${Icons.comment} View Conversation
+                  ${Icons.comment} Talk
                 </div>
               </div>
               ${adminTools}
@@ -334,8 +338,8 @@
     window.toggleInput = (type) => {
       const img = document.getElementById('image-url-container');
       const vid = document.getElementById('video-url-container');
-      img.style.display = type === 'image' ? (img.style.display === 'none' ? 'block' : 'none') : 'none';
-      vid.style.display = type === 'video' ? (vid.style.display === 'none' ? 'block' : 'none') : 'none';
+      img.style.display = type === 'image' ? 'block' : 'none';
+      vid.style.display = type === 'video' ? 'block' : 'none';
     };
 
     document.getElementById('share-btn').onclick = async () => {
@@ -367,15 +371,12 @@
     };
 
     window.quickReact = async (id) => {
-      if (window.navigator.vibrate) window.navigator.vibrate(15);
+      if (window.navigator.vibrate) window.navigator.vibrate(10);
       const postRef = doc(db, "posts", id);
       const data = allPostsData[id];
       const reactions = data.reactions || {};
-      if (reactions[currentUser.uid] === '❤️') {
-        delete reactions[currentUser.uid];
-      } else {
-        reactions[currentUser.uid] = '❤️';
-      }
+      if (reactions[currentUser.uid] === '❤️') delete reactions[currentUser.uid];
+      else reactions[currentUser.uid] = '❤️';
       await updateDoc(postRef, { reactions: reactions });
     };
 
@@ -383,17 +384,17 @@
       activePostId = id;
       const data = allPostsData[id];
       document.getElementById('pm-content').innerHTML = `
-        <div class="post-header" style="margin-bottom:12px;">
-           <img src="${data.authorAvatar}" class="profile-avatar" style="width:40px; height:40px;">
-           <span class="author-name">${data.authorName}</span>
+        <div class="post-header" style="margin-bottom:20px;">
+           <img src="${data.authorAvatar}" class="profile-avatar" style="width:48px; height:48px;">
+           <span class="author-name" style="font-size:1.2em;">${data.authorName}</span>
         </div>
-        <div class="post-content" style="font-size:1.1rem;">${data.text || ''}</div>
+        <div class="post-content" style="font-size:1.3rem; line-height:1.6;">${data.text || ''}</div>
         ${getMediaHTML(data.mediaUrl, data.mediaType)}
       `;
       let rHTML = '';
       Emojis.forEach(e => {
         const isActive = data.reactions && data.reactions[currentUser.uid] === e;
-        rHTML += `<span style="font-size:1.6rem; cursor:pointer; transition:transform 0.2s; ${isActive ? 'transform:scale(1.3); filter:drop-shadow(0 0 5px var(--primary));' : 'opacity:0.6;'}" onclick="window.toggleEmoji('${id}', '${e}')">${e}</span>`;
+        rHTML += `<span style="font-size:1.8rem; cursor:pointer; transition:transform 0.2s; ${isActive ? 'transform:scale(1.3); filter:drop-shadow(0 0 8px var(--primary));' : 'opacity:0.4;'}" onclick="window.toggleEmoji('${id}', '${e}')">${e}</span>`;
       });
       document.getElementById('pm-reactions').innerHTML = rHTML;
       document.getElementById('post-detail-modal').style.display = 'flex';
@@ -401,7 +402,7 @@
     };
 
     window.toggleEmoji = async (id, emoji) => {
-      if (window.navigator.vibrate) window.navigator.vibrate(10);
+      if (window.navigator.vibrate) window.navigator.vibrate(8);
       const postRef = doc(db, "posts", id);
       const reactions = allPostsData[id].reactions || {};
       if (reactions[currentUser.uid] === emoji) delete reactions[currentUser.uid];
@@ -414,15 +415,15 @@
       onSnapshot(query(collection(db, "posts", id, "comments"), orderBy("createdAt", "asc")), (snap) => {
         const div = document.getElementById('pm-comments');
         div.innerHTML = '';
-        if(snap.empty) { div.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.9em;">No comments yet. Start the talk!</p>'; return; }
+        if(snap.empty) { div.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">No messages yet.</p>'; return; }
         snap.forEach(d => {
           const c = d.data();
           div.insertAdjacentHTML('beforeend', `
-            <div style="margin-bottom:16px; display:flex; gap:10px; align-items:flex-start;">
-              <img src="${c.authorAvatar}" class="profile-avatar" style="width:28px; height:28px; border-width:1px;">
-              <div class="glass" style="padding:10px 14px; border-radius:18px; font-size:0.95em; box-shadow:none;">
-                <div style="font-weight:800; font-size:0.8em; color:var(--primary); margin-bottom:2px;">${c.authorName}</div>
-                <div>${c.text}</div>
+            <div style="margin-bottom:20px; display:flex; gap:12px; align-items:flex-start;">
+              <img src="${c.authorAvatar}" class="profile-avatar" style="width:32px; height:32px; border-width:1px;">
+              <div class="glass" style="padding:14px 18px; border-radius:22px; font-size:1em; box-shadow:none; flex:1;">
+                <div style="font-weight:900; font-size:0.8em; color:var(--primary); margin-bottom:4px;">${c.authorName}</div>
+                <div style="line-height:1.5;">${c.text}</div>
               </div>
             </div>`);
         });
@@ -451,32 +452,36 @@
     };
 
     window.openDelete = async (id) => {
-      if (confirm("Permanently delete this Spark?")) await deleteDoc(doc(db, "posts", id));
+      if (confirm("Delete this story permanently?")) await deleteDoc(doc(db, "posts", id));
     };
 
-    // UI & Global Helpers
     window.closePostModal = () => document.getElementById('post-detail-modal').style.display = 'none';
     document.getElementById('fab-compose').onclick = () => document.getElementById('compose-modal').style.display = 'flex';
+    
     window.onclick = (e) => { 
       if(e.target.classList.contains('small-modal')) e.target.style.display = 'none'; 
       if(e.target.classList.contains('post-modal-overlay')) e.target.style.display = 'none';
     };
     
     document.getElementById('google-signin-btn').onclick = () => signInWithPopup(auth, new GoogleAuthProvider());
-    window.openProfileModal = () => document.getElementById('profile-modal').style.display = 'flex';
+    window.openProfileModal = () => {
+      document.getElementById('edit-profile-name').value = userProfile.name;
+      document.getElementById('edit-profile-bio').value = userProfile.bio;
+      document.getElementById('edit-profile-avatar-url').value = userProfile.avatarUrl;
+      document.getElementById('profile-modal').style.display = 'flex';
+    };
     
     document.getElementById('save-profile-btn').onclick = async () => {
       const updated = { 
-        name: document.getElementById('edit-profile-name').value.trim() || userProfile.name, 
-        bio: document.getElementById('edit-profile-bio').value.trim() || userProfile.bio, 
-        avatarUrl: document.getElementById('edit-profile-avatar-url').value.trim() || userProfile.avatarUrl 
+        name: document.getElementById('edit-profile-name').value.trim(), 
+        bio: document.getElementById('edit-profile-bio').value.trim(), 
+        avatarUrl: document.getElementById('edit-profile-avatar-url').value.trim() 
       };
       await setDoc(doc(db, "users", currentUser.uid), updated);
       userProfile = updated; updateProfileUI(); document.getElementById('profile-modal').style.display = 'none';
     };
 
-    const savedTheme = localStorage.getItem('closr-theme');
-    if (savedTheme === 'dark') document.body.classList.add('dark');
+    if (localStorage.getItem('closr-theme') === 'dark') document.body.classList.add('dark');
     document.getElementById('theme-toggle').onclick = () => {
       document.body.classList.toggle('dark');
       localStorage.setItem('closr-theme', document.body.classList.contains('dark') ? 'dark' : 'light');
