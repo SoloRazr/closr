@@ -76,13 +76,14 @@
     .login-card { padding: 40px; text-align: center; max-width: 300px; width: 90%; }
     .login-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; margin-top: 10px; cursor: pointer; font-weight: bold; font-size: 16px; }
 
-    /* Profile Section */
-    .profile-header { padding: 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; position: relative; }
+    /* Profile Section - UPDATED FOR APP VIBE */
+    .profile-header { padding: 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px; position: relative; cursor: pointer; transition: transform 0.1s, background-color 0.2s; }
+    .profile-header:active { transform: scale(0.98); background: var(--input-bg); }
     .profile-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; background: var(--input-bg); border: 2px solid var(--primary); }
     .profile-info { flex: 1; }
     .profile-name { font-weight: 800; font-size: 1.2em; margin-bottom: 4px; }
     .profile-bio { color: var(--text-muted); font-size: 0.9em; line-height: 1.4; }
-    .edit-profile-btn { background: var(--input-bg); color: var(--text); border: 1px solid var(--card-border); padding: 8px 16px; border-radius: 9999px; font-size: 0.8em; font-weight: 700; cursor: pointer; position: absolute; top: 20px; right: 20px; backdrop-filter: blur(4px); }
+    .profile-chevron { color: var(--text-muted); opacity: 0.5; }
 
     /* Tiny Avatars */
     .avatar-sm { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--input-bg); border: 1px solid var(--card-border);}
@@ -190,14 +191,15 @@
       </div>
     </div>
     
-    <!-- Profile Header -->
-    <div class="profile-header glass">
+    <!-- Profile Header (NOW FULLY TAPPABLE) -->
+    <div class="profile-header glass" onclick="openProfileModal()">
       <img id="main-profile-avatar" class="profile-avatar" src="https://via.placeholder.com/64" alt="Profile">
       <div class="profile-info">
         <div class="profile-name" id="main-profile-name">Loading...</div>
         <div class="profile-bio" id="main-profile-bio">Welcome to the family feed!</div>
       </div>
-      <button class="edit-profile-btn" onclick="openProfileModal()">Edit</button>
+      <!-- iOS style Chevron Arrow -->
+      <svg class="icon profile-chevron" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
     </div>
 
     <!-- Feed -->
@@ -209,7 +211,7 @@
     <svg class="icon" viewBox="0 0 24 24" style="stroke-width: 3;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
   </div>
 
-  <!-- COMPOSE MODAL (Replaces inline compose box) -->
+  <!-- COMPOSE MODAL -->
   <div id="compose-modal" class="small-modal">
     <div class="modal-card glass">
       <h3 style="margin-top:0; font-size: 1.2rem; margin-bottom: 20px;">New Post</h3>
