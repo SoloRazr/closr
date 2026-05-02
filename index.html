@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Our Circle</title>
+  <title>CLOSR</title>
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; background: #f3f4f6; color: #1f2937; margin: 0; padding: 0; height: 100vh;}
     .container { max-width: 600px; margin: 0 auto; padding: 20px; display: none; }
@@ -17,6 +17,18 @@
     .login-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; max-width: 300px;}
     .login-btn { display: block; width: 100%; background: #3b82f6; color: white; border: none; padding: 12px; border-radius: 8px; margin-top: 10px; cursor: pointer; font-weight: bold; font-size: 16px;}
     
+    /* Profile Section */
+    .profile-header { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 24px; display: flex; align-items: center; gap: 16px; position: relative;}
+    .profile-avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; background: #e5e7eb; border: 2px solid #3b82f6;}
+    .profile-info { flex: 1; }
+    .profile-name { font-weight: bold; font-size: 1.2em; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;}
+    .profile-bio { color: #6b7280; font-size: 0.9em; line-height: 1.4;}
+    .edit-profile-btn { background: #f3f4f6; color: #4b5563; border: none; padding: 6px 12px; border-radius: 9999px; font-size: 0.8em; font-weight: bold; cursor: pointer; position: absolute; top: 20px; right: 20px;}
+
+    /* Tiny Avatars for Posts and Comments */
+    .avatar-sm { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: #e5e7eb; }
+    .avatar-xs { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; background: #e5e7eb; }
+
     /* Compose Box */
     .compose-box { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 24px; display: none; }
     textarea { width: 100%; border: none; outline: none; resize: none; font-size: 18px; font-family: inherit; margin-bottom: 10px; }
@@ -31,13 +43,15 @@
     /* Posts in Feed */
     .post { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 16px; cursor: pointer; transition: transform 0.1s;}
     .post:active { transform: scale(0.98); }
-    .post-header { font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
-    .timestamp { color: #9ca3af; font-size: 0.85em; font-weight: 400; }
+    .post-header { margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+    .post-author-info { display: flex; flex-direction: column; justify-content: center;}
+    .author-name { font-weight: 700; font-size: 1em; color: #111827;}
+    .timestamp { color: #9ca3af; font-size: 0.8em; font-weight: 400; }
     .post-content { line-height: 1.5; margin-bottom: 16px; white-space: pre-wrap; }
     .post-media { width: 100%; border-radius: 12px; margin-bottom: 16px; max-height: 400px; object-fit: cover; background: #000; }
     .post-stats { display: flex; gap: 16px; color: #6b7280; font-weight: 600; font-size: 0.9em; border-top: 1px solid #f3f4f6; padding-top: 12px;}
 
-    /* Full Post Detail Modal (Mobile App Vibe) */
+    /* Full Post Detail Modal */
     .post-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
     .post-modal-card { background: white; width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
     @media (min-width: 600px) { .post-modal-card { max-width: 500px; height: 90vh; border-radius: 16px; } }
@@ -52,22 +66,26 @@
     .comment-send { background: #3b82f6; color: white; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; cursor: pointer; font-weight: bold;}
     
     /* Comments List */
-    .comment-box { background: white; padding: 12px 16px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-    .comment-author { font-weight: 700; font-size: 0.9em; margin-bottom: 4px; display: flex; justify-content: space-between;}
+    .comment-box { background: white; padding: 12px 16px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); display: flex; gap: 10px;}
+    .comment-content { flex: 1; }
+    .comment-author { font-weight: 700; font-size: 0.9em; margin-bottom: 2px;}
     .comment-text { font-size: 0.95em; color: #374151; line-height: 1.4; margin-bottom: 8px;}
     .comment-actions { display: flex; gap: 15px; font-size: 0.85em; color: #6b7280; font-weight: 600;}
     .c-action { cursor: pointer; user-select: none; }
     .c-action:hover { color: #3b82f6; }
     .liked { color: #ef4444 !important; }
 
-    /* Edit/Delete Small Modals */
+    /* General Small Modals */
     .small-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; padding: 20px; }
-    .modal-card { background: white; width: 100%; max-width: 400px; border-radius: 16px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+    .modal-card { background: white; width: 100%; max-width: 400px; border-radius: 16px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); position: relative;}
     .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
     .btn-cancel { background: #f3f4f6; color: #4b5563; border: none; padding: 10px 20px; border-radius: 9999px; cursor: pointer; font-weight: 600;}
     .btn-danger { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 9999px; cursor: pointer; font-weight: 600;}
 
-    /* Tool menu inside post detail */
+    /* Profile Edit specific */
+    .profile-edit-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; display: block; margin: 0 auto 15px; cursor: pointer; border: 2px dashed #ccc;}
+    .input-field { width: 100%; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; font-size: 15px; margin-bottom: 15px; box-sizing: border-box; outline: none;}
+
     .admin-tools { display: flex; gap: 10px; margin-top: 15px; border-top: 1px dashed #e5e7eb; padding-top: 15px;}
     .tool-btn { background: #f3f4f6; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8em; font-weight: bold; cursor: pointer;}
     .tool-btn.del { color: #ef4444; background: #fef2f2;}
@@ -78,7 +96,7 @@
   <!-- Login Screen -->
   <div id="login-screen">
     <div class="login-card">
-      <h2 style="margin-top: 0;">Closr with Sol Anda ☕️</h2>
+      <h2 style="margin-top: 0;">CLOSR</h2>
       <p style="color: #6b7280; margin-bottom: 24px;">Sign in to view the family feed.</p>
       <button class="login-btn" id="google-signin-btn">Sign In with Google</button>
     </div>
@@ -86,8 +104,19 @@
 
   <!-- Main App -->
   <div class="container" id="app-container">
-    <h1 style="color: #111827;">Closr with Sol Anda ☕️ <span id="user-badge" style="font-size: 14px; font-weight: normal; color: #6b7280;"></span></h1>
     
+    <h1 style="color: #111827; margin-bottom: 10px;">CLOSR <span id="user-badge" style="font-size: 14px; font-weight: normal; color: #6b7280;"></span></h1>
+    
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <img id="main-profile-avatar" class="profile-avatar" src="https://via.placeholder.com/60" alt="Profile">
+      <div class="profile-info">
+        <div class="profile-name" id="main-profile-name">Loading...</div>
+        <div class="profile-bio" id="main-profile-bio">Welcome to my feed!</div>
+      </div>
+      <button class="edit-profile-btn" onclick="openProfileModal()">Edit</button>
+    </div>
+
     <!-- Compose Box -->
     <div class="compose-box" id="compose-box">
       <textarea id="postInput" rows="3" placeholder="What's going on today?"></textarea>
@@ -114,11 +143,8 @@
         <span class="pm-close" onclick="closePostModal()">✕</span>
       </div>
       <div class="pm-body">
-        <!-- Injected Post Content -->
         <div id="pm-content"></div>
-        
         <h4 style="margin-bottom: 10px; color: #4b5563;">Comments</h4>
-        <!-- Injected Comments -->
         <div id="pm-comments"></div>
       </div>
       <div class="pm-footer">
@@ -128,11 +154,31 @@
     </div>
   </div>
 
+  <!-- EDIT PROFILE MODAL -->
+  <div id="profile-modal" class="small-modal">
+    <div class="modal-card">
+      <h3 style="margin-top:0; text-align: center;">Edit Profile</h3>
+      <img id="edit-profile-preview" class="profile-edit-avatar" src="https://via.placeholder.com/80" onclick="document.getElementById('profile-upload').click()" title="Tap to change photo">
+      <input type="file" id="profile-upload" accept="image/*" style="display: none;">
+      
+      <label style="font-size: 14px; font-weight: bold; color: #4b5563;">Display Name</label>
+      <input type="text" id="edit-profile-name" class="input-field" placeholder="Your name">
+      
+      <label style="font-size: 14px; font-weight: bold; color: #4b5563;">Bio</label>
+      <input type="text" id="edit-profile-bio" class="input-field" placeholder="A short bio...">
+      
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeSmallModals()">Cancel</button>
+        <button class="btn" id="save-profile-btn">Save</button>
+      </div>
+    </div>
+  </div>
+
   <!-- EDIT MODAL -->
   <div id="edit-modal" class="small-modal">
     <div class="modal-card">
       <h3 style="margin-top:0;">Edit Post</h3>
-      <textarea id="edit-textarea" rows="4" style="width: 100%; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; font-size: 16px; outline: none; box-sizing: border-box;"></textarea>
+      <textarea id="edit-textarea" rows="4" class="input-field"></textarea>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeSmallModals()">Cancel</button>
         <button class="btn" id="save-edit-btn">Save</button>
@@ -156,7 +202,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js";
 
     const firebaseConfig = {
@@ -179,17 +225,21 @@
     // Global State
     let currentUser = null;
     let currentUserRole = 'guest';
-    let allPostsData = {}; // Cache posts so modal can open instantly
+    let userProfile = { name: '', bio: '', avatarUrl: 'https://via.placeholder.com/60' };
+    let allPostsData = {}; 
     let activePostId = null;
     let commentsUnsubscribe = null;
     let selectedFile = null;
+    let selectedProfileFile = null;
 
-    // ----- AUTHENTICATION -----
+    const defaultAvatar = "https://ui-avatars.com/api/?background=3b82f6&color=fff&name=";
+
+    // ----- AUTHENTICATION & PROFILE FETCHING -----
     document.getElementById('google-signin-btn').addEventListener('click', () => {
       signInWithPopup(auth, new GoogleAuthProvider()).catch(err => alert("Login failed."));
     });
 
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
         currentUser = user;
         document.getElementById('login-screen').style.display = 'none';
@@ -198,11 +248,28 @@
         if (user.email === ADMIN_EMAIL) {
           currentUserRole = 'admin';
           document.getElementById('compose-box').style.display = 'block';
-          document.getElementById('user-badge').innerText = "(Admin View)";
+          document.getElementById('user-badge').innerText = "(Admin)";
         } else {
           currentUserRole = 'guest';
-          document.getElementById('user-badge').innerText = `(${user.displayName || 'Family'})`;
+          document.getElementById('user-badge').innerText = "(Family)";
         }
+
+        // Fetch or Create Profile
+        const userRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(userRef);
+        
+        if (docSnap.exists()) {
+          userProfile = docSnap.data();
+        } else {
+          userProfile = {
+            name: user.displayName || user.email.split('@')[0],
+            bio: "Happy to be here!",
+            avatarUrl: defaultAvatar + (user.displayName || "User")
+          };
+          await setDoc(userRef, userProfile);
+        }
+        
+        updateProfileUI();
         loadPosts();
       } else {
         document.getElementById('login-screen').style.display = 'flex';
@@ -210,7 +277,59 @@
       }
     });
 
-    // ----- MEDIA UPLOAD LOGIC -----
+    function updateProfileUI() {
+      document.getElementById('main-profile-name').innerText = userProfile.name;
+      document.getElementById('main-profile-bio').innerText = userProfile.bio;
+      document.getElementById('main-profile-avatar').src = userProfile.avatarUrl;
+    }
+
+    // ----- PROFILE EDIT LOGIC -----
+    window.openProfileModal = () => {
+      document.getElementById('edit-profile-name').value = userProfile.name;
+      document.getElementById('edit-profile-bio').value = userProfile.bio;
+      document.getElementById('edit-profile-preview').src = userProfile.avatarUrl;
+      document.getElementById('profile-modal').style.display = 'flex';
+    };
+
+    document.getElementById('profile-upload').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      selectedProfileFile = file;
+      document.getElementById('edit-profile-preview').src = URL.createObjectURL(file);
+    });
+
+    document.getElementById('save-profile-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('save-profile-btn');
+      btn.disabled = true; btn.innerText = "Saving...";
+      
+      try {
+        let newAvatarUrl = userProfile.avatarUrl;
+        
+        if (selectedProfileFile) {
+          const storageRef = ref(storage, 'avatars/' + currentUser.uid + '-' + Date.now());
+          await uploadBytes(storageRef, selectedProfileFile);
+          newAvatarUrl = await getDownloadURL(storageRef);
+        }
+
+        const newProfile = {
+          name: document.getElementById('edit-profile-name').value.trim() || userProfile.name,
+          bio: document.getElementById('edit-profile-bio').value.trim(),
+          avatarUrl: newAvatarUrl
+        };
+
+        await setDoc(doc(db, "users", currentUser.uid), newProfile);
+        userProfile = newProfile;
+        updateProfileUI();
+        window.closeSmallModals();
+      } catch (error) {
+        console.error(error); alert("Failed to update profile.");
+      } finally {
+        btn.disabled = false; btn.innerText = "Save";
+        selectedProfileFile = null;
+      }
+    });
+
+    // ----- POST MEDIA LOGIC -----
     const mediaInput = document.getElementById('media-input');
     const mediaPreviewContainer = document.getElementById('media-preview-container');
     const imagePreview = document.getElementById('image-preview');
@@ -223,13 +342,9 @@
       mediaPreviewContainer.style.display = 'block';
       const fileURL = URL.createObjectURL(file);
       if (file.type.startsWith('video/')) {
-        imagePreview.style.display = 'none';
-        videoPreview.style.display = 'block';
-        videoPreview.src = fileURL;
+        imagePreview.style.display = 'none'; videoPreview.style.display = 'block'; videoPreview.src = fileURL;
       } else {
-        videoPreview.style.display = 'none';
-        imagePreview.style.display = 'block';
-        imagePreview.src = fileURL;
+        videoPreview.style.display = 'none'; imagePreview.style.display = 'block'; imagePreview.src = fileURL;
       }
     });
 
@@ -238,10 +353,10 @@
     });
 
     // ----- CREATE POST -----
-    const shareBtn = document.getElementById('share-btn');
-    shareBtn.addEventListener('click', async () => {
+    document.getElementById('share-btn').addEventListener('click', async () => {
       const postInput = document.getElementById('postInput');
       const text = postInput.value.trim();
+      const shareBtn = document.getElementById('share-btn');
       if (!text && !selectedFile) return;
       
       shareBtn.disabled = true; shareBtn.innerText = "Posting...";
@@ -254,9 +369,15 @@
           mediaType = selectedFile.type.startsWith('video/') ? 'video' : 'image';
         }
 
+        // Attach current user's profile info to the post
         await addDoc(collection(db, "posts"), {
-          text: text, authorName: "You", createdAt: serverTimestamp(),
-          mediaUrl: mediaUrl, mediaType: mediaType, likedBy: [] 
+          text: text, 
+          authorName: userProfile.name, 
+          authorAvatar: userProfile.avatarUrl,
+          createdAt: serverTimestamp(),
+          mediaUrl: mediaUrl, 
+          mediaType: mediaType, 
+          likedBy: [] 
         });
 
         postInput.value = ''; document.getElementById('remove-media-btn').click();
@@ -272,33 +393,31 @@
         feed.innerHTML = ''; 
         if (snapshot.empty) { feed.innerHTML = '<p style="text-align:center;">No posts yet!</p>'; return; }
 
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          allPostsData[doc.id] = data; // Cache data
+        snapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          allPostsData[docSnap.id] = data; 
           
           let timeString = data.createdAt ? data.createdAt.toDate().toLocaleDateString() : "Just now";
-          let mediaHTML = '';
-          if (data.mediaUrl) {
-            mediaHTML = data.mediaType === 'video' 
-              ? `<video src="${data.mediaUrl}" class="post-media" controls></video>`
-              : `<img src="${data.mediaUrl}" class="post-media">`;
-          }
-
+          let mediaHTML = data.mediaUrl ? (data.mediaType === 'video' ? `<video src="${data.mediaUrl}" class="post-media" controls></video>` : `<img src="${data.mediaUrl}" class="post-media">`) : '';
           const likesCount = data.likedBy ? data.likedBy.length : 0;
-          const isLiked = data.likedBy && data.likedBy.includes(currentUser.email);
+          const isLiked = data.likedBy && data.likedBy.includes(currentUser.uid);
           const heartIcon = isLiked ? '❤️' : '🤍';
+          const avatarUrl = data.authorAvatar || defaultAvatar + data.authorName;
 
-          // Tapping anywhere on the post opens the modal
           const postHTML = `
-            <div class="post" onclick="window.openPostModal('${doc.id}')">
+            <div class="post" onclick="window.openPostModal('${docSnap.id}')">
               <div class="post-header">
-                <div>${data.authorName} <span class="timestamp">· ${timeString}</span></div>
+                <img src="${avatarUrl}" class="avatar-sm">
+                <div class="post-author-info">
+                  <span class="author-name">${data.authorName}</span>
+                  <span class="timestamp">${timeString}</span>
+                </div>
               </div>
               <div class="post-content">${data.text || ''}</div>
               ${mediaHTML}
               <div class="post-stats">
                 <span>${heartIcon} ${likesCount} Likes</span>
-                <span>💬 Tap to view comments</span>
+                <span>💬 Comments</span>
               </div>
             </div>
           `;
@@ -307,24 +426,16 @@
       });
     }
 
-    // ----- MODAL & INTERACTION LOGIC -----
-    
-    // 1. Open Full Post Modal
+    // ----- MODAL LOGIC -----
     window.openPostModal = (postId) => {
       activePostId = postId;
       const data = allPostsData[postId];
       const modalContent = document.getElementById('pm-content');
       
-      let mediaHTML = '';
-      if (data.mediaUrl) {
-        mediaHTML = data.mediaType === 'video' 
-          ? `<video src="${data.mediaUrl}" class="post-media" controls></video>`
-          : `<img src="${data.mediaUrl}" class="post-media">`;
-      }
-
-      const isLiked = data.likedBy && data.likedBy.includes(currentUser.email);
+      let mediaHTML = data.mediaUrl ? (data.mediaType === 'video' ? `<video src="${data.mediaUrl}" class="post-media" controls></video>` : `<img src="${data.mediaUrl}" class="post-media">`) : '';
+      const isLiked = data.likedBy && data.likedBy.includes(currentUser.uid);
+      const avatarUrl = data.authorAvatar || defaultAvatar + data.authorName;
       
-      // Admin Tools injection
       let adminTools = '';
       if (currentUserRole === 'admin') {
         const safeText = data.text ? data.text.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
@@ -337,7 +448,11 @@
       }
 
       modalContent.innerHTML = `
-        <div class="post" style="box-shadow: none; padding: 0; margin-bottom: 20px;">
+        <div class="post" style="box-shadow: none; padding: 0; margin-bottom: 20px; cursor: default;">
+          <div class="post-header">
+            <img src="${avatarUrl}" class="avatar-sm">
+            <span class="author-name">${data.authorName}</span>
+          </div>
           <div class="post-content">${data.text || ''}</div>
           ${mediaHTML}
           <div style="margin-top: 10px;">
@@ -351,7 +466,6 @@
 
       document.getElementById('post-detail-modal').style.display = 'flex';
       
-      // Listen to Comments for this specific post
       const q = query(collection(db, "posts", postId, "comments"), orderBy("createdAt", "asc"));
       commentsUnsubscribe = onSnapshot(q, (snapshot) => {
         const commentsDiv = document.getElementById('pm-comments');
@@ -361,72 +475,62 @@
         snapshot.forEach(docSnap => {
           const cData = docSnap.data();
           const cId = docSnap.id;
-          const cIsLiked = cData.likedBy && cData.likedBy.includes(currentUser.email);
-          const cLikeCount = cData.likedBy ? cData.likedBy.length : 0;
-          
-          // Escape name for the reply function
+          const cIsLiked = cData.likedBy && cData.likedBy.includes(currentUser.uid);
+          const cAvatar = cData.authorAvatar || defaultAvatar + cData.authorName;
           const safeName = cData.authorName.replace(/'/g, "\\'");
 
           commentsDiv.insertAdjacentHTML('beforeend', `
             <div class="comment-box">
-              <div class="comment-author">
-                <span>${cData.authorName}</span>
-              </div>
-              <div class="comment-text">${cData.text}</div>
-              <div class="comment-actions">
-                <span class="c-action ${cIsLiked ? 'liked' : ''}" onclick="window.toggleCommentLike('${postId}', '${cId}', ${cIsLiked})">${cIsLiked ? '❤️' : '🤍'} ${cLikeCount}</span>
-                <span class="c-action" onclick="window.replyTo('${safeName}')">Reply</span>
+              <img src="${cAvatar}" class="avatar-xs">
+              <div class="comment-content">
+                <div class="comment-author">${cData.authorName}</div>
+                <div class="comment-text">${cData.text}</div>
+                <div class="comment-actions">
+                  <span class="c-action ${cIsLiked ? 'liked' : ''}" onclick="window.toggleCommentLike('${postId}', '${cId}', ${cIsLiked})">${cIsLiked ? '❤️' : '🤍'} ${cData.likedBy ? cData.likedBy.length : 0}</span>
+                  <span class="c-action" onclick="window.replyTo('${safeName}')">Reply</span>
+                </div>
               </div>
             </div>
           `);
         });
-        // Scroll to bottom of comments
         const modalBody = document.querySelector('.pm-body');
         modalBody.scrollTop = modalBody.scrollHeight;
       });
     };
 
-    window.closePostModal = () => {
-      document.getElementById('post-detail-modal').style.display = 'none';
-      if (commentsUnsubscribe) commentsUnsubscribe();
-      activePostId = null;
+    window.closePostModal = () => { document.getElementById('post-detail-modal').style.display = 'none'; if (commentsUnsubscribe) commentsUnsubscribe(); activePostId = null; };
+    
+    // Global Click-Outside Logic
+    window.onclick = function(e) {
+      if (e.target.classList.contains('post-modal-overlay')) window.closePostModal();
+      if (e.target.classList.contains('small-modal')) window.closeSmallModals();
     };
 
-    // Close modal if clicking the dark overlay
-    document.getElementById('post-detail-modal').addEventListener('click', (e) => {
-      if(e.target === document.getElementById('post-detail-modal')) window.closePostModal();
-    });
-
-    // 2. Toggling Likes
     window.togglePostLike = async (postId) => {
-      const isLiked = allPostsData[postId].likedBy && allPostsData[postId].likedBy.includes(currentUser.email);
+      const isLiked = allPostsData[postId].likedBy && allPostsData[postId].likedBy.includes(currentUser.uid);
       const postRef = doc(db, "posts", postId);
-      if (isLiked) await updateDoc(postRef, { likedBy: arrayRemove(currentUser.email) });
-      else await updateDoc(postRef, { likedBy: arrayUnion(currentUser.email) });
-      
-      // Auto-refresh modal UI by re-calling openPostModal
+      if (isLiked) await updateDoc(postRef, { likedBy: arrayRemove(currentUser.uid) });
+      else await updateDoc(postRef, { likedBy: arrayUnion(currentUser.uid) });
       window.openPostModal(postId); 
     };
 
     window.toggleCommentLike = async (postId, commentId, isCurrentlyLiked) => {
       const commentRef = doc(db, "posts", postId, "comments", commentId);
-      if (isCurrentlyLiked) await updateDoc(commentRef, { likedBy: arrayRemove(currentUser.email) });
-      else await updateDoc(commentRef, { likedBy: arrayUnion(currentUser.email) });
+      if (isCurrentlyLiked) await updateDoc(commentRef, { likedBy: arrayRemove(currentUser.uid) });
+      else await updateDoc(commentRef, { likedBy: arrayUnion(currentUser.uid) });
     };
 
-    // 3. Comments (Add & Reply)
     window.submitComment = async () => {
       if(!activePostId) return;
       const input = document.getElementById('comment-input');
       const text = input.value.trim();
       if(!text) return;
       
-      input.value = ''; // clear instantly for snappy vibe
-      const author = currentUserRole === 'admin' ? 'You' : (currentUser.displayName || currentUser.email.split('@')[0]);
-      
+      input.value = ''; 
       await addDoc(collection(db, "posts", activePostId, "comments"), {
         text: text,
-        authorName: author,
+        authorName: userProfile.name,
+        authorAvatar: userProfile.avatarUrl,
         createdAt: serverTimestamp(),
         likedBy: []
       });
@@ -438,24 +542,21 @@
       input.focus();
     };
 
-    // 4. Admin Edit / Delete Logic
     let currentEditId = null; let currentDeleteId = null;
     window.openEdit = (id, text) => { currentEditId = id; document.getElementById('edit-textarea').value = text; document.getElementById('edit-modal').style.display = 'flex'; };
     window.openDelete = (id) => { currentDeleteId = id; document.getElementById('delete-modal').style.display = 'flex'; };
-    window.closeSmallModals = () => { document.getElementById('edit-modal').style.display = 'none'; document.getElementById('delete-modal').style.display = 'none'; currentEditId = null; currentDeleteId = null; };
+    window.closeSmallModals = () => { document.querySelectorAll('.small-modal').forEach(m => m.style.display = 'none'); currentEditId = null; currentDeleteId = null; document.getElementById('edit-profile-preview').src = userProfile.avatarUrl; selectedProfileFile = null;};
 
     document.getElementById('save-edit-btn').addEventListener('click', async () => {
       if (!currentEditId) return;
       await updateDoc(doc(db, "posts", currentEditId), { text: document.getElementById('edit-textarea').value.trim() });
-      window.closeSmallModals();
-      window.openPostModal(currentEditId); // Refresh modal view
+      window.closeSmallModals(); window.openPostModal(currentEditId); 
     });
 
     document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
       if (!currentDeleteId) return;
       await deleteDoc(doc(db, "posts", currentDeleteId));
-      window.closeSmallModals();
-      window.closePostModal(); // Close detail view since post is gone
+      window.closeSmallModals(); window.closePostModal(); 
     });
 
   </script>
