@@ -34,11 +34,8 @@
     textarea { width: 100%; border: none; outline: none; resize: none; font-size: 18px; font-family: inherit; margin-bottom: 10px; }
     .btn { background: #3b82f6; color: white; border: none; padding: 10px 24px; border-radius: 9999px; cursor: pointer; float: right; font-weight: 600; }
     .btn-outline { background: transparent; color: #3b82f6; border: 2px solid #3b82f6; float: left; padding: 8px 16px; border-radius: 9999px; cursor: pointer; font-weight: 600;}
+    .input-field { width: 100%; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; font-size: 15px; margin-bottom: 15px; box-sizing: border-box; outline: none;}
     .clear { clear: both; }
-    
-    #media-preview-container { display: none; margin-bottom: 15px; position: relative; }
-    .media-preview { width: 100%; border-radius: 12px; max-height: 300px; object-fit: cover; }
-    #remove-media-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-weight: bold;}
 
     /* Posts in Feed */
     .post { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 16px; cursor: pointer; transition: transform 0.1s;}
@@ -82,10 +79,7 @@
     .btn-cancel { background: #f3f4f6; color: #4b5563; border: none; padding: 10px 20px; border-radius: 9999px; cursor: pointer; font-weight: 600;}
     .btn-danger { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 9999px; cursor: pointer; font-weight: 600;}
 
-    /* Profile Edit specific */
-    .profile-edit-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; display: block; margin: 0 auto 15px; cursor: pointer; border: 2px dashed #ccc;}
-    .input-field { width: 100%; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px; font-size: 15px; margin-bottom: 15px; box-sizing: border-box; outline: none;}
-
+    /* Admin Tools */
     .admin-tools { display: flex; gap: 10px; margin-top: 15px; border-top: 1px dashed #e5e7eb; padding-top: 15px;}
     .tool-btn { background: #f3f4f6; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8em; font-weight: bold; cursor: pointer;}
     .tool-btn.del { color: #ef4444; background: #fef2f2;}
@@ -105,14 +99,14 @@
   <!-- Main App -->
   <div class="container" id="app-container">
     
-    <h1 style="color: #111827; margin-bottom: 10px;">CLOSR <span id="user-badge" style="font-size: 14px; font-weight: normal; color: #6b7280;"></span></h1>
+    <h1 style="color: #111827; margin-bottom: 10px;">CLOSR<span id="user-badge" style="font-size: 14px; font-weight: normal; color: #6b7280;"></span></h1>
     
     <!-- Profile Header -->
     <div class="profile-header">
       <img id="main-profile-avatar" class="profile-avatar" src="https://via.placeholder.com/60" alt="Profile">
       <div class="profile-info">
         <div class="profile-name" id="main-profile-name">Loading...</div>
-        <div class="profile-bio" id="main-profile-bio">Welcome to my feed!</div>
+        <div class="profile-bio" id="main-profile-bio">Welcome to the family feed!</div>
       </div>
       <button class="edit-profile-btn" onclick="openProfileModal()">Edit</button>
     </div>
@@ -120,13 +114,14 @@
     <!-- Compose Box -->
     <div class="compose-box" id="compose-box">
       <textarea id="postInput" rows="3" placeholder="What's going on today?"></textarea>
-      <div id="media-preview-container">
-        <button id="remove-media-btn">✕</button>
-        <img id="image-preview" class="media-preview" style="display: none;" />
-        <video id="video-preview" class="media-preview" style="display: none;" controls muted></video>
+      
+      <!-- New Image URL Input Area -->
+      <div id="image-url-container" style="display: none; margin-bottom: 15px; background: #f9fafb; padding: 15px; border-radius: 8px;">
+        <label style="font-size: 12px; font-weight: bold; color: #6b7280; display: block; margin-bottom: 5px;">PASTE IMAGE LINK (e.g. ends in .jpg or .png)</label>
+        <input type="text" id="post-image-url" class="input-field" style="margin-bottom: 0;" placeholder="https://...">
       </div>
-      <input type="file" id="media-input" accept="image/*,video/*" style="display: none;">
-      <button class="btn-outline" onclick="document.getElementById('media-input').click()">📷 Media</button>
+
+      <button class="btn-outline" onclick="toggleImageUrlInput()">🔗 Add Photo Link</button>
       <button class="btn" id="share-btn">Share</button>
       <div class="clear"></div>
     </div>
@@ -158,14 +153,15 @@
   <div id="profile-modal" class="small-modal">
     <div class="modal-card">
       <h3 style="margin-top:0; text-align: center;">Edit Profile</h3>
-      <img id="edit-profile-preview" class="profile-edit-avatar" src="https://via.placeholder.com/80" onclick="document.getElementById('profile-upload').click()" title="Tap to change photo">
-      <input type="file" id="profile-upload" accept="image/*" style="display: none;">
       
       <label style="font-size: 14px; font-weight: bold; color: #4b5563;">Display Name</label>
       <input type="text" id="edit-profile-name" class="input-field" placeholder="Your name">
       
       <label style="font-size: 14px; font-weight: bold; color: #4b5563;">Bio</label>
       <input type="text" id="edit-profile-bio" class="input-field" placeholder="A short bio...">
+
+      <label style="font-size: 14px; font-weight: bold; color: #4b5563;">Profile Photo URL</label>
+      <input type="text" id="edit-profile-avatar-url" class="input-field" placeholder="Paste an image link here">
       
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeSmallModals()">Cancel</button>
@@ -203,7 +199,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDusGOyWlAEpBUZ-Bm89vZ9SAqAMrWJt3E",
@@ -220,7 +215,6 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app);
 
     // Global State
     let currentUser = null;
@@ -229,8 +223,6 @@
     let allPostsData = {}; 
     let activePostId = null;
     let commentsUnsubscribe = null;
-    let selectedFile = null;
-    let selectedProfileFile = null;
 
     const defaultAvatar = "https://ui-avatars.com/api/?background=3b82f6&color=fff&name=";
 
@@ -254,7 +246,6 @@
           document.getElementById('user-badge').innerText = "(Family)";
         }
 
-        // Fetch or Create Profile
         const userRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(userRef);
         
@@ -287,34 +278,20 @@
     window.openProfileModal = () => {
       document.getElementById('edit-profile-name').value = userProfile.name;
       document.getElementById('edit-profile-bio').value = userProfile.bio;
-      document.getElementById('edit-profile-preview').src = userProfile.avatarUrl;
+      document.getElementById('edit-profile-avatar-url').value = userProfile.avatarUrl !== (defaultAvatar + userProfile.name) ? userProfile.avatarUrl : '';
       document.getElementById('profile-modal').style.display = 'flex';
     };
-
-    document.getElementById('profile-upload').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      selectedProfileFile = file;
-      document.getElementById('edit-profile-preview').src = URL.createObjectURL(file);
-    });
 
     document.getElementById('save-profile-btn').addEventListener('click', async () => {
       const btn = document.getElementById('save-profile-btn');
       btn.disabled = true; btn.innerText = "Saving...";
       
       try {
-        let newAvatarUrl = userProfile.avatarUrl;
-        
-        if (selectedProfileFile) {
-          const storageRef = ref(storage, 'avatars/' + currentUser.uid + '-' + Date.now());
-          await uploadBytes(storageRef, selectedProfileFile);
-          newAvatarUrl = await getDownloadURL(storageRef);
-        }
-
+        const inputUrl = document.getElementById('edit-profile-avatar-url').value.trim();
         const newProfile = {
           name: document.getElementById('edit-profile-name').value.trim() || userProfile.name,
           bio: document.getElementById('edit-profile-bio').value.trim(),
-          avatarUrl: newAvatarUrl
+          avatarUrl: inputUrl ? inputUrl : (defaultAvatar + (document.getElementById('edit-profile-name').value.trim() || "User"))
         };
 
         await setDoc(doc(db, "users", currentUser.uid), newProfile);
@@ -325,62 +302,41 @@
         console.error(error); alert("Failed to update profile.");
       } finally {
         btn.disabled = false; btn.innerText = "Save";
-        selectedProfileFile = null;
       }
     });
 
-    // ----- POST MEDIA LOGIC -----
-    const mediaInput = document.getElementById('media-input');
-    const mediaPreviewContainer = document.getElementById('media-preview-container');
-    const imagePreview = document.getElementById('image-preview');
-    const videoPreview = document.getElementById('video-preview');
-    
-    mediaInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      selectedFile = file;
-      mediaPreviewContainer.style.display = 'block';
-      const fileURL = URL.createObjectURL(file);
-      if (file.type.startsWith('video/')) {
-        imagePreview.style.display = 'none'; videoPreview.style.display = 'block'; videoPreview.src = fileURL;
-      } else {
-        videoPreview.style.display = 'none'; imagePreview.style.display = 'block'; imagePreview.src = fileURL;
-      }
-    });
-
-    document.getElementById('remove-media-btn').addEventListener('click', () => {
-      selectedFile = null; mediaInput.value = ''; mediaPreviewContainer.style.display = 'none';
-    });
+    // ----- POST UI LOGIC -----
+    window.toggleImageUrlInput = () => {
+      const container = document.getElementById('image-url-container');
+      container.style.display = container.style.display === 'none' ? 'block' : 'none';
+    };
 
     // ----- CREATE POST -----
     document.getElementById('share-btn').addEventListener('click', async () => {
       const postInput = document.getElementById('postInput');
+      const urlInput = document.getElementById('post-image-url');
       const text = postInput.value.trim();
+      const mediaUrl = urlInput.value.trim();
       const shareBtn = document.getElementById('share-btn');
-      if (!text && !selectedFile) return;
+      
+      if (!text && !mediaUrl) return;
       
       shareBtn.disabled = true; shareBtn.innerText = "Posting...";
       try {
-        let mediaUrl = null; let mediaType = null;
-        if (selectedFile) {
-          const storageRef = ref(storage, 'uploads/' + Date.now() + '-' + selectedFile.name);
-          await uploadBytes(storageRef, selectedFile);
-          mediaUrl = await getDownloadURL(storageRef);
-          mediaType = selectedFile.type.startsWith('video/') ? 'video' : 'image';
-        }
-
-        // Attach current user's profile info to the post
         await addDoc(collection(db, "posts"), {
           text: text, 
           authorName: userProfile.name, 
           authorAvatar: userProfile.avatarUrl,
           createdAt: serverTimestamp(),
-          mediaUrl: mediaUrl, 
-          mediaType: mediaType, 
+          mediaUrl: mediaUrl || null, 
+          mediaType: mediaUrl ? 'image' : null, 
           likedBy: [] 
         });
 
-        postInput.value = ''; document.getElementById('remove-media-btn').click();
+        // Reset UI
+        postInput.value = ''; 
+        urlInput.value = '';
+        document.getElementById('image-url-container').style.display = 'none';
       } catch (error) { console.error(error); alert("Couldn't post."); } 
       finally { shareBtn.disabled = false; shareBtn.innerText = "Share"; }
     });
@@ -398,7 +354,7 @@
           allPostsData[docSnap.id] = data; 
           
           let timeString = data.createdAt ? data.createdAt.toDate().toLocaleDateString() : "Just now";
-          let mediaHTML = data.mediaUrl ? (data.mediaType === 'video' ? `<video src="${data.mediaUrl}" class="post-media" controls></video>` : `<img src="${data.mediaUrl}" class="post-media">`) : '';
+          let mediaHTML = data.mediaUrl ? `<img src="${data.mediaUrl}" class="post-media" onerror="this.style.display='none'">` : '';
           const likesCount = data.likedBy ? data.likedBy.length : 0;
           const isLiked = data.likedBy && data.likedBy.includes(currentUser.uid);
           const heartIcon = isLiked ? '❤️' : '🤍';
@@ -407,7 +363,7 @@
           const postHTML = `
             <div class="post" onclick="window.openPostModal('${docSnap.id}')">
               <div class="post-header">
-                <img src="${avatarUrl}" class="avatar-sm">
+                <img src="${avatarUrl}" class="avatar-sm" onerror="this.src='https://via.placeholder.com/36'">
                 <div class="post-author-info">
                   <span class="author-name">${data.authorName}</span>
                   <span class="timestamp">${timeString}</span>
@@ -432,7 +388,7 @@
       const data = allPostsData[postId];
       const modalContent = document.getElementById('pm-content');
       
-      let mediaHTML = data.mediaUrl ? (data.mediaType === 'video' ? `<video src="${data.mediaUrl}" class="post-media" controls></video>` : `<img src="${data.mediaUrl}" class="post-media">`) : '';
+      let mediaHTML = data.mediaUrl ? `<img src="${data.mediaUrl}" class="post-media" onerror="this.style.display='none'">` : '';
       const isLiked = data.likedBy && data.likedBy.includes(currentUser.uid);
       const avatarUrl = data.authorAvatar || defaultAvatar + data.authorName;
       
@@ -450,7 +406,7 @@
       modalContent.innerHTML = `
         <div class="post" style="box-shadow: none; padding: 0; margin-bottom: 20px; cursor: default;">
           <div class="post-header">
-            <img src="${avatarUrl}" class="avatar-sm">
+            <img src="${avatarUrl}" class="avatar-sm" onerror="this.src='https://via.placeholder.com/36'">
             <span class="author-name">${data.authorName}</span>
           </div>
           <div class="post-content">${data.text || ''}</div>
@@ -481,7 +437,7 @@
 
           commentsDiv.insertAdjacentHTML('beforeend', `
             <div class="comment-box">
-              <img src="${cAvatar}" class="avatar-xs">
+              <img src="${cAvatar}" class="avatar-xs" onerror="this.src='https://via.placeholder.com/28'">
               <div class="comment-content">
                 <div class="comment-author">${cData.authorName}</div>
                 <div class="comment-text">${cData.text}</div>
@@ -545,7 +501,7 @@
     let currentEditId = null; let currentDeleteId = null;
     window.openEdit = (id, text) => { currentEditId = id; document.getElementById('edit-textarea').value = text; document.getElementById('edit-modal').style.display = 'flex'; };
     window.openDelete = (id) => { currentDeleteId = id; document.getElementById('delete-modal').style.display = 'flex'; };
-    window.closeSmallModals = () => { document.querySelectorAll('.small-modal').forEach(m => m.style.display = 'none'); currentEditId = null; currentDeleteId = null; document.getElementById('edit-profile-preview').src = userProfile.avatarUrl; selectedProfileFile = null;};
+    window.closeSmallModals = () => { document.querySelectorAll('.small-modal').forEach(m => m.style.display = 'none'); currentEditId = null; currentDeleteId = null; };
 
     document.getElementById('save-edit-btn').addEventListener('click', async () => {
       if (!currentEditId) return;
