@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>CLOSR</title>
   <style>
-    /* CSS Variables for Light & Dark Theme[cite: 1] */
+    /* Global Styles & Theming[cite: 1] */
     :root {
       --bg: #f8fafc;
       --text: #0f172a;
@@ -15,11 +15,9 @@
       --primary: #3b82f6;
       --card-bg: rgba(255, 255, 255, 0.85);
       --card-border: rgba(255, 255, 255, 0.6);
-      /* Soft, diffused box-shadows instead of hard borders[cite: 1] */
       --glass-shadow: 0 12px 40px -12px rgba(0, 0, 0, 0.08);
       --input-bg: rgba(255, 255, 255, 0.6);
       --radius: 24px;
-      --spacing: 20px;
     }
 
     body.dark {
@@ -30,7 +28,6 @@
       --card-bg: rgba(15, 23, 42, 0.75);
       --card-border: rgba(255, 255, 255, 0.06);
       --glass-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.6);
-      --input-bg: rgba(30, 41, 59, 0.5);
     }
 
     body { 
@@ -40,17 +37,10 @@
       background-attachment: fixed;
       color: var(--text); 
       margin: 0; padding: 0; min-height: 100vh;
-      transition: background-color 0.4s;
       -webkit-tap-highlight-color: transparent;
     }
     
-    /* Layout Container[cite: 1] */
-    .container { 
-      max-width: 600px; 
-      margin: 0 auto; 
-      padding: max(20px, env(safe-area-inset-top)) 20px calc(100px + env(safe-area-inset-bottom)); 
-      display: none; 
-    }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px 20px calc(100px + env(safe-area-inset-bottom)); display: none; }
     
     .glass {
       background: var(--card-bg);
@@ -61,61 +51,51 @@
       border-radius: var(--radius);
     }
 
-    /* Typography & Spacing[cite: 1] */
-    .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding: 10px 0; }
-    .nav-title { font-size: 1.8rem; font-weight: 900; margin: 0; letter-spacing: -0.04em; }
+    .nav-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+    .nav-title { font-size: 1.8rem; font-weight: 900; letter-spacing: -0.04em; }
 
-    .profile-header { padding: 20px; margin-bottom: 32px; display: flex; align-items: center; gap: 18px; cursor: pointer; }
-    .profile-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); padding: 3px; background: var(--bg); }
-    .profile-name { font-weight: 800; font-size: 1.2em; }
-
-    /* Post Layout[cite: 1] */
     .post { padding: 24px; margin-bottom: 28px; border: none; }
     .post-header { margin-bottom: 18px; display: flex; align-items: center; gap: 14px; }
-    .author-name { font-weight: 700; font-size: 1.05em; }
-    .timestamp { color: var(--text-muted); font-size: 0.85em; }
+    .profile-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); padding: 2px; background: var(--bg); }
     .post-content { line-height: 1.7; margin-bottom: 20px; font-size: 1.1rem; white-space: pre-wrap; }
     .post-media { width: 100%; border-radius: 20px; margin-bottom: 20px; box-shadow: var(--glass-shadow); }
 
-    /* Action Bar Breathing Room[cite: 1] */
-    .post-actions { display: flex; gap: 24px; border-top: 1px solid var(--card-border); padding-top: 20px; margin-top: 12px; }
-    .action-item { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.95em; font-weight: 700; color: var(--text-muted); }
+    /* Hover Reactions[cite: 1] */
+    .post-actions { display: flex; gap: 24px; border-top: 1px solid var(--card-border); padding-top: 20px; margin-top: 12px; position: relative; }
+    .action-item { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.95em; font-weight: 700; color: var(--text-muted); position: relative; }
     
-    .reaction-summary { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-    .mini-pill { background: var(--input-bg); padding: 6px 12px; border-radius: 99px; font-size: 0.85em; border: 1px solid var(--card-border); display: flex; align-items: center; gap: 6px; font-weight: 600; }
-
-    /* FAB Position[cite: 1] */
-    .fab { 
-      position: fixed; 
-      bottom: max(32px, env(safe-area-inset-bottom)); 
-      right: 24px; 
-      width: 68px; height: 68px; 
-      border-radius: 50%; 
-      background: var(--primary); 
-      color: white; 
-      display: none; 
-      justify-content: center; align-items: center; 
-      box-shadow: 0 16px 32px rgba(59, 130, 246, 0.4); 
-      cursor: pointer; z-index: 900; 
+    .reaction-popover { 
+      position: absolute; bottom: 100%; left: 0; 
+      display: none; gap: 12px; padding: 10px 18px; 
+      background: var(--card-bg); backdrop-filter: blur(15px);
+      border-radius: 99px; margin-bottom: 12px; 
+      box-shadow: var(--glass-shadow); border: 1px solid var(--card-border);
+      z-index: 100;
     }
+    .action-item:hover .reaction-popover { display: flex; }
+    .react-emoji { font-size: 1.5rem; transition: transform 0.2s; }
+    .react-emoji:hover { transform: scale(1.4); }
 
-    /* Modal Tweaks[cite: 1] */
+    .mini-pill { background: var(--input-bg); padding: 6px 12px; border-radius: 99px; font-size: 0.85em; border: 1px solid var(--card-border); display: flex; align-items: center; gap: 6px; font-weight: 600; margin-bottom: 10px;}
+
+    /* Comment Styling & Actions[cite: 1] */
+    .comment-card { margin-bottom: 16px; display: flex; gap: 12px; align-items: flex-start; }
+    .comment-bubble { padding: 14px 18px; border-radius: 22px; font-size: 1em; flex: 1; position: relative; }
+    .comment-tools { display: flex; gap: 12px; margin-top: 6px; font-size: 0.75em; font-weight: 800; color: var(--text-muted); padding-left: 10px; }
+    .tool-link { cursor: pointer; }
+    .tool-link:hover { color: var(--primary); }
+
+    .fab { position: fixed; bottom: max(32px, env(safe-area-inset-bottom)); right: 24px; width: 68px; height: 68px; border-radius: 50%; background: var(--primary); color: white; display: none; justify-content: center; align-items: center; box-shadow: 0 16px 32px rgba(59, 130, 246, 0.4); cursor: pointer; z-index: 900; }
+
     .small-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(12px); }
     .post-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: flex-end; backdrop-filter: blur(12px); }
     .post-modal-card { width: 100%; max-height: 94vh; display: flex; flex-direction: column; background: var(--bg); border-radius: 36px 36px 0 0; overflow: hidden; }
     
-    @media (min-width: 600px) { 
-      .post-modal-overlay { align-items: center; padding: 20px; }
-      .post-modal-card { max-width: 520px; border-radius: 36px; height: 85vh; } 
-    }
+    @media (min-width: 600px) { .post-modal-card { max-width: 520px; border-radius: 36px; height: 85vh; } }
 
-    /* Buttons[cite: 1] */
-    .btn { background: var(--primary); color: white; border: none; padding: 16px 32px; border-radius: 999px; cursor: pointer; font-weight: 800; font-size: 1rem; box-shadow: 0 10px 24px rgba(59, 130, 246, 0.3); }
+    .btn { background: var(--primary); color: white; border: none; padding: 16px 32px; border-radius: 999px; cursor: pointer; font-weight: 800; }
     .input-field { width: 100%; background: var(--input-bg); color: var(--text); border: 1px solid var(--card-border); border-radius: 18px; padding: 16px; font-size: 16px; margin-bottom: 16px; box-sizing: border-box; outline: none; }
-
-    .admin-bar { display: flex; gap: 12px; margin-top: 20px; border-top: 1px dashed var(--card-border); padding-top: 20px; }
-    .tool-btn { font-size: 0.85em; font-weight: 800; padding: 8px 16px; border-radius: 12px; cursor: pointer; background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text-muted); }
-
+    
     #login-screen { position: fixed; inset: 0; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 3000; }
   </style>
 </head>
@@ -123,35 +103,34 @@
 
   <script>
     const Icons = {
-      comment: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`,
-      plus: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
-      heart: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`,
-      send: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>`
+      comment: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`,
+      plus: `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
+      heart: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`,
+      send: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>`
     };
     const Emojis = ['❤️', '😂', '🙌', '😮', '🙏'];
   </script>
 
   <div id="login-screen">
     <div class="glass" style="padding: 48px; text-align: center; max-width: 340px; width: 90%;">
-      <h2 style="margin-top: 0; font-weight: 900; font-size: 2.5rem; letter-spacing: -0.05em;">CLOSR</h2>
-      <p style="color: var(--text-muted); margin-bottom: 40px; font-size: 1rem;">Family. Connected.</p>
-      <button class="btn" id="google-signin-btn" style="width: 100%;">Enter Private Space</button>
+      <h2 style="margin-top: 0; font-weight: 900; font-size: 2.5rem;">CLOSR</h2>
+      <button class="btn" id="google-signin-btn" style="width: 100%;">Enter Space</button>
     </div>
   </div>
 
   <div class="container" id="app-container">
     <div class="nav-header">
-      <h1 class="nav-title">CLOSR <span id="user-badge" style="font-size: 10px; font-weight: 900; color: var(--primary); text-transform: uppercase; margin-left: 10px; border: 1.5px solid; padding: 2px 6px; border-radius: 6px;"></span></h1>
-      <button id="theme-toggle" class="icon-btn" style="border-radius: 50%; width: 44px; height: 44px; background: var(--input-bg); border: 1px solid var(--card-border); color: var(--text);">
-        <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      <h1 class="nav-title">CLOSR</h1>
+      <button id="theme-toggle" class="glass" style="width: 44px; height: 44px; border-radius: 50%; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer; color:inherit;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
       </button>
     </div>
     
     <div class="profile-header glass" onclick="openProfileModal()">
-      <img id="main-profile-avatar" class="profile-avatar" src="" alt="">
+      <img id="main-profile-avatar" class="profile-avatar" src="">
       <div class="profile-info">
         <div class="profile-name" id="main-profile-name">...</div>
-        <div class="profile-bio" id="main-profile-bio">...</div>
+        <div class="profile-bio" id="main-profile-bio" style="color:var(--text-muted); font-size:0.9em;">Family</div>
       </div>
     </div>
 
@@ -160,18 +139,14 @@
 
   <div id="fab-compose" class="fab"></div>
 
-  <!-- MODALS[cite: 1] -->
+  <!-- MODALS -->
   <div id="compose-modal" class="small-modal">
     <div class="glass" style="width: 100%; max-width: 480px; padding: 32px;">
-      <h3 style="margin-top:0; font-weight: 900; font-size: 1.5rem;">New Spark</h3>
-      <textarea id="postInput" rows="4" placeholder="Share a moment..." style="width: 100%; background: transparent; border: none; outline: none; color: var(--text); font-size: 1.2rem; resize: none; margin-bottom: 20px;"></textarea>
-      
-      <div id="image-url-container" style="display: none;"><input type="text" id="post-image-url" class="input-field" placeholder="Image Link (.jpg, .png)"></div>
-      <div id="video-url-container" style="display: none;"><input type="text" id="post-video-url" class="input-field" placeholder="YouTube or Video Link"></div>
-
-      <div style="display: flex; gap: 12px; margin-top: 10px;">
-        <button class="btn" style="background: var(--input-bg); color: var(--text); flex: 1; box-shadow: none;" onclick="toggleInput('image')">Photo</button>
-        <button class="btn" style="background: var(--input-bg); color: var(--text); flex: 1; box-shadow: none;" onclick="toggleInput('video')">Video</button>
+      <h3 style="margin-top:0; font-weight: 900;">New Spark</h3>
+      <textarea id="postInput" rows="4" placeholder="Share a moment..." style="width: 100%; background: transparent; border: none; outline: none; color: var(--text); font-size: 1.2rem; resize: none;"></textarea>
+      <div id="image-url-container" style="display: none;"><input type="text" id="post-image-url" class="input-field" placeholder="Image URL"></div>
+      <div style="display: flex; gap: 12px; margin-top: 20px;">
+        <button class="btn" style="background: var(--input-bg); color: var(--text); flex: 1;" onclick="toggleInput('image')">Media</button>
         <button class="btn" id="share-btn" style="flex: 1.5;">Share</button>
       </div>
     </div>
@@ -180,38 +155,27 @@
   <div id="post-detail-modal" class="post-modal-overlay">
     <div class="post-modal-card glass">
       <div style="padding: 24px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; background: var(--card-bg);">
-        <span style="font-weight: 900; font-size: 1.1rem;">Conversation</span>
+        <span style="font-weight: 900;">Conversation</span>
         <span onclick="closePostModal()" style="cursor: pointer; font-weight: 800; opacity: 0.5;">Close</span>
       </div>
       <div style="flex: 1; overflow-y: auto; padding: 24px;">
         <div id="pm-content"></div>
-        <div id="pm-reactions" style="display: flex; justify-content: space-around; background: var(--input-bg); border-radius: 99px; padding: 16px; margin: 32px 0; border: 1px solid var(--card-border);"></div>
-        <div id="pm-comments"></div>
+        <div id="pm-comments" style="margin-top: 24px;"></div>
       </div>
       <div style="padding: 20px; border-top: 1px solid var(--card-border); display: flex; gap: 14px; align-items: center; background: var(--card-bg); padding-bottom: max(20px, env(safe-area-inset-bottom));">
-        <input type="text" id="comment-input" class="input-field" style="margin-bottom:0; border-radius: 99px; padding: 14px 24px;" placeholder="Add to the talk...">
-        <button class="icon-btn" onclick="submitComment()" style="background: var(--primary); color: white; border: none; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+        <input type="text" id="comment-input" class="input-field" style="margin-bottom:0; border-radius: 99px;" placeholder="Add to talk...">
+        <button class="btn" onclick="submitComment()" style="width: 52px; height: 52px; padding:0; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
           <script>document.write(Icons.send)</script>
         </button>
       </div>
     </div>
   </div>
 
-  <div id="edit-modal" class="small-modal">
+  <div id="edit-comment-modal" class="small-modal">
     <div class="glass" style="width: 100%; max-width: 440px; padding: 32px;">
-      <h3 style="margin-top:0; font-weight: 900;">Update Story</h3>
-      <textarea id="edit-textarea" rows="4" class="input-field" style="background: transparent; min-height: 140px; font-size: 1.1rem;"></textarea>
-      <button class="btn" id="save-edit-btn" style="width: 100%;">Save Changes</button>
-    </div>
-  </div>
-
-  <div id="profile-modal" class="small-modal">
-    <div class="glass" style="width: 100%; max-width: 400px; padding: 32px;">
-      <h3 style="margin-top:0; text-align: center; font-weight: 900;">Your Identity</h3>
-      <input type="text" id="edit-profile-name" class="input-field" placeholder="Full Name">
-      <input type="text" id="edit-profile-bio" class="input-field" placeholder="Brief Bio">
-      <input type="text" id="edit-profile-avatar-url" class="input-field" placeholder="Avatar URL">
-      <button class="btn" id="save-profile-btn" style="width: 100%;">Update Profile</button>
+      <h3 style="margin-top:0; font-weight: 900;">Edit Comment</h3>
+      <textarea id="edit-comment-textarea" rows="3" class="input-field"></textarea>
+      <button class="btn" id="save-comment-btn" style="width: 100%;">Update</button>
     </div>
   </div>
 
@@ -238,7 +202,7 @@
     let userProfile = {};
     let allPostsData = {};
     let activePostId = null;
-    let currentEditId = null;
+    let editingCommentId = null;
 
     document.getElementById('fab-compose').innerHTML = Icons.plus;
 
@@ -248,135 +212,64 @@
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app-container').style.display = 'block';
         document.getElementById('fab-compose').style.display = 'flex';
-        
-        const isAdm = user.email === ADMIN_EMAIL;
-        document.getElementById('user-badge').innerText = isAdm ? "Admin" : "Family";
-
         const userRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(userRef);
-        userProfile = docSnap.exists() ? docSnap.data() : { 
-          name: user.displayName || "Family Member", 
-          bio: "Just joined CLOSR!", 
-          avatarUrl: user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}&background=random` 
-        };
+        userProfile = docSnap.exists() ? docSnap.data() : { name: user.displayName, avatarUrl: user.photoURL };
         if(!docSnap.exists()) await setDoc(userRef, userProfile);
-        
         updateProfileUI();
         loadPosts();
-      } else {
-        document.getElementById('login-screen').style.display = 'flex';
-        document.getElementById('app-container').style.display = 'none';
       }
     });
 
     function updateProfileUI() {
       document.getElementById('main-profile-name').innerText = userProfile.name;
-      document.getElementById('main-profile-bio').innerText = userProfile.bio;
       document.getElementById('main-profile-avatar').src = userProfile.avatarUrl;
     }
 
-    function getMediaHTML(url, type) {
-      if (!url) return '';
-      if (type === 'youtube') return `<iframe class="post-media" src="https://www.youtube.com/embed/${url}" frameborder="0" allowfullscreen style="aspect-ratio: 16/9; height: auto;"></iframe>`;
-      if (type === 'video') return `<video src="${url}" class="post-media" controls></video>`;
-      return `<img src="${url}" class="post-media" loading="lazy">`;
-    }
-
     window.loadPosts = () => {
-      const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-      onSnapshot(q, (snapshot) => {
+      onSnapshot(query(collection(db, "posts"), orderBy("createdAt", "desc")), (snapshot) => {
         const feed = document.getElementById('feed');
         feed.innerHTML = '';
         snapshot.forEach((docSnap) => {
           const data = { ...docSnap.data(), id: docSnap.id };
           allPostsData[data.id] = data;
           
-          const reactions = data.reactions || {};
-          const reactionCounts = {};
-          Object.values(reactions).forEach(e => reactionCounts[e] = (reactionCounts[e] || 0) + 1);
-          
-          let reactionHTML = '<div class="reaction-summary">';
-          Object.entries(reactionCounts).forEach(([emoji, count]) => {
-            reactionHTML += `<div class="mini-pill">${emoji} <span>${count}</span></div>`;
-          });
+          let reactionHTML = '<div style="display:flex; gap:8px; flex-wrap:wrap;">';
+          const counts = {};
+          Object.values(data.reactions || {}).forEach(e => counts[e] = (counts[e] || 0) + 1);
+          Object.entries(counts).forEach(([e, c]) => reactionHTML += `<div class="mini-pill">${e} ${c}</div>`);
           reactionHTML += '</div>';
 
-          const isAdm = currentUser && currentUser.email === ADMIN_EMAIL;
-          const adminTools = isAdm ? `
-            <div class="admin-bar">
-              <span class="tool-btn" onclick="event.stopPropagation(); window.openEdit('${data.id}')">Edit</span>
-              <span class="tool-btn del" onclick="event.stopPropagation(); window.openDelete('${data.id}')">Delete</span>
-            </div>` : '';
+          let popoverHTML = `<div class="reaction-popover glass">`;
+          Emojis.forEach(e => popoverHTML += `<span class="react-emoji" onclick="event.stopPropagation(); window.toggleEmoji('${data.id}', '${e}')">${e}</span>`);
+          popoverHTML += `</div>`;
 
           feed.insertAdjacentHTML('beforeend', `
             <div class="post glass" onclick="window.openPostModal('${data.id}')">
               <div class="post-header">
-                <img src="${data.authorAvatar}" class="profile-avatar" style="width:40px; height:40px; border-width:2px;">
-                <div style="display:flex; flex-direction:column;">
-                  <span class="author-name">${data.authorName}</span>
-                  <span class="timestamp">${data.createdAt ? data.createdAt.toDate().toLocaleDateString() : 'Just now'}</span>
-                </div>
+                <img src="${data.authorAvatar}" class="profile-avatar">
+                <div><div class="author-name">${data.authorName}</div><div class="timestamp">${data.createdAt?.toDate().toLocaleDateString() || 'now'}</div></div>
               </div>
               <div class="post-content">${data.text || ''}</div>
-              ${getMediaHTML(data.mediaUrl, data.mediaType)}
+              ${data.mediaUrl ? `<img src="${data.mediaUrl}" class="post-media">` : ''}
               ${reactionHTML}
               <div class="post-actions">
-                <div class="action-item" onclick="event.stopPropagation(); window.quickReact('${data.id}')">
-                  ${Icons.heart} Love
-                </div>
                 <div class="action-item">
-                  ${Icons.comment} Talk
+                  ${popoverHTML}
+                  ${Icons.heart} React
                 </div>
+                <div class="action-item">${Icons.comment} Talk</div>
               </div>
-              ${adminTools}
             </div>
           `);
         });
       });
     };
 
-    window.toggleInput = (type) => {
-      const img = document.getElementById('image-url-container');
-      const vid = document.getElementById('video-url-container');
-      img.style.display = type === 'image' ? 'block' : 'none';
-      vid.style.display = type === 'video' ? 'block' : 'none';
-    };
-
-    document.getElementById('share-btn').onclick = async () => {
-      const text = document.getElementById('postInput').value.trim();
-      const img = document.getElementById('post-image-url').value.trim();
-      const vid = document.getElementById('post-video-url').value.trim();
-      
-      if (!text && !img && !vid) return;
-
-      let finalMedia = img;
-      let finalType = 'image';
-      
-      if (vid) {
-        const ytMatch = vid.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
-        finalMedia = ytMatch ? ytMatch[1] : vid;
-        finalType = ytMatch ? 'youtube' : 'video';
-      }
-
-      await addDoc(collection(db, "posts"), {
-        text: text, mediaUrl: finalMedia, mediaType: finalType,
-        authorName: userProfile.name, authorAvatar: userProfile.avatarUrl,
-        createdAt: serverTimestamp(), reactions: {}
-      });
-      
-      document.getElementById('compose-modal').style.display = 'none';
-      document.getElementById('postInput').value = '';
-      document.getElementById('post-image-url').value = '';
-      document.getElementById('post-video-url').value = '';
-    };
-
-    window.quickReact = async (id) => {
-      if (window.navigator.vibrate) window.navigator.vibrate(10);
+    window.toggleEmoji = async (id, emoji) => {
       const postRef = doc(db, "posts", id);
-      const data = allPostsData[id];
-      const reactions = data.reactions || {};
-      if (reactions[currentUser.uid] === '❤️') delete reactions[currentUser.uid];
-      else reactions[currentUser.uid] = '❤️';
+      const reactions = allPostsData[id].reactions || {};
+      reactions[currentUser.uid] = reactions[currentUser.uid] === emoji ? delete reactions[currentUser.uid] : emoji;
       await updateDoc(postRef, { reactions: reactions });
     };
 
@@ -384,108 +277,84 @@
       activePostId = id;
       const data = allPostsData[id];
       document.getElementById('pm-content').innerHTML = `
-        <div class="post-header" style="margin-bottom:20px;">
-           <img src="${data.authorAvatar}" class="profile-avatar" style="width:48px; height:48px;">
-           <span class="author-name" style="font-size:1.2em;">${data.authorName}</span>
-        </div>
-        <div class="post-content" style="font-size:1.3rem; line-height:1.6;">${data.text || ''}</div>
-        ${getMediaHTML(data.mediaUrl, data.mediaType)}
+        <div class="post-content" style="font-size:1.3rem;">${data.text || ''}</div>
+        ${data.mediaUrl ? `<img src="${data.mediaUrl}" class="post-media">` : ''}
       `;
-      let rHTML = '';
-      Emojis.forEach(e => {
-        const isActive = data.reactions && data.reactions[currentUser.uid] === e;
-        rHTML += `<span style="font-size:1.8rem; cursor:pointer; transition:transform 0.2s; ${isActive ? 'transform:scale(1.3); filter:drop-shadow(0 0 8px var(--primary));' : 'opacity:0.4;'}" onclick="window.toggleEmoji('${id}', '${e}')">${e}</span>`;
-      });
-      document.getElementById('pm-reactions').innerHTML = rHTML;
       document.getElementById('post-detail-modal').style.display = 'flex';
       loadComments(id);
-    };
-
-    window.toggleEmoji = async (id, emoji) => {
-      if (window.navigator.vibrate) window.navigator.vibrate(8);
-      const postRef = doc(db, "posts", id);
-      const reactions = allPostsData[id].reactions || {};
-      if (reactions[currentUser.uid] === emoji) delete reactions[currentUser.uid];
-      else reactions[currentUser.uid] = emoji;
-      await updateDoc(postRef, { reactions: reactions });
-      window.openPostModal(id);
     };
 
     function loadComments(id) {
       onSnapshot(query(collection(db, "posts", id, "comments"), orderBy("createdAt", "asc")), (snap) => {
         const div = document.getElementById('pm-comments');
         div.innerHTML = '';
-        if(snap.empty) { div.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">No messages yet.</p>'; return; }
         snap.forEach(d => {
           const c = d.data();
+          const isOwner = c.authorUid === currentUser.uid || currentUser.email === ADMIN_EMAIL;
           div.insertAdjacentHTML('beforeend', `
-            <div style="margin-bottom:20px; display:flex; gap:12px; align-items:flex-start;">
-              <img src="${c.authorAvatar}" class="profile-avatar" style="width:32px; height:32px; border-width:1px;">
-              <div class="glass" style="padding:14px 18px; border-radius:22px; font-size:1em; box-shadow:none; flex:1;">
-                <div style="font-weight:900; font-size:0.8em; color:var(--primary); margin-bottom:4px;">${c.authorName}</div>
-                <div style="line-height:1.5;">${c.text}</div>
+            <div class="comment-card">
+              <img src="${c.authorAvatar}" class="profile-avatar" style="width:32px; height:32px;">
+              <div style="flex:1;">
+                <div class="glass comment-bubble">
+                  <div style="font-weight:900; font-size:0.8em; color:var(--primary);">${c.authorName}</div>
+                  <div>${c.text}</div>
+                </div>
+                <div class="comment-tools">
+                  <span class="tool-link" onclick="window.replyTo('${c.authorName}')">Reply</span>
+                  ${isOwner ? `<span class="tool-link" onclick="window.editComment('${d.id}', '${c.text.replace(/'/g, "\\'")}')">Edit</span>` : ''}
+                  ${isOwner ? `<span class="tool-link" onclick="window.deleteComment('${d.id}')">Delete</span>` : ''}
+                </div>
               </div>
             </div>`);
         });
       });
     }
 
+    window.replyTo = (name) => {
+      const input = document.getElementById('comment-input');
+      input.value = `@${name} ` + input.value;
+      input.focus();
+    };
+
+    window.editComment = (id, text) => {
+      editingCommentId = id;
+      document.getElementById('edit-comment-textarea').value = text;
+      document.getElementById('edit-comment-modal').style.display = 'flex';
+    };
+
+    document.getElementById('save-comment-btn').onclick = async () => {
+      const text = document.getElementById('edit-comment-textarea').value.trim();
+      await updateDoc(doc(db, "posts", activePostId, "comments", editingCommentId), { text: text });
+      document.getElementById('edit-comment-modal').style.display = 'none';
+    };
+
+    window.deleteComment = async (id) => {
+      if(confirm("Delete comment?")) await deleteDoc(doc(db, "posts", activePostId, "comments", id));
+    };
+
     window.submitComment = async () => {
       const input = document.getElementById('comment-input');
-      const txt = input.value.trim();
-      if (!txt || !activePostId) return;
+      if (!input.value.trim()) return;
       await addDoc(collection(db, "posts", activePostId, "comments"), {
-        text: txt, authorName: userProfile.name, authorAvatar: userProfile.avatarUrl, createdAt: serverTimestamp()
+        text: input.value, authorName: userProfile.name, authorAvatar: userProfile.avatarUrl, authorUid: currentUser.uid, createdAt: serverTimestamp()
       });
       input.value = '';
     };
 
-    window.openEdit = (id) => {
-      currentEditId = id;
-      document.getElementById('edit-textarea').value = allPostsData[id].text || '';
-      document.getElementById('edit-modal').style.display = 'flex';
-    };
-
-    document.getElementById('save-edit-btn').onclick = async () => {
-      await updateDoc(doc(db, "posts", currentEditId), { text: document.getElementById('edit-textarea').value.trim() });
-      document.getElementById('edit-modal').style.display = 'none';
-    };
-
-    window.openDelete = async (id) => {
-      if (confirm("Delete this story permanently?")) await deleteDoc(doc(db, "posts", id));
-    };
-
+    // UI Helpers
     window.closePostModal = () => document.getElementById('post-detail-modal').style.display = 'none';
     document.getElementById('fab-compose').onclick = () => document.getElementById('compose-modal').style.display = 'flex';
-    
-    window.onclick = (e) => { 
-      if(e.target.classList.contains('small-modal')) e.target.style.display = 'none'; 
-      if(e.target.classList.contains('post-modal-overlay')) e.target.style.display = 'none';
-    };
-    
+    window.onclick = (e) => { if(e.target.className.includes('modal')) e.target.style.display = 'none'; };
     document.getElementById('google-signin-btn').onclick = () => signInWithPopup(auth, new GoogleAuthProvider());
-    window.openProfileModal = () => {
-      document.getElementById('edit-profile-name').value = userProfile.name;
-      document.getElementById('edit-profile-bio').value = userProfile.bio;
-      document.getElementById('edit-profile-avatar-url').value = userProfile.avatarUrl;
-      document.getElementById('profile-modal').style.display = 'flex';
+    document.getElementById('share-btn').onclick = async () => {
+      await addDoc(collection(db, "posts"), {
+        text: document.getElementById('postInput').value,
+        mediaUrl: document.getElementById('post-image-url').value,
+        authorName: userProfile.name, authorAvatar: userProfile.avatarUrl, authorUid: currentUser.uid, createdAt: serverTimestamp(), reactions: {}
+      });
+      document.getElementById('compose-modal').style.display = 'none';
     };
-    
-    document.getElementById('save-profile-btn').onclick = async () => {
-      const updated = { 
-        name: document.getElementById('edit-profile-name').value.trim(), 
-        bio: document.getElementById('edit-profile-bio').value.trim(), 
-        avatarUrl: document.getElementById('edit-profile-avatar-url').value.trim() 
-      };
-      await setDoc(doc(db, "users", currentUser.uid), updated);
-      userProfile = updated; updateProfileUI(); document.getElementById('profile-modal').style.display = 'none';
-    };
-
-    if (localStorage.getItem('closr-theme') === 'dark') document.body.classList.add('dark');
-    document.getElementById('theme-toggle').onclick = () => {
-      document.body.classList.toggle('dark');
-      localStorage.setItem('closr-theme', document.body.classList.contains('dark') ? 'dark' : 'light');
-    };
+    window.toggleInput = (t) => { const i = document.getElementById('image-url-container'); i.style.display = i.style.display === 'none' ? 'block' : 'none'; };
   </script>
 </body>
 </html>
