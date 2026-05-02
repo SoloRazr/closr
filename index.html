@@ -45,7 +45,7 @@
     .author-name { font-weight: 700; font-size: 1em; color: #111827;}
     .timestamp { color: #9ca3af; font-size: 0.8em; font-weight: 400; }
     .post-content { line-height: 1.5; margin-bottom: 16px; white-space: pre-wrap; }
-    .post-media { width: 100%; border-radius: 12px; margin-bottom: 16px; max-height: 400px; object-fit: cover; background: #000; }
+    .post-media { width: 100%; border-radius: 12px; margin-bottom: 16px; max-height: 400px; object-fit: cover; background: #f9fafb; }
     .post-stats { display: flex; gap: 16px; color: #6b7280; font-weight: 600; font-size: 0.9em; border-top: 1px solid #f3f4f6; padding-top: 12px;}
 
     /* Full Post Detail Modal */
@@ -115,7 +115,7 @@
     <div class="compose-box" id="compose-box">
       <textarea id="postInput" rows="3" placeholder="What's going on today?"></textarea>
       
-      <!-- New Image URL Input Area -->
+      <!-- Image URL Input Area -->
       <div id="image-url-container" style="display: none; margin-bottom: 15px; background: #f9fafb; padding: 15px; border-radius: 8px;">
         <label style="font-size: 12px; font-weight: bold; color: #6b7280; display: block; margin-bottom: 5px;">PASTE IMAGE LINK (e.g. ends in .jpg or .png)</label>
         <input type="text" id="post-image-url" class="input-field" style="margin-bottom: 0;" placeholder="https://...">
@@ -200,6 +200,7 @@
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
+    // Your actual Firebase keys
     const firebaseConfig = {
       apiKey: "AIzaSyDusGOyWlAEpBUZ-Bm89vZ9SAqAMrWJt3E",
       authDomain: "anda-sol.firebaseapp.com",
@@ -354,7 +355,10 @@
           allPostsData[docSnap.id] = data; 
           
           let timeString = data.createdAt ? data.createdAt.toDate().toLocaleDateString() : "Just now";
-          let mediaHTML = data.mediaUrl ? `<img src="${data.mediaUrl}" class="post-media" onerror="this.style.display='none'">` : '';
+          
+          // iPhone friendly image tag:
+          let mediaHTML = data.mediaUrl ? `<img src="${data.mediaUrl}" class="post-media" loading="lazy" alt="Post photo">` : '';
+          
           const likesCount = data.likedBy ? data.likedBy.length : 0;
           const isLiked = data.likedBy && data.likedBy.includes(currentUser.uid);
           const heartIcon = isLiked ? '❤️' : '🤍';
@@ -388,7 +392,9 @@
       const data = allPostsData[postId];
       const modalContent = document.getElementById('pm-content');
       
-      let mediaHTML = data.mediaUrl ? `<img src="${data.mediaUrl}" class="post-media" onerror="this.style.display='none'">` : '';
+      // iPhone friendly image tag:
+      let mediaHTML = data.mediaUrl ? `<img src="${data.mediaUrl}" class="post-media" loading="lazy" alt="Post photo">` : '';
+      
       const isLiked = data.likedBy && data.likedBy.includes(currentUser.uid);
       const avatarUrl = data.authorAvatar || defaultAvatar + data.authorName;
       
