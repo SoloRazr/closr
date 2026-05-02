@@ -330,6 +330,111 @@
 
     // Note: The rest of your Firebase initialization (auth, Firestore) 
     // should be pasted below to connect the functionality.
+
+<!-- ===== FIREBASE LOGIC ===== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDusGOyWlAEpBUZ-Bm89vZ9SAqAMrWJt3E",
+      authDomain: "anda-sol.firebaseapp.com",
+      projectId: "anda-sol",
+      storageBucket: "anda-sol.firebasestorage.app",
+      messagingSenderId: "341991663482",
+      appId: "1:341991663482:web:fe92b24241c2fe7a9b98c3"
+    };
+
+    const ADMIN_EMAIL = "amorsolo.villanda@gmail.com";
+    // Members who can post (in addition to admin)
+    const MEMBER_EMAILS = []; // Add family/friend emails here e.g. ["sister@gmail.com"]
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+    let currentUserRole = 'guest'; // 'admin' | 'member' | 'guest'
+    let userProfile = { name: '', bio: '', avatarUrl: '' };
+    let allPostsData = {};
+    let activePostId = null;
+    let commentsUnsubscribe = null;
+    let selectedDuration = 1; // days
+    let activeMediaTab = 'photo';
+
+    const defaultAvatar = "https://ui-avatars.com/api/?background=4f79f6&color=fff&name=";
+
+    // ---- THEME ----
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    function updateThemeIcon(isDark) {
+      themeIcon.innerHTML = isDark
+        ? `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`
+        : `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+    }
+    const savedTheme = localStorage.getItem('closr-theme');
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.body.classList.add('dark'); updateThemeIcon(true);
+    }
+    themeToggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('closr-theme', isDark ? 'dark' : 'light');
+      updateThemeIcon(isDark);
+    });
+
+    // ---- AUTH ----
+    document.getElementById('google-signin-btn').addEventListener('click', () => {
+      signInWithPopup(auth, new GoogleAuthProvider()).catch(() => alert("Login failed. Please try again."));
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUser = user;
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app-container').style.display = 'block';
+
+        if (user.email === ADMIN_EMAIL) {
+          currentUserRole = 'admin';
+          document.getElementById('user-badge').innerText = "✦ Admin";
+          document.getElementById('fab-compose').style.display = 'flex';
+        } else if (MEMBER_EMAILS.includes(user.email)) {
+          currentUserRole = 'member';
+          document.getElementById('user-badge').innerText = "Family";
+          document.getElementById('fab-compose').style.display = 'flex';
+        } else {
+          currentUserRole = 'guest';
+          document.getElementById('user-badge').innerText = "Family";
+          document.getElementById('fab-compose').style.display = 'none';
+        }
+
+        const userRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(userRef);
+        if (docSnap.exists()) {
+          userProfile = docSnap.data();
+        } else {
+          userProfile = {
+            name: user.displayName || user.email.split('@')[0],
+            bio: "Happy to be here! 💙",
+            avatarUrl: defaultAvatar + encodeURIComponent(user.displayName || "User")
+          };
+          await setDoc(userRef, userProfile);
+        }
+        updateProfileUI();
+        loadPosts();
+      } else {
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('app-container').style.display = 'none';
+        document.getElementById('fab-compose').style.display = 'none';
+      }
+    });
+
+    function updateProfileUI() {
+      document.getElementById('main-profile-name').innerText = userProfile.name;
+      document.getElementById('main-profile-bio').innerText = userProfile.bio;
+      document.getElementById('main-profile-avatar').src = userProfile.avatarUrl;
+    }
   </script>
 </body>
 </html>
