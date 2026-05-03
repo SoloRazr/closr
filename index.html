@@ -992,7 +992,7 @@
 
       commentsUnsub = onSnapshot(query(collection(db,"posts",id,"comments"), orderBy("createdAt","asc")), snap => {
         const div = document.getElementById('pm-comments'); div.innerHTML = '';
-        if (snap.empty) { div.innerHTML = '<p style="text-align:center;">No comments yet - be the first 👋</p>'; return; }
+        if (snap.empty) { div.innerHTML = '<p style="text-align:center;">No comments yet — be the first 👋</p>'; return; }
         snap.forEach(cs => { const c=cs.data(), ci=cs.id;
           const ownerBtns = (c.authorUid===currentUser.uid || currentUserRole==='admin') ? `<div class="comment-owner-actions"><button class="comment-action-btn del-btn" onclick="openDeleteComment('${id}','${ci}')">${I.trash}</button></div>`:'';
           div.insertAdjacentHTML('beforeend', `<div class="comment-box glass"><img src="${c.authorAvatar||defaultAv(c.authorName)}" class="avatar-xs"><div class="comment-content"><div class="comment-author">${esc(c.authorName)}</div><div class="comment-text">${esc(c.text)}</div><div class="comment-actions">${ownerBtns}</div></div></div>`);
@@ -1000,6 +1000,64 @@
       });
     };
     window.closePostModal = () => { document.getElementById('post-detail-modal').classList.remove('active'); if(commentsUnsub)commentsUnsub(); activePostId=null; };
+
+    // ── Swipe-to-go-back on post detail (iOS-style) ──────────────────
+(function () {
+  const modal   = document.getElementById('post-detail-modal');
+  const card    = modal.querySelector('.post-modal-card');
+  const THRESH  = 80;   // px of horizontal travel to trigger close
+  const MAX_Y   = 60;   // max vertical drift before we ignore the gesture
+
+  let startX = 0, startY = 0, tracking = false;
+
+  modal.addEventListener('touchstart', (e) => {
+    // Only begin tracking if the touch starts in the left 28px edge zone
+    if (e.touches[0].clientX > 28) return;
+    startX   = e.touches[0].clientX;
+    startY   = e.touches[0].clientY;
+    tracking = true;
+    card.style.transition = 'none';
+  }, { passive: true });
+
+  modal.addEventListener('touchmove', (e) => {
+    if (!tracking) return;
+    const dx = e.touches[0].clientX - startX;
+    const dy = Math.abs(e.touches[0].clientY - startY);
+
+    // If the user is scrolling vertically, cancel the gesture
+    if (dy > MAX_Y) { resetCard(); return; }
+
+    // Only follow rightward drags
+    if (dx > 0) {
+      card.style.transform = `translateX(${dx}px)`;
+      card.style.opacity   = `${Math.max(0, 1 - dx / 320)}`;
+    }
+  }, { passive: true });
+
+  modal.addEventListener('touchend', (e) => {
+    if (!tracking) return;
+    const dx = e.changedTouches[0].clientX - startX;
+
+    if (dx > THRESH) {
+      // Commit the close with a quick slide-out animation
+      card.style.transition = 'transform .22s ease, opacity .22s ease';
+      card.style.transform  = 'translateX(100%)';
+      card.style.opacity    = '0';
+      setTimeout(() => { closePostModal(); resetCard(); }, 220);
+    } else {
+      // Snap back
+      resetCard();
+    }
+    tracking = false;
+  }, { passive: true });
+
+  function resetCard() {
+    card.style.transition = '';
+    card.style.transform  = '';
+    card.style.opacity    = '';
+    tracking = false;
+  }
+})();
 
     /* ============================================================
        LIGHTBOX
