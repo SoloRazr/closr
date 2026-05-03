@@ -88,14 +88,28 @@
     #user-badge { font-size: 11px; font-weight: 800; color: var(--primary); background: var(--primary-soft); padding: 2px 8px; border-radius: 6px; font-family: 'Nunito', sans-serif; letter-spacing: 0.3px; text-transform: uppercase; }
     .nav-actions { display: flex; gap: 8px; align-items: center; }
 
+    /* PERSONALITY ENHANCEMENTS: TINT & GLOW */
     .header-profile {
       display: flex; align-items: center; gap: 14px;
       margin: 8px 16px 14px; padding: 14px 18px; 
-      background: var(--card-bg); border-radius: var(--radius);
+      /* Accent Tint Background */
+      background: color-mix(in srgb, var(--u-color, var(--primary)) 6%, var(--card-bg));
+      border-radius: var(--radius);
       box-shadow: var(--glass-shadow); border: none; 
       transition: all .25s; overflow: visible; 
     }
-    .header-profile-avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; background: var(--input-bg); box-shadow: 0 4px 12px var(--primary-soft); border: none; flex-shrink: 0; transition: width .25s, height .25s; }
+    .header-profile-avatar { 
+      width: 52px; height: 52px; border-radius: 50%; object-fit: cover; background: var(--input-bg); 
+      /* Avatar Glow */
+      box-shadow: 0 4px 18px color-mix(in srgb, var(--u-color, var(--primary)) 45%, transparent);
+      border: 2px solid color-mix(in srgb, var(--u-color, var(--primary)) 80%, transparent); 
+      flex-shrink: 0; transition: width .25s, height .25s; 
+    }
+    .post-avatar {
+      box-shadow: 0 4px 14px color-mix(in srgb, var(--p-color, var(--primary)) 40%, transparent);
+      border: 1.5px solid color-mix(in srgb, var(--p-color, var(--primary)) 60%, transparent);
+    }
+    
     .header-profile-info { flex: 1; min-width: 0; }
     .header-profile-name { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.05em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .header-profile-bio { color: var(--text-muted); font-size: 0.85em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; margin-top: 2px; }
@@ -124,8 +138,6 @@
     .icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
     .icon-sm { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
     .icon-xs { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
-    .icon-filled { fill: currentColor; stroke: none; }
-    .text-red { color: var(--danger); }
 
     /* Login Screen */
     #login-screen { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; padding: 24px; }
@@ -135,12 +147,10 @@
     .login-tagline { font-size: .95rem; color: var(--text-muted); font-weight: 600; margin-bottom: 22px; }
     .login-info-box { background: var(--hint-bg); border: 1px solid var(--hint-border); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 20px; text-align: left; }
     .login-info-box p { font-size: .85rem; color: var(--text); line-height: 1.65; font-weight: 600; margin-bottom: 10px; }
-    .login-info-box p:last-child { margin-bottom: 0; }
-    .login-info-divider { border: none; border-top: 1px dashed var(--hint-border); margin: 8px 0; }
     .login-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; background: var(--primary); color: #fff; border: none; padding: 15px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 800; font-size: 15px; font-family: 'Nunito', sans-serif; box-shadow: 0 6px 22px rgba(79,121,246,.35); transition: transform .18s; }
     .login-btn:active { transform: scale(.96); }
 
-    .avatar-sm { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--input-bg); border: 1.5px solid var(--card-border); flex-shrink: 0; }
+    .avatar-sm { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--input-bg); flex-shrink: 0; }
     .avatar-xs { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: var(--input-bg); flex-shrink: 0; }
 
     .fab { position: fixed; bottom: calc(env(safe-area-inset-bottom) + 18px); right: 18px; width: 58px; height: 58px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #7b5fe8); color: #fff; display: none; justify-content: center; align-items: center; box-shadow: 0 8px 26px rgba(79,121,246,.45); cursor: pointer; z-index: 900; transition: transform .2s; }
@@ -171,7 +181,7 @@
     .c-action { cursor: pointer; user-select: none; display: flex; align-items: center; gap: 5px; transition: color .15s; }
     .c-action:active { opacity: .7; }
 
-    /* RESTORED EMOJIS CSS */
+    /* EMOJIS CSS */
     .reaction-wrap { position: relative; display: inline-flex; align-items: center; }
     .emoji-bar { position: absolute; bottom: calc(100% + 8px); left: 0; background: var(--card-bg); backdrop-filter: blur(20px) saturate(1.5); -webkit-backdrop-filter: blur(20px) saturate(1.5); border: none; border-radius: 999px; padding: 7px 12px; display: flex; gap: 2px; box-shadow: var(--glass-shadow); pointer-events: none; opacity: 0; transition: opacity .18s, transform .18s; transform: scale(.88); transform-origin: bottom left; z-index: 9999; white-space: nowrap; }
     .emoji-bar.visible { opacity: 1; pointer-events: auto; transform: scale(1); }
@@ -185,6 +195,10 @@
     .modal-card { width: 100%; max-width: 400px; background: var(--card-bg); backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4); border: none; box-shadow: var(--glass-shadow); border-radius: 22px; padding: 24px 22px; animation: popIn .22s cubic-bezier(.34,1.4,.64,1); }
     @keyframes popIn { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
     .modal-title { font-family: 'Sora', sans-serif; font-size: 1.05rem; font-weight: 800; margin-bottom: 16px; color: var(--text); }
+
+    /* Color Swatches */
+    .c-swatch { width: 28px; height: 28px; border-radius: 50%; background: var(--sw); cursor: pointer; border: 2.5px solid transparent; transition: transform .15s, border-color .15s; }
+    .c-swatch.active { border-color: var(--text); transform: scale(1.15); box-shadow: 0 4px 10px color-mix(in srgb, var(--sw) 40%, transparent); }
 
     /* Post Detail */
     #post-detail-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; padding: 16px; }
@@ -233,7 +247,7 @@
     .compose-actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
 
     /* Profile Avatar & Limit CSS */
-    .avatar-upload-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 18px; }
+    .avatar-upload-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 10px; }
     .avatar-upload-ring { position: relative; width: 72px; height: 72px; border-radius: 50%; border: 2.5px solid var(--primary); box-shadow: 0 0 0 4px var(--primary-soft); overflow: hidden; cursor: pointer; background: var(--input-bg); }
     .avatar-upload-ring img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .avatar-upload-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.38); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s; }
@@ -260,8 +274,6 @@
     edit:    `<svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>`,
     trash:   `<svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`,
     camera:  `<svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
-    heart:   `<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
-    heartF:  `<svg class="icon-sm icon-filled text-red" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
     bubble:  `<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
     image:   `<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`,
     video:   `<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>`,
@@ -298,7 +310,7 @@
       <h1 class="nav-title">CLOS<span class="logo-dot">R</span>&nbsp;<span id="user-badge"></span></h1>
       <div class="nav-actions"><button id="theme-toggle" class="icon-btn"></button></div>
     </div>
-    <div class="header-profile" style="position:relative;">
+    <div class="header-profile" id="header-profile-card">
       <img id="main-profile-avatar" class="header-profile-avatar" src="" alt="Profile">
       <div class="header-profile-info">
         <div class="header-profile-name" id="main-profile-name">Loading…</div>
@@ -448,6 +460,16 @@
       <label style="font-size:12px;font-weight:800;color:var(--text-muted);display:block;">Bio</label>
       <input type="text" id="edit-profile-bio" class="input-field">
       
+      <!-- Theme Color Selector -->
+      <label style="font-size:12px;font-weight:800;color:var(--text-muted);display:block;margin-top:10px;">Theme Color</label>
+      <div style="display:flex; gap:12px; margin-bottom:18px; margin-top:6px;" id="theme-color-picker">
+        <div class="c-swatch active" style="--sw:#4f79f6;" data-c="#4f79f6" onclick="selectThemeColor(this)"></div>
+        <div class="c-swatch" style="--sw:#b478ff;" data-c="#b478ff" onclick="selectThemeColor(this)"></div>
+        <div class="c-swatch" style="--sw:#50dcb4;" data-c="#50dcb4" onclick="selectThemeColor(this)"></div>
+        <div class="c-swatch" style="--sw:#ff9800;" data-c="#ff9800" onclick="selectThemeColor(this)"></div>
+        <div class="c-swatch" style="--sw:#e91e63;" data-c="#e91e63" onclick="selectThemeColor(this)"></div>
+      </div>
+      
       <button class="btn" id="save-profile-btn" style="width:100%;">Save Profile</button>
       <p class="edit-limit-note" id="edit-limit-note"></p>
     </div>
@@ -469,7 +491,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, signInWithPopup, signOut, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, deleteDoc, updateDoc, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, deleteDoc, updateDoc, setDoc, getDoc, getDocs, increment } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
     import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js";
 
     const firebaseConfig = {
@@ -489,10 +511,13 @@
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    let currentUser = null, currentUserRole = 'outer', userProfile = { name: '', bio: '', avatarUrl: '', editsThisMonth: 0, lastEditMonth: '' };
+    let currentUser = null, currentUserRole = 'outer';
+    let userProfile = { name: '', bio: '', avatarUrl: '', themeColor: '#4f79f6', editsThisMonth: 0, lastEditMonth: '' };
     let allPostsData = {}, activePostId = null, commentsUnsub = null;
     let selectedDuration = 1, selectedVisibility = 'inner', activeMediaTab = 'photo';
     let currEditId = null, editSelectedVisibility = 'inner', editActiveMediaTab = 'photo';
+    let currCPostId = null, currDelCId = null;
+    
     const defaultAv = n => `https://ui-avatars.com/api/?background=4f79f6&color=fff&name=${encodeURIComponent(n||'User')}`;
 
     function injectIcons() {
@@ -511,10 +536,10 @@
     const themeBtn = document.getElementById('theme-toggle');
     if (localStorage.getItem('closr-theme')==='dark' || (!localStorage.getItem('closr-theme') && window.matchMedia('(prefers-color-scheme:dark)').matches)) { document.body.classList.add('dark'); themeBtn.innerHTML = I.sun; }
     themeBtn.addEventListener('click', () => { document.body.classList.toggle('dark'); const d = document.body.classList.contains('dark'); localStorage.setItem('closr-theme', d?'dark':'light'); themeBtn.innerHTML = d?I.sun:I.moon; });
+    
     let ddOpen = false;
     document.getElementById('profile-menu-btn').addEventListener('click', (e) => { e.stopPropagation(); ddOpen = !ddOpen; document.getElementById('profile-dropdown').style.display = ddOpen?'block':'none'; });
     
-    // Close dropdowns and emoji bars when clicking outside
     document.addEventListener('click', () => { 
       if(ddOpen) { document.getElementById('profile-dropdown').style.display = 'none'; ddOpen = false; }
       document.querySelectorAll('.emoji-bar').forEach(b => b.classList.remove('visible'));
@@ -533,12 +558,13 @@
         
         const docSnap = await getDoc(doc(db, "users", user.uid));
         if (docSnap.exists()) { 
-          userProfile = docSnap.data(); 
+          userProfile = { themeColor: '#4f79f6', ...docSnap.data() }; 
         } else { 
           userProfile = { 
             name: user.displayName || user.email.split('@')[0], 
             bio: "Happy to be here! 💙", 
             avatarUrl: defaultAv(user.displayName),
+            themeColor: '#4f79f6',
             editsThisMonth: 0,
             lastEditMonth: new Date().toISOString().slice(0, 7)
           }; 
@@ -550,8 +576,11 @@
 
     function updateProfileUI() {
       const av = userProfile.avatarUrl || defaultAv(userProfile.name);
-      document.getElementById('main-profile-name').innerText = userProfile.name; document.getElementById('main-profile-bio').innerText = userProfile.bio||'';
-      document.getElementById('main-profile-avatar').src = av; document.getElementById('profile-avatar-preview').src = av;
+      document.getElementById('main-profile-name').innerText = userProfile.name; 
+      document.getElementById('main-profile-bio').innerText = userProfile.bio||'';
+      document.getElementById('main-profile-avatar').src = av; 
+      document.getElementById('profile-avatar-preview').src = av;
+      document.getElementById('header-profile-card').style.setProperty('--u-color', userProfile.themeColor || '#4f79f6');
     }
 
     window.openModal = (id) => document.getElementById(id).classList.add('active');
@@ -560,10 +589,23 @@
     window.handlePostModalClick = (e) => { if (e.target === document.getElementById('post-detail-modal')) closePostModal(); };
     window.openComposeModal = () => openModal('compose-modal');
 
+    // Theme Color Selection Logic
+    let tempThemeColor = '#4f79f6';
+    window.selectThemeColor = (el) => {
+      document.querySelectorAll('.c-swatch').forEach(s => s.classList.remove('active'));
+      el.classList.add('active');
+      tempThemeColor = el.getAttribute('data-c');
+    };
+
     window.openProfileModal = () => { 
       document.getElementById('edit-profile-name').value = userProfile.name; 
       document.getElementById('edit-profile-bio').value = userProfile.bio || ''; 
       
+      tempThemeColor = userProfile.themeColor || '#4f79f6';
+      document.querySelectorAll('.c-swatch').forEach(s => {
+        s.classList.toggle('active', s.getAttribute('data-c') === tempThemeColor);
+      });
+
       const currentMonth = new Date().toISOString().slice(0, 7);
       let editsUsed = (userProfile.lastEditMonth === currentMonth) ? (userProfile.editsThisMonth || 0) : 0;
       let editsLeft = 3 - editsUsed;
@@ -603,6 +645,7 @@
         await setDoc(doc(db, "users", currentUser.uid), { 
           name, 
           bio, 
+          themeColor: tempThemeColor,
           avatarUrl: userProfile.avatarUrl,
           editsThisMonth: newEditsCount,
           lastEditMonth: currentMonth
@@ -610,6 +653,7 @@
 
         userProfile.name = name; 
         userProfile.bio = bio; 
+        userProfile.themeColor = tempThemeColor;
         userProfile.editsThisMonth = newEditsCount;
         userProfile.lastEditMonth = currentMonth;
         
@@ -660,8 +704,8 @@
         const expires = new Date(); expires.setDate(expires.getDate() + selectedDuration);
         try {
           await addDoc(collection(db, "posts"), {
-            text, authorName: userProfile.name, authorAvatar: userProfile.avatarUrl, authorUid: currentUser.uid, createdAt: serverTimestamp(),
-            mediaUrl, mediaType, visibility: selectedVisibility, edited: false, likedBy: [], reactions: {}, userReactions: {},
+            text, authorName: userProfile.name, authorAvatar: userProfile.avatarUrl, authorTheme: userProfile.themeColor || '#4f79f6', authorUid: currentUser.uid, createdAt: serverTimestamp(),
+            mediaUrl, mediaType, visibility: selectedVisibility, edited: false, likedBy: [], reactions: {}, userReactions: {}, commentCount: 0,
             expiresAt: expires.toISOString(), keepDays: selectedDuration
           });
           document.getElementById('postInput').value = '';
@@ -697,9 +741,6 @@
       }
     });
 
-    /* ============================================================
-       RESTORED REACTION LOGIC
-    ============================================================ */
     window.toggleReactionBar = (e, id) => { 
       e.stopPropagation(); 
       document.querySelectorAll('.emoji-bar').forEach(b => b.classList.remove('visible')); 
@@ -759,14 +800,15 @@
           const media = buildMedia(data);
           const rCount = Object.values(data.reactions||{}).reduce((a,b)=>a+b,0);
           const topR = topReaction(data.reactions);
+          const cCount = data.commentCount || 0;
           const keepL = data.keepDays > 1 ? `${data.keepDays}d` : '24h';
           const visBadge = data.visibility === 'outer' ? '👁️ Outer' : (data.visibility === 'both' ? '👁️ Everyone' : '👁️ Inner');
+          const authorTheme = data.authorTheme || '#4f79f6';
 
-          // RESTORED: Reaction Wrapper in the HTML Injection
           feed.insertAdjacentHTML('beforeend', `
             <div class="post glass" onclick="openPostModal('${id}')">
               <div class="post-header">
-                <img src="${data.authorAvatar||defaultAv(data.authorName)}" class="avatar-sm">
+                <img src="${data.authorAvatar||defaultAv(data.authorName)}" class="avatar-sm post-avatar" style="--p-color: ${authorTheme};">
                 <div class="post-author-info">
                   <span class="author-name">${esc(data.authorName)} <span class="exp-badge">⏳ ${keepL}</span> <span class="vis-badge">${visBadge}</span></span>
                   <span class="timestamp">${time} ${editedFlag}</span>
@@ -785,7 +827,7 @@
                     <span class="emoji-opt" onclick="addReaction(event, '${id}', '🙏')">🙏</span>
                   </div>
                 </div>
-                <span class="c-action">${I.bubble} Comments</span>
+                <span class="c-action">${I.bubble} ${cCount} ${cCount === 1 ? 'Comment' : 'Comments'}</span>
               </div>
             </div>`);
         });
@@ -808,10 +850,11 @@
       const time = d.createdAt ? fmtTime(d.createdAt.toDate()) : '';
       const editedFlag = d.edited ? `<span style="opacity:0.7;">&middot; Edited</span>` : '';
       const adminTools = currentUserRole === 'admin' ? `<div class="admin-tools"><button class="tool-btn" onclick="openEditPost('${id}')">${I.edit} Edit</button><button class="tool-btn del" onclick="openDeletePost('${id}')">${I.trash} Delete</button></div>` : '';
+      const authorTheme = d.authorTheme || '#4f79f6';
       
       document.getElementById('pm-content').innerHTML = `
         <div class="post glass" style="margin-bottom:16px;box-shadow:none;">
-          <div class="post-header"><img src="${d.authorAvatar||defaultAv(d.authorName)}" class="avatar-sm">
+          <div class="post-header"><img src="${d.authorAvatar||defaultAv(d.authorName)}" class="avatar-sm post-avatar" style="--p-color: ${authorTheme};">
             <div class="post-author-info"><span class="author-name">${esc(d.authorName)}</span><span class="timestamp">${time} ${editedFlag}</span></div>
           </div>
           ${d.text ? `<div class="post-content">${esc(d.text)}</div>` : ''} ${buildMedia(d)}
@@ -831,8 +874,18 @@
     window.closePostModal = () => { document.getElementById('post-detail-modal').classList.remove('active'); if(commentsUnsub)commentsUnsub(); activePostId=null; };
 
     window.submitComment = async () => {
-      if (!activePostId) return; const inp = document.getElementById('comment-input'), text = inp.value.trim(); if (!text) return; inp.value = '';
-      await addDoc(collection(db, "posts", activePostId, "comments"), { text, authorName: userProfile.name, authorAvatar: userProfile.avatarUrl, authorUid: currentUser.uid, createdAt: serverTimestamp(), expiresAt: allPostsData[activePostId].expiresAt||null });
+      if (!activePostId) return; 
+      const inp = document.getElementById('comment-input');
+      const text = inp.value.trim(); 
+      if (!text) return; 
+      inp.value = '';
+      
+      try {
+        await addDoc(collection(db, "posts", activePostId, "comments"), { text, authorName: userProfile.name, authorAvatar: userProfile.avatarUrl, authorUid: currentUser.uid, createdAt: serverTimestamp(), expiresAt: allPostsData[activePostId].expiresAt||null });
+        await updateDoc(doc(db, "posts", activePostId), { commentCount: increment(1) });
+      } catch (e) {
+        console.error("Failed to add comment: ", e);
+      }
     };
 
     window.setEditMediaTab = (tab) => {
@@ -910,7 +963,15 @@
     });
 
     window.openDeleteComment = (pid, cid) => { currCPostId = pid; currDelCId = cid; openModal('delete-comment-modal'); };
-    document.getElementById('confirm-delete-comment-btn').addEventListener('click', async () => { await deleteDoc(doc(db,"posts",currCPostId,"comments",currDelCId)); closeModal('delete-comment-modal'); });
+    document.getElementById('confirm-delete-comment-btn').addEventListener('click', async () => { 
+      try {
+        await deleteDoc(doc(db,"posts",currCPostId,"comments",currDelCId)); 
+        await updateDoc(doc(db, "posts", currCPostId), { commentCount: increment(-1) });
+        closeModal('delete-comment-modal'); 
+      } catch (e) {
+        console.error("Failed to delete comment: ", e);
+      }
+    });
 
   </script>
 </body>
