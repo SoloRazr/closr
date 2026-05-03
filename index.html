@@ -529,9 +529,9 @@
     .tool-btn.del { color: var(--danger); border-color: rgba(229,57,53,.25); background: rgba(229,57,53,.07); }
 
     /* ============================================================
-       COMPOSE MODAL SPECIFICS
+       COMPOSE / EDIT MODAL SPECIFICS
     ============================================================ */
-    #compose-modal .modal-card { max-width: 420px; }
+    #compose-modal .modal-card, #edit-modal .modal-card { max-width: 420px; }
     .hint-box {
       background: var(--hint-bg);
       border: 1px solid var(--hint-border);
@@ -559,8 +559,6 @@
       font-family: 'Nunito', sans-serif; transition: all .18s;
     }
     .mtab.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
-    .media-hint { font-size: .75rem; color: var(--text-muted); font-weight: 700; margin-top: 6px; line-height: 1.5; }
-    .media-hint a { color: var(--primary); text-decoration: none; }
 
     /* Duration & Visibility Pickers */
     .dur-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px;}
@@ -597,7 +595,7 @@
     .avatar-upload-label { font-size: .75rem; color: var(--text-muted); font-weight: 700; }
     .edit-limit-note { font-size: .75rem; color: var(--text-muted); font-weight: 700; text-align: center; margin-top: 6px; }
 
-    /* expiry badge on post */
+    /* Badges */
     .exp-badge {
       display: inline-block;
       background: var(--primary-soft); color: var(--primary);
@@ -615,7 +613,7 @@
 <body>
 
   <!-- =====================================================
-       ICON REGISTRY  (inline SVG — no external requests)
+       ICON REGISTRY
   ===================================================== -->
   <script>
   const I = {
@@ -671,7 +669,6 @@
         <button id="theme-toggle" class="icon-btn" aria-label="Toggle theme" id="theme-btn"></button>
       </div>
     </div>
-    <!-- Profile row -->
     <div class="header-profile" style="position:relative;">
       <img id="main-profile-avatar" class="header-profile-avatar" src="" alt="Profile">
       <div class="header-profile-info">
@@ -802,7 +799,7 @@
   </div>
 
   <!-- =====================================================
-       EDIT POST MODAL
+       EDIT POST MODAL (UPDATED)
   ===================================================== -->
   <div id="edit-modal" class="modal-overlay" onclick="handleOverlayClick(event,'edit-modal')">
     <div class="modal-card">
@@ -810,10 +807,31 @@
         <span class="modal-title" style="margin-bottom:0;">Edit Post</span>
         <button class="icon-btn" style="width:32px;height:32px;" onclick="closeModal('edit-modal')" id="edit-close-btn"></button>
       </div>
+      
       <div class="compose-text-wrap" style="margin-bottom:14px;">
         <textarea id="edit-textarea" rows="4"></textarea>
       </div>
-      <button class="btn" id="save-edit-btn" style="width:100%;">Save Changes</button>
+
+      <!-- Edit Media input -->
+      <div class="media-url-box" id="edit-media-url-box" style="display:block;">
+        <div class="media-tabs">
+          <button class="mtab active" id="edit-tab-photo" onclick="setEditMediaTab('photo')"><span id="edit-mtab-img-icon"></span>Photo URL</button>
+          <button class="mtab" id="edit-tab-video" onclick="setEditMediaTab('video')"><span id="edit-mtab-vid-icon"></span>YouTube / Video</button>
+        </div>
+        <input type="url" inputmode="url" id="edit-post-media-url" class="input-field" style="margin-bottom:4px;" placeholder="Paste a link here…">
+      </div>
+
+      <!-- Edit Visibility Picker -->
+      <div>
+        <div style="font-size:11px; font-weight:800; color:var(--text-muted); letter-spacing:.6px; margin-bottom:7px;">👁️ VISIBLE TO</div>
+        <div class="dur-row">
+          <button class="vtab" id="edit-vis-inner" onclick="setEditVisibility('inner',this)">Inner Circle</button>
+          <button class="vtab" id="edit-vis-outer" onclick="setEditVisibility('outer',this)">Outer Circle</button>
+          <button class="vtab" id="edit-vis-both"  onclick="setEditVisibility('both',this)">Everyone</button>
+        </div>
+      </div>
+
+      <button class="btn" id="save-edit-btn" style="width:100%; margin-top:8px;">Save Changes</button>
     </div>
   </div>
 
@@ -864,7 +882,7 @@
       from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, onSnapshot, query, orderBy,
              serverTimestamp, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove,
-             setDoc, getDoc }
+             setDoc, getDoc, getDocs }
       from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
     /* ---- CONFIG ---- */
@@ -895,6 +913,12 @@
     let selectedDuration   = 1;
     let selectedVisibility = 'inner';
     let activeMediaTab     = 'photo';
+    
+    // Edit specific state
+    let currEditId             = null;
+    let editSelectedVisibility = 'inner';
+    let editActiveMediaTab     = 'photo';
+
     let profileDropdownOpen = false;
     const defaultAv = n => `https://ui-avatars.com/api/?background=4f79f6&color=fff&name=${encodeURIComponent(n||'User')}`;
 
@@ -915,6 +939,11 @@
       document.getElementById('addmedia-icon').innerHTML = I.link2;
       document.getElementById('mtab-img-icon').innerHTML = I.image;
       document.getElementById('mtab-vid-icon').innerHTML = I.video;
+      
+      // Edit icons
+      document.getElementById('edit-mtab-img-icon').innerHTML = I.image;
+      document.getElementById('edit-mtab-vid-icon').innerHTML = I.video;
+
       document.getElementById('dd-user-icon').innerHTML  = I.user;
       document.getElementById('dd-signout-icon').innerHTML = I.signout;
       document.getElementById('cam-icon').innerHTML      = I.camera;
@@ -970,7 +999,6 @@
         stickyHeader.style.display = 'block';
         document.getElementById('app-container').style.display = 'block';
 
-        // Assign Roles
         if (user.email === ADMIN_EMAIL) {
           currentUserRole = 'admin';
           document.getElementById('user-badge').innerText = '✦ Admin';
@@ -982,7 +1010,7 @@
         } else {
           currentUserRole = 'outer';
           document.getElementById('user-badge').innerText = 'Outer Circle';
-          document.getElementById('fab-compose').style.display = 'none'; // Outer circle cannot post
+          document.getElementById('fab-compose').style.display = 'none'; 
         }
 
         const userRef  = doc(db, "users", user.uid);
@@ -1120,7 +1148,7 @@
     };
     window.setVisibility = (vis, btn) => {
       selectedVisibility = vis;
-      document.querySelectorAll('.vtab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#compose-modal .vtab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     };
 
@@ -1154,7 +1182,8 @@
           text, authorName: userProfile.name, authorAvatar: userProfile.avatarUrl,
           authorUid: currentUser.uid, createdAt: serverTimestamp(),
           mediaUrl: finalUrl, mediaType: finalType,
-          visibility: selectedVisibility, // Added visibility 
+          visibility: selectedVisibility,
+          edited: false,
           likedBy: [], reactions: {}, userReactions: {},
           expiresAt: expires.toISOString(), keepDays: selectedDuration
         });
@@ -1169,7 +1198,7 @@
         document.getElementById('dur-1').classList.add('active');
 
         selectedVisibility = 'inner';
-        document.querySelectorAll('.vtab').forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll('#compose-modal .vtab').forEach(b=>b.classList.remove('active'));
         document.getElementById('vis-inner').classList.add('active');
         
         closeModal('compose-modal');
@@ -1189,7 +1218,7 @@
     }
 
     /* ============================================================
-       LOAD FEED (WITH VISIBILITY & EXPIRY FILTERS)
+       LOAD FEED (WITH VISIBILITY, EXPIRY FILTERS & EDITED BADGE)
     ============================================================ */
     function loadPosts() {
       const q = query(collection(db,"posts"), orderBy("createdAt","desc"));
@@ -1207,10 +1236,8 @@
           const data = docSnap.data();
           const id   = docSnap.id;
           
-          // 1. Expiry Check - Do not render if post has expired
           if (data.expiresAt && new Date(data.expiresAt) < new Date()) return;
 
-          // 2. Visibility Check - Filter out posts not meant for current user's circle
           if (currentUserRole !== 'admin') {
              if (data.visibility === 'inner' && currentUserRole === 'outer') return;
              if (data.visibility === 'outer' && currentUserRole === 'inner') return;
@@ -1220,6 +1247,7 @@
           visiblePostsCount++;
 
           const time   = data.createdAt ? fmtTime(data.createdAt.toDate()) : 'Just now';
+          const editedFlag = data.edited ? `<span style="opacity:0.7;">&middot; Edited</span>` : '';
           const media  = buildMedia(data);
           const rCount = Object.values(data.reactions||{}).reduce((a,b)=>a+b,0);
           const topR   = topReaction(data.reactions);
@@ -1240,7 +1268,7 @@
                     <span class="exp-badge">⏳ ${keepL}</span>
                     <span class="vis-badge">${visBadgeText}</span>
                   </span>
-                  <span class="timestamp">${time}</span>
+                  <span class="timestamp">${time} ${editedFlag}</span>
                 </div>
               </div>
               ${data.text ? `<div class="post-content">${esc(data.text)}</div>` : ''}
@@ -1294,6 +1322,8 @@
       const av   = data.authorAvatar || defaultAv(data.authorName);
       const rTotal = Object.values(data.reactions||{}).reduce((a,b)=>a+b,0);
       const myReact = (data.userReactions||{})[currentUser.uid];
+      const time   = data.createdAt ? fmtTime(data.createdAt.toDate()) : '';
+      const editedFlag = data.edited ? `<span style="opacity:0.7;">&middot; Edited</span>` : '';
 
       const emojiBar = EMOJIS.map(e =>
         `<span class="emoji-opt" data-emoji="${e}" onclick="reactToPost('${postId}','${e}')">${e}</span>`
@@ -1314,7 +1344,7 @@
             <img src="${av}" class="avatar-sm" onerror="this.src='${defaultAv(data.authorName)}'">
             <div class="post-author-info">
               <span class="author-name">${esc(data.authorName)}</span>
-              <span class="timestamp">${data.createdAt ? fmtTime(data.createdAt.toDate()) : ''}</span>
+              <span class="timestamp">${time} ${editedFlag}</span>
             </div>
           </div>
           ${data.text ? `<div class="post-content">${esc(data.text)}</div>` : ''}
@@ -1383,7 +1413,7 @@
     };
 
     /* ============================================================
-       EMOJI BAR — native absolute positioning logic
+       EMOJI BAR 
     ============================================================ */
     const hideTimers = {};
     window.showEmojiBar = (postId) => {
@@ -1449,9 +1479,17 @@
       const text = inp.value.trim();
       if (!text) return;
       inp.value = '';
-      await addDoc(collection(db,"posts",activePostId,"comments"), {
-        text, authorName: userProfile.name, authorAvatar: userProfile.avatarUrl,
-        authorUid: currentUser.uid, createdAt: serverTimestamp(), likedBy: []
+
+      const parentPostExpiry = allPostsData[activePostId].expiresAt || null;
+
+      await addDoc(collection(db, "posts", activePostId, "comments"), {
+        text, 
+        authorName: userProfile.name, 
+        authorAvatar: userProfile.avatarUrl,
+        authorUid: currentUser.uid, 
+        createdAt: serverTimestamp(), 
+        likedBy: [],
+        expiresAt: parentPostExpiry 
       });
     };
 
@@ -1462,29 +1500,119 @@
     };
 
     /* ============================================================
-       EDIT / DELETE POST
+       EDIT POST LOGIC
     ============================================================ */
-    let currEditId = null, currDeleteId = null;
+    window.setEditMediaTab = (tab) => {
+      editActiveMediaTab = tab;
+      document.getElementById('edit-tab-photo').classList.toggle('active', tab==='photo');
+      document.getElementById('edit-tab-video').classList.toggle('active', tab==='video');
+      const input = document.getElementById('edit-post-media-url');
+      input.placeholder = tab === 'photo' ? 'Paste image URL (.jpg / .png / .webp)…' : 'Paste YouTube or direct video URL…';
+    };
+
+    window.setEditVisibility = (vis, btn) => {
+      editSelectedVisibility = vis;
+      document.querySelectorAll('#edit-modal .vtab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    };
+
     window.openEditPost = (id) => {
       currEditId = id;
-      document.getElementById('edit-textarea').value = allPostsData[id]?.text || '';
+      const data = allPostsData[id];
+
+      // 1. Load existing Text
+      document.getElementById('edit-textarea').value = data.text || '';
+
+      // 2. Load existing Media URL
+      let displayUrl = data.mediaUrl || '';
+      if (data.mediaType === 'youtube' && displayUrl) {
+        displayUrl = `https://www.youtube.com/watch?v=${displayUrl}`; // Format it nicely back to a standard URL
+        setEditMediaTab('video');
+      } else if (data.mediaType === 'video') {
+        setEditMediaTab('video');
+      } else {
+        setEditMediaTab('photo');
+      }
+      document.getElementById('edit-post-media-url').value = displayUrl;
+
+      // 3. Load existing Visibility
+      const vis = data.visibility || 'inner';
+      setEditVisibility(vis, document.getElementById(`edit-vis-${vis}`));
+
       openModal('edit-modal');
     };
+
+    document.getElementById('save-edit-btn').addEventListener('click', async () => {
+      if (!currEditId) return;
+
+      const btn = document.getElementById('save-edit-btn');
+      btn.disabled = true; btn.innerText = "Saving Changes...";
+
+      const text = document.getElementById('edit-textarea').value.trim();
+      const rawUrl = document.getElementById('edit-post-media-url').value.trim();
+      let finalUrl = null, finalType = null;
+
+      if (rawUrl) {
+        if (editActiveMediaTab === 'video') {
+          const yt = rawUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+          finalUrl  = yt ? yt[1] : rawUrl;
+          finalType = yt ? 'youtube' : 'video';
+        } else {
+          finalUrl  = sanitiseImageUrl(rawUrl);
+          finalType = 'image';
+        }
+      }
+
+      try {
+        await updateDoc(doc(db,"posts",currEditId), { 
+          text, 
+          mediaUrl: finalUrl, 
+          mediaType: finalType, 
+          visibility: editSelectedVisibility,
+          edited: true // Sets the flag to true
+        });
+        closeModal('edit-modal');
+        window.openPostModal(currEditId); // Refresh the modal with new data
+      } catch (error) {
+        console.error(error);
+        alert("Failed to update post.");
+      } finally {
+        btn.disabled = false; btn.innerText = "Save Changes";
+      }
+    });
+
+    /* ============================================================
+       DELETE POST (Sweeps comments first)
+    ============================================================ */
     window.openDeletePost = (id) => {
       currDeleteId = id;
       openModal('delete-modal');
     };
-    document.getElementById('save-edit-btn').addEventListener('click', async () => {
-      if (!currEditId) return;
-      await updateDoc(doc(db,"posts",currEditId), { text: document.getElementById('edit-textarea').value.trim() });
-      closeModal('edit-modal');
-      window.openPostModal(currEditId);
-    });
+
     document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
       if (!currDeleteId) return;
-      await deleteDoc(doc(db,"posts",currDeleteId));
-      closeModal('delete-modal');
-      closePostModal();
+      
+      const btn = document.getElementById('confirm-delete-btn');
+      btn.disabled = true; btn.innerText = "Deleting...";
+
+      try {
+        const commentsSnap = await getDocs(collection(db, "posts", currDeleteId, "comments"));
+        const deletePromises = [];
+        commentsSnap.forEach(cDoc => {
+          deletePromises.push(deleteDoc(doc(db, "posts", currDeleteId, "comments", cDoc.id)));
+        });
+        await Promise.all(deletePromises);
+
+        await deleteDoc(doc(db, "posts", currDeleteId));
+        
+        closeModal('delete-modal');
+        closePostModal();
+      } catch (error) {
+        console.error(error);
+        alert("Failed to delete post and comments.");
+      } finally {
+        btn.disabled = false; btn.innerText = "Delete Post";
+      }
     });
 
     /* ============================================================
