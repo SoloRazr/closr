@@ -86,15 +86,12 @@
       border-bottom: 1px solid var(--card-border);
       box-shadow: 0 2px 16px rgba(30,50,120,0.06);
       padding: env(safe-area-inset-top) 0 0;
-      transition: padding .3s;
     }
-    #sticky-header.condensed { padding: env(safe-area-inset-top) 0 0; }
 
     /* Full header row */
     .header-full {
       display: flex; align-items: center; justify-content: space-between;
       padding: 12px 16px 10px;
-      transition: padding .25s;
     }
     .nav-title {
       font-family: 'Sora', sans-serif;
@@ -112,8 +109,6 @@
     .header-profile {
       display: flex; align-items: center; gap: 12px;
       padding: 10px 16px 14px;
-      transition: all .25s;
-      overflow: hidden;
     }
     .header-profile-avatar {
       width: 46px; height: 46px; border-radius: 50%;
@@ -121,7 +116,6 @@
       border: 2px solid var(--primary);
       box-shadow: 0 0 0 3px var(--primary-soft);
       flex-shrink: 0;
-      transition: width .25s, height .25s;
     }
     .header-profile-info { flex: 1; min-width: 0; }
     .header-profile-name {
@@ -134,17 +128,6 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
       font-weight: 600; margin-top: 1px;
     }
-
-    /* Condensed profile row */
-    #sticky-header.condensed .header-profile {
-      padding: 6px 16px 8px;
-    }
-    #sticky-header.condensed .header-profile-avatar {
-      width: 32px; height: 32px;
-      box-shadow: 0 0 0 2px var(--primary-soft);
-    }
-    #sticky-header.condensed .header-profile-bio { display: none; }
-    #sticky-header.condensed .header-profile-name { font-size: 0.88em; }
 
     /* 3-dot menu button on profile row */
     .profile-menu-btn {
@@ -369,11 +352,13 @@
     .c-action:active { opacity: .7; }
 
     /* ============================================================
-       EMOJI REACTION BAR  — fixed positioning approach
+       EMOJI REACTION BAR — relative absolute positioning
     ============================================================ */
     .reaction-wrap { position: relative; display: inline-flex; align-items: center; }
     .emoji-bar {
-      position: fixed; /* fixed so it never clips inside overflow:hidden containers */
+      position: absolute; /* changed from fixed */
+      bottom: calc(100% + 8px);
+      left: 50%;
       background: var(--card-bg);
       backdrop-filter: blur(20px) saturate(1.5);
       -webkit-backdrop-filter: blur(20px) saturate(1.5);
@@ -384,12 +369,12 @@
       box-shadow: 0 8px 28px rgba(0,0,0,.18);
       pointer-events: none; opacity: 0;
       transition: opacity .18s, transform .18s;
-      transform: scale(.88);
+      transform: translateX(-50%) scale(.88);
       transform-origin: bottom center;
       z-index: 9999;
       white-space: nowrap;
     }
-    .emoji-bar.visible { opacity: 1; pointer-events: auto; transform: scale(1); }
+    .emoji-bar.visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) scale(1); }
     .emoji-opt {
       font-size: 1.45rem; cursor: pointer;
       padding: 3px 6px; border-radius: 50%;
@@ -622,26 +607,21 @@
   ===================================================== -->
   <script>
   const I = {
-    // Navigation / UI
     moon:    `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`,
     sun:     `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
     plus:    `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
     x:       `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
     dots:    `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.2" fill="currentColor" stroke="none"/></svg>`,
-    // Actions
     send:    `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22 11 13 2 9l20-7z"/></svg>`,
     edit:    `<svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>`,
     trash:   `<svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`,
     camera:  `<svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
-    // Post stats
     heart:   `<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
     heartF:  `<svg class="icon-sm icon-filled text-red" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
     bubble:  `<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
-    // Compose
     image:   `<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`,
     video:   `<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>`,
     link2:   `<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`,
-    // Profile
     user:    `<svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
     signout: `<svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`,
     check:   `<svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
@@ -942,13 +922,7 @@
       themeBtn.innerHTML = isDark ? I.sun : I.moon;
     });
 
-    /* ============================================================
-       STICKY HEADER — CONDENSED ON SCROLL
-    ============================================================ */
     const stickyHeader = document.getElementById('sticky-header');
-    window.addEventListener('scroll', () => {
-      stickyHeader.classList.toggle('condensed', window.scrollY > 60);
-    }, { passive: true });
 
     /* ============================================================
        PROFILE DROPDOWN (3-dot menu)
@@ -1322,11 +1296,11 @@
                 onmouseleave="schedHideBar('${postId}')">
                 ${myReact||'🤍'} ${rTotal} react${rTotal===1?'':'s'}
               </span>
-            </div>
-            <div class="emoji-bar" id="ebar-${postId}"
-              onmouseenter="cancelHideBar('${postId}')"
-              onmouseleave="schedHideBar('${postId}')">
-              ${emojiBar}
+              <div class="emoji-bar" id="ebar-${postId}"
+                onmouseenter="cancelHideBar('${postId}')"
+                onmouseleave="schedHideBar('${postId}')">
+                ${emojiBar}
+              </div>
             </div>
           </div>
           ${adminTools}
@@ -1378,12 +1352,12 @@
     };
 
     /* ============================================================
-       EMOJI BAR — uses fixed positioning calculated at show-time
+       EMOJI BAR — native absolute positioning logic
     ============================================================ */
     const hideTimers = {};
     window.showEmojiBar = (postId) => {
       cancelHideBar(postId);
-      positionEmojiBar(postId);
+      hideAllEmojiBars(); // ensures overlapping bars don't cascade
       document.getElementById(`ebar-${postId}`)?.classList.add('visible');
     };
     window.schedHideBar = (postId) => {
@@ -1399,29 +1373,25 @@
       if (bar.classList.contains('visible')) {
         bar.classList.remove('visible');
       } else {
-        positionEmojiBar(postId);
+        hideAllEmojiBars();
         bar.classList.add('visible');
       }
     };
-    function positionEmojiBar(postId) {
-      const trigger = document.getElementById(`react-trigger-${postId}`);
-      const bar     = document.getElementById(`ebar-${postId}`);
-      if (!trigger || !bar) return;
-      const rect = trigger.getBoundingClientRect();
-      // Show above the trigger, centred
-      bar.style.top  = `${rect.top - 56}px`;
-      bar.style.left = '50%';
-      bar.style.transform = 'translateX(-50%) scale(1)';
-      // Clamp to viewport edges
-      const bw = 280; // approx bar width
-      const vw = window.innerWidth;
-      const ideal = rect.left + rect.width/2 - bw/2;
-      const clamped = Math.max(8, Math.min(ideal, vw - bw - 8));
-      bar.style.left = `${clamped + bw/2}px`;
-    }
     function hideAllEmojiBars() {
       document.querySelectorAll('.emoji-bar').forEach(b => b.classList.remove('visible'));
     }
+
+    // Global listener to dismiss the emoji bar if tapping outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.reaction-wrap')) {
+        hideAllEmojiBars();
+      }
+    });
+    document.addEventListener('touchstart', (e) => {
+      if (!e.target.closest('.reaction-wrap')) {
+        hideAllEmojiBars();
+      }
+    }, { passive: true });
 
     /* ============================================================
        REACTIONS
