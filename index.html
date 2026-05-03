@@ -883,7 +883,9 @@
       
       try {
         await addDoc(collection(db, "posts", activePostId, "comments"), { text, authorName: userProfile.name, authorAvatar: userProfile.avatarUrl, authorUid: currentUser.uid, createdAt: serverTimestamp(), expiresAt: allPostsData[activePostId].expiresAt||null });
-        await updateDoc(doc(db, "posts", activePostId), { commentCount: increment(1) });
+        const cSnap = await getDocs(collection(db,"posts",activePostId,"comments"));
+        await updateDoc(doc(db, "posts", activePostId), { commentCount: cSnap.size });
+
       } catch (e) {
         console.error("Failed to add comment: ", e);
       }
@@ -967,7 +969,9 @@
     document.getElementById('confirm-delete-comment-btn').addEventListener('click', async () => { 
       try {
         await deleteDoc(doc(db,"posts",currCPostId,"comments",currDelCId)); 
-        await updateDoc(doc(db, "posts", currCPostId), { commentCount: increment(-1) });
+        const cSnap = await getDocs(collection(db,"posts",currCPostId,"comments"));
+        await updateDoc(doc(db, "posts", currCPostId), { commentCount: cSnap.size });
+
         closeModal('delete-comment-modal'); 
       } catch (e) {
         console.error("Failed to delete comment: ", e);
