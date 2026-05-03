@@ -127,9 +127,7 @@
     .icon-filled { fill: currentColor; stroke: none; }
     .text-red { color: var(--danger); }
 
-    /* ============================================================
-       LOGIN SCREEN WITH FULL INFO BOX RESTORED
-    ============================================================ */
+    /* Login Screen */
     #login-screen { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; padding: 24px; }
     .login-card { padding: 34px 28px 36px; text-align: center; max-width: 340px; width: 100%; }
     .login-logo { font-family: 'Sora', sans-serif; font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 4px; }
@@ -173,22 +171,10 @@
     .c-action { cursor: pointer; user-select: none; display: flex; align-items: center; gap: 5px; transition: color .15s; }
     .c-action:active { opacity: .7; }
 
-    /* Emojis */
-    .reaction-wrap { position: relative; display: inline-flex; align-items: center; }
-    .emoji-bar { position: absolute; bottom: calc(100% + 8px); left: 0; background: var(--card-bg); backdrop-filter: blur(20px) saturate(1.5); -webkit-backdrop-filter: blur(20px) saturate(1.5); border: none; border-radius: 999px; padding: 7px 12px; display: flex; gap: 2px; box-shadow: var(--glass-shadow); pointer-events: none; opacity: 0; transition: opacity .18s, transform .18s; transform: scale(.88); transform-origin: bottom left; z-index: 9999; white-space: nowrap; }
-    .emoji-bar.visible { opacity: 1; pointer-events: auto; transform: scale(1); }
-    .emoji-opt { font-size: 1.45rem; cursor: pointer; padding: 3px 6px; border-radius: 50%; transition: transform .15s; line-height: 1; }
-    .emoji-opt:hover, .emoji-opt:active { transform: scale(1.4); }
-
-    /* ============================================================
-       MODALS & Z-INDEX FIX
-    ============================================================ */
+    /* Modals & Z-Index Fix */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
     .modal-overlay.active { display: flex; }
-    
-    /* Bump z-index for secondary modals so they sit ABOVE post-detail-modal */
     #edit-modal, #delete-modal, #edit-comment-modal, #delete-comment-modal { z-index: 1050; }
-
     .modal-card { width: 100%; max-width: 400px; background: var(--card-bg); backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4); border: none; box-shadow: var(--glass-shadow); border-radius: 22px; padding: 24px 22px; animation: popIn .22s cubic-bezier(.34,1.4,.64,1); }
     @keyframes popIn { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
     .modal-title { font-family: 'Sora', sans-serif; font-size: 1.05rem; font-weight: 800; margin-bottom: 16px; color: var(--text); }
@@ -225,18 +211,12 @@
     .compose-text-wrap { background: var(--input-bg); border: 1.5px solid var(--card-border); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 12px; }
     .compose-text-wrap:focus-within { border-color: var(--primary); }
 
-    /* Updated Image Upload UI */
     .media-url-box { display: none; margin-bottom: 12px; }
     .media-tabs { display: flex; gap: 6px; margin-bottom: 8px; }
     .mtab { flex: 1; padding: 8px 10px; border-radius: 10px; border: 1.5px solid var(--card-border); background: var(--input-bg); color: var(--text-muted); font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; font-family: 'Nunito', sans-serif; transition: all .18s; }
     .mtab.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
     
-    .upload-area {
-      border: 2px dashed var(--card-border); background: var(--input-bg);
-      border-radius: var(--radius-sm); padding: 20px; text-align: center;
-      cursor: pointer; transition: border-color .2s; margin-bottom: 4px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-    }
+    .upload-area { border: 2px dashed var(--card-border); background: var(--input-bg); border-radius: var(--radius-sm); padding: 20px; text-align: center; cursor: pointer; transition: border-color .2s; margin-bottom: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .upload-area:hover { border-color: var(--primary); }
     .upload-prompt { color: var(--text-muted); font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
 
@@ -245,14 +225,16 @@
     .dtab.active, .vtab.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
     .compose-actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
 
-    /* Profile Avatar */
+    /* Profile Avatar & Limit CSS */
     .avatar-upload-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 18px; }
     .avatar-upload-ring { position: relative; width: 72px; height: 72px; border-radius: 50%; border: 2.5px solid var(--primary); box-shadow: 0 0 0 4px var(--primary-soft); overflow: hidden; cursor: pointer; background: var(--input-bg); }
     .avatar-upload-ring img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .avatar-upload-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.38); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s; }
     .avatar-upload-ring:hover .avatar-upload-overlay, .avatar-upload-ring:active .avatar-upload-overlay { opacity: 1; }
     #avatar-file-input { display: none; }
-    .avatar-upload-label { font-size: .75rem; color: var(--text-muted); font-weight: 700; }
+    
+    .edit-limit-note { text-align: center; font-size: 11px; font-weight: 800; color: var(--text-muted); margin-top: 14px; font-family: 'Nunito', sans-serif; }
+    .edit-limit-note.error { color: var(--danger); }
     
     .exp-badge { display: inline-block; background: var(--primary-soft); color: var(--primary); font-size: .7em; font-weight: 800; border-radius: 6px; padding: 1px 6px; margin-left: 5px; vertical-align: middle; }
     .vis-badge { display: inline-block; background: rgba(180,120,255,0.15); color: #8e5de8; font-size: .7em; font-weight: 800; border-radius: 6px; padding: 1px 6px; margin-left: 5px; vertical-align: middle; }
@@ -288,7 +270,6 @@
       <div class="login-logo">CLOS<span>R</span></div>
       <div class="login-tagline">Family, kept close. 💙</div>
       
-      <!-- RESTORED: Full Welcome & Info Message -->
       <div class="login-info-box">
         <p>👋 <strong>Welcome!</strong> CLOSR is a private space for our family and close friends to share moments together.</p>
         <hr class="login-info-divider">
@@ -345,7 +326,6 @@
           <button class="mtab" id="tab-video" onclick="setMediaTab('video')"><span id="mtab-vid-icon"></span>YouTube</button>
         </div>
         
-        <!-- Photo Upload UI -->
         <div id="compose-photo-ui">
           <input type="file" id="post-file-input" accept="image/*" style="display:none;" onchange="previewMedia(this, 'compose-img-preview', 'compose-upload-prompt')">
           <div class="upload-area" onclick="document.getElementById('post-file-input').click()">
@@ -354,7 +334,6 @@
           </div>
         </div>
 
-        <!-- Video Link UI -->
         <div id="compose-video-ui" style="display:none;">
           <input type="url" inputmode="url" id="post-video-url" class="input-field" placeholder="Paste YouTube link here…">
         </div>
@@ -461,7 +440,10 @@
       <input type="text" id="edit-profile-name" class="input-field">
       <label style="font-size:12px;font-weight:800;color:var(--text-muted);display:block;">Bio</label>
       <input type="text" id="edit-profile-bio" class="input-field">
+      
       <button class="btn" id="save-profile-btn" style="width:100%;">Save Profile</button>
+      
+      <!-- RESTORED: Profile Edit Limit Tracker -->
       <p class="edit-limit-note" id="edit-limit-note"></p>
     </div>
   </div>
@@ -482,7 +464,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, signInWithPopup, signOut, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, deleteDoc, updateDoc, arrayUnion, arrayRemove, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, deleteDoc, updateDoc, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
     import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js";
 
     const firebaseConfig = {
@@ -502,7 +484,7 @@
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    let currentUser = null, currentUserRole = 'outer', userProfile = { name: '', bio: '', avatarUrl: '' };
+    let currentUser = null, currentUserRole = 'outer', userProfile = { name: '', bio: '', avatarUrl: '', editsThisMonth: 0, lastEditMonth: '' };
     let allPostsData = {}, activePostId = null, commentsUnsub = null;
     let selectedDuration = 1, selectedVisibility = 'inner', activeMediaTab = 'photo';
     let currEditId = null, editSelectedVisibility = 'inner', editActiveMediaTab = 'photo';
@@ -539,8 +521,18 @@
         else { currentUserRole = 'outer'; document.getElementById('user-badge').innerText = 'Outer Circle'; document.getElementById('fab-compose').style.display = 'none'; }
         
         const docSnap = await getDoc(doc(db, "users", user.uid));
-        if (docSnap.exists()) { userProfile = docSnap.data(); } 
-        else { userProfile = { name: user.displayName||user.email.split('@')[0], bio: "Happy to be here! 💙", avatarUrl: defaultAv(user.displayName) }; await setDoc(doc(db, "users", user.uid), userProfile); }
+        if (docSnap.exists()) { 
+          userProfile = docSnap.data(); 
+        } else { 
+          userProfile = { 
+            name: user.displayName || user.email.split('@')[0], 
+            bio: "Happy to be here! 💙", 
+            avatarUrl: defaultAv(user.displayName),
+            editsThisMonth: 0,
+            lastEditMonth: new Date().toISOString().slice(0, 7)
+          }; 
+          await setDoc(doc(db, "users", user.uid), userProfile); 
+        }
         updateProfileUI(); loadPosts();
       } else { currentUser = null; document.getElementById('login-screen').style.display = 'flex'; document.getElementById('sticky-header').style.display = 'none'; document.getElementById('app-container').style.display = 'none'; document.getElementById('fab-compose').style.display = 'none'; }
     });
@@ -557,17 +549,66 @@
     window.handlePostModalClick = (e) => { if (e.target === document.getElementById('post-detail-modal')) closePostModal(); };
     window.openComposeModal = () => openModal('compose-modal');
 
-    window.openProfileModal = () => { document.getElementById('edit-profile-name').value = userProfile.name; document.getElementById('edit-profile-bio').value = userProfile.bio||''; openModal('profile-modal'); document.getElementById('profile-dropdown').style.display='none'; ddOpen=false; };
+    // RESTORED PROFILE EDIT LIMIT LOGIC
+    window.openProfileModal = () => { 
+      document.getElementById('edit-profile-name').value = userProfile.name; 
+      document.getElementById('edit-profile-bio').value = userProfile.bio || ''; 
+      
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      let editsUsed = (userProfile.lastEditMonth === currentMonth) ? (userProfile.editsThisMonth || 0) : 0;
+      let editsLeft = 3 - editsUsed;
+
+      const noteEl = document.getElementById('edit-limit-note');
+      const saveBtn = document.getElementById('save-profile-btn');
+
+      if (editsLeft > 0) {
+        noteEl.innerText = `You can edit your profile ${editsLeft} more time${editsLeft > 1 ? 's' : ''} this month.`;
+        noteEl.classList.remove('error');
+        saveBtn.disabled = false;
+      } else {
+        noteEl.innerText = `You have reached your profile edit limit for this month.`;
+        noteEl.classList.add('error');
+        saveBtn.disabled = true;
+      }
+
+      openModal('profile-modal'); 
+      document.getElementById('profile-dropdown').style.display='none'; 
+      ddOpen=false; 
+    };
+
     document.getElementById('avatar-file-input').addEventListener('change', (e) => {
       const file = e.target.files[0]; if (!file || file.size > 800*1024) return alert("Photo must be under 800 KB");
       const reader = new FileReader(); reader.onload = ev => { userProfile.avatarUrl = ev.target.result; document.getElementById('profile-avatar-preview').src = userProfile.avatarUrl; }; reader.readAsDataURL(file);
     });
+
     document.getElementById('save-profile-btn').addEventListener('click', async () => {
       const btn = document.getElementById('save-profile-btn'); btn.disabled = true;
-      try { const name = document.getElementById('edit-profile-name').value.trim()||userProfile.name; const bio = document.getElementById('edit-profile-bio').value.trim();
-        await setDoc(doc(db, "users", currentUser.uid), { name, bio, avatarUrl: userProfile.avatarUrl });
-        userProfile.name = name; userProfile.bio = bio; updateProfileUI(); closeModal('profile-modal');
-      } catch(e) { alert("Failed to save"); } finally { btn.disabled = false; }
+      try { 
+        const name = document.getElementById('edit-profile-name').value.trim() || userProfile.name; 
+        const bio = document.getElementById('edit-profile-bio').value.trim();
+        const currentMonth = new Date().toISOString().slice(0, 7);
+        
+        let newEditsCount = (userProfile.lastEditMonth === currentMonth) ? (userProfile.editsThisMonth || 0) + 1 : 1;
+
+        await setDoc(doc(db, "users", currentUser.uid), { 
+          name, 
+          bio, 
+          avatarUrl: userProfile.avatarUrl,
+          editsThisMonth: newEditsCount,
+          lastEditMonth: currentMonth
+        }, { merge: true });
+
+        userProfile.name = name; 
+        userProfile.bio = bio; 
+        userProfile.editsThisMonth = newEditsCount;
+        userProfile.lastEditMonth = currentMonth;
+        
+        updateProfileUI(); 
+        closeModal('profile-modal');
+      } catch(e) { 
+        alert("Failed to save"); 
+        btn.disabled = false;
+      } 
     });
 
     window.previewMedia = (input, imgId, promptId) => {
