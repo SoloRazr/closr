@@ -20,7 +20,7 @@
       --primary-hover: #3562e8;
       --card-bg: rgba(255,255,255,0.75);
       --card-border: rgba(255,255,255,0.9);
-      --glass-shadow: 0 12px 36px rgba(30,50,120,0.08); /* Updated to soft, diffused shadow */
+      --glass-shadow: 0 12px 36px rgba(30,50,120,0.08); 
       --input-bg: rgba(255,255,255,0.6);
       --blob-1: rgba(79,121,246,0.13);
       --blob-2: rgba(180,120,255,0.11);
@@ -41,7 +41,7 @@
       --primary-hover: #4f79f6;
       --card-bg: rgba(20,30,56,0.78);
       --card-border: rgba(255,255,255,0.07);
-      --glass-shadow: 0 12px 40px rgba(0,0,0,0.4); /* Updated for dark mode depth */
+      --glass-shadow: 0 12px 40px rgba(0,0,0,0.4); 
       --input-bg: rgba(8,13,28,0.6);
       --blob-1: rgba(79,121,246,0.08);
       --blob-2: rgba(170,100,255,0.07);
@@ -98,8 +98,9 @@
     }
     .logo-dot { color: var(--primary); }
     #user-badge {
-      font-size: 11px; font-weight: 700; color: var(--text-muted);
-      font-family: 'Nunito', sans-serif; letter-spacing: 0.3px;
+      font-size: 11px; font-weight: 800; color: var(--primary);
+      background: var(--primary-soft); padding: 2px 8px; border-radius: 6px;
+      font-family: 'Nunito', sans-serif; letter-spacing: 0.3px; text-transform: uppercase;
     }
     .nav-actions { display: flex; gap: 8px; align-items: center; }
 
@@ -561,18 +562,18 @@
     .media-hint { font-size: .75rem; color: var(--text-muted); font-weight: 700; margin-top: 6px; line-height: 1.5; }
     .media-hint a { color: var(--primary); text-decoration: none; }
 
-    /* Duration picker */
-    .dur-row { display: flex; gap: 6px; flex-wrap: wrap; }
-    .dtab {
+    /* Duration & Visibility Pickers */
+    .dur-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px;}
+    .dtab, .vtab {
       padding: 6px 12px; border-radius: 9px;
       border: 1.5px solid var(--card-border);
       background: var(--input-bg); color: var(--text-muted);
       font-weight: 800; font-size: 12px; cursor: pointer;
       font-family: 'Nunito', sans-serif; transition: all .18s;
     }
-    .dtab.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+    .dtab.active, .vtab.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
 
-    .compose-actions { display: flex; gap: 8px; align-items: center; margin-top: 14px; }
+    .compose-actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
 
     /* ============================================================
        PROFILE MODAL
@@ -600,6 +601,12 @@
     .exp-badge {
       display: inline-block;
       background: var(--primary-soft); color: var(--primary);
+      font-size: .7em; font-weight: 800; border-radius: 6px;
+      padding: 1px 6px; margin-left: 5px; vertical-align: middle;
+    }
+    .vis-badge {
+      display: inline-block;
+      background: rgba(180,120,255,0.15); color: #8e5de8;
       font-size: .7em; font-weight: 800; border-radius: 6px;
       padding: 1px 6px; margin-left: 5px; vertical-align: middle;
     }
@@ -658,7 +665,6 @@
        STICKY HEADER
   ===================================================== -->
   <div id="sticky-header" style="display:none;">
-    <!-- Top nav row -->
     <div class="header-full">
       <h1 class="nav-title">CLOS<span class="logo-dot">R</span>&nbsp;<span id="user-badge"></span></h1>
       <div class="nav-actions">
@@ -673,7 +679,6 @@
         <div class="header-profile-bio" id="main-profile-bio">Welcome to the family feed!</div>
       </div>
       <button class="profile-menu-btn" id="profile-menu-btn" aria-label="Profile menu"></button>
-      <!-- Dropdown -->
       <div class="profile-dropdown" id="profile-dropdown" style="display:none;">
         <button onclick="openProfileModal()">
           <span id="dd-user-icon"></span> Edit Profile
@@ -708,11 +713,6 @@
         <button class="icon-btn" style="width:32px;height:32px;" onclick="closeModal('compose-modal')" id="compose-close"></button>
       </div>
 
-      <div class="hint-box">
-        📸 Share a moment with the crew! Posts last <strong>24 hrs</strong> by default — extend below.<br>
-        🔒 Only family &amp; close friends can see this.
-      </div>
-
       <div class="compose-text-wrap">
         <textarea id="postInput" rows="3" placeholder="What's going on today?"></textarea>
       </div>
@@ -724,13 +724,20 @@
           <button class="mtab" id="tab-video" onclick="setMediaTab('video')"><span id="mtab-vid-icon"></span>YouTube / Video</button>
         </div>
         <input type="url" inputmode="url" id="post-media-url" class="input-field" style="margin-bottom:4px;" placeholder="Paste a link here…">
-        <div class="media-hint" id="media-hint-text">
-          💡 Use <strong>Imgur</strong> or <strong>Google Photos</strong> for images — tap the share button then copy the direct link ending in <code>.jpg</code> or <code>.png</code>. Avoid postimg.cc links as they may be blocked on iPhone.
+      </div>
+
+      <!-- Visibility Picker -->
+      <div>
+        <div style="font-size:11px; font-weight:800; color:var(--text-muted); letter-spacing:.6px; margin-bottom:7px;">👁️ VISIBLE TO</div>
+        <div class="dur-row">
+          <button class="vtab active" id="vis-inner" onclick="setVisibility('inner',this)">Inner Circle</button>
+          <button class="vtab"        id="vis-outer" onclick="setVisibility('outer',this)">Outer Circle</button>
+          <button class="vtab"        id="vis-both"  onclick="setVisibility('both',this)">Everyone</button>
         </div>
       </div>
 
-      <!-- Duration -->
-      <div style="margin-bottom:14px;">
+      <!-- Duration Picker -->
+      <div>
         <div style="font-size:11px; font-weight:800; color:var(--text-muted); letter-spacing:.6px; margin-bottom:7px;">⏳ KEEP FOR</div>
         <div class="dur-row">
           <button class="dtab active" id="dur-1"  onclick="setDuration(1,this)">24 hrs</button>
@@ -869,22 +876,25 @@
       messagingSenderId: "341991663482",
       appId: "1:341991663482:web:fe92b24241c2fe7a9b98c3"
     };
-    const ADMIN_EMAIL   = "amorsolo.villanda@gmail.com";
-    const MEMBER_EMAILS = []; // add family emails: ["sis@gmail.com"]
+    
+    // DEFINE ROLES HERE
+    const ADMIN_EMAIL         = "amorsolo.villanda@gmail.com";
+    const INNER_CIRCLE_EMAILS = []; // e.g. ["sis@gmail.com", "mom@gmail.com"]
 
     const app  = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db   = getFirestore(app);
 
     /* ---- STATE ---- */
-    let currentUser     = null;
-    let currentUserRole = 'guest';
-    let userProfile     = { name: '', bio: '', avatarUrl: '' };
-    let allPostsData    = {};
-    let activePostId    = null;
-    let commentsUnsub   = null;
-    let selectedDuration = 1;
-    let activeMediaTab   = 'photo';
+    let currentUser        = null;
+    let currentUserRole    = 'outer'; // 'admin', 'inner', or 'outer'
+    let userProfile        = { name: '', bio: '', avatarUrl: '' };
+    let allPostsData       = {};
+    let activePostId       = null;
+    let commentsUnsub      = null;
+    let selectedDuration   = 1;
+    let selectedVisibility = 'inner';
+    let activeMediaTab     = 'photo';
     let profileDropdownOpen = false;
     const defaultAv = n => `https://ui-avatars.com/api/?background=4f79f6&color=fff&name=${encodeURIComponent(n||'User')}`;
 
@@ -947,7 +957,7 @@
     window.signOutUser = () => signOut(auth);
 
     /* ============================================================
-       AUTH
+       AUTH & ROLES
     ============================================================ */
     document.getElementById('google-signin-btn').addEventListener('click', () => {
       signInWithPopup(auth, new GoogleAuthProvider()).catch(() => alert("Login failed. Please try again."));
@@ -960,20 +970,21 @@
         stickyHeader.style.display = 'block';
         document.getElementById('app-container').style.display = 'block';
 
+        // Assign Roles
         if (user.email === ADMIN_EMAIL) {
           currentUserRole = 'admin';
           document.getElementById('user-badge').innerText = '✦ Admin';
           document.getElementById('fab-compose').style.display = 'flex';
-        } else if (MEMBER_EMAILS.includes(user.email)) {
-          currentUserRole = 'member';
-          document.getElementById('user-badge').innerText = 'Family';
+        } else if (INNER_CIRCLE_EMAILS.includes(user.email)) {
+          currentUserRole = 'inner';
+          document.getElementById('user-badge').innerText = 'Inner Circle';
           document.getElementById('fab-compose').style.display = 'flex';
         } else {
-          currentUserRole = 'guest';
-          document.getElementById('user-badge').innerText = 'Family';
+          currentUserRole = 'outer';
+          document.getElementById('user-badge').innerText = 'Outer Circle';
+          document.getElementById('fab-compose').style.display = 'none'; // Outer circle cannot post
         }
 
-        // Load profile from Firestore, fallback to localStorage avatar
         const userRef  = doc(db, "users", user.uid);
         const docSnap  = await getDoc(userRef);
         const localAvatar = localStorage.getItem(`closr-avatar-${user.uid}`);
@@ -1011,37 +1022,25 @@
     /* ============================================================
        MODAL HELPERS
     ============================================================ */
-    window.openModal = (id) => {
-      document.getElementById(id).classList.add('active');
-    };
-    window.closeModal = (id) => {
-      document.getElementById(id).classList.remove('active');
-    };
-    window.handleOverlayClick = (e, id) => {
-      if (e.target === document.getElementById(id)) closeModal(id);
-    };
-    window.handlePostModalClick = (e) => {
-      if (e.target === document.getElementById('post-detail-modal')) closePostModal();
-    };
+    window.openModal = (id) => { document.getElementById(id).classList.add('active'); };
+    window.closeModal = (id) => { document.getElementById(id).classList.remove('active'); };
+    window.handleOverlayClick = (e, id) => { if (e.target === document.getElementById(id)) closeModal(id); };
+    window.handlePostModalClick = (e) => { if (e.target === document.getElementById('post-detail-modal')) closePostModal(); };
     window.openComposeModal = () => openModal('compose-modal');
 
     /* ============================================================
-       PROFILE EDIT — limit 3 times/month, avatar from device
+       PROFILE EDIT
     ============================================================ */
     window.openProfileModal = () => {
       document.getElementById('edit-profile-name').value = userProfile.name;
       document.getElementById('edit-profile-bio').value  = userProfile.bio || '';
-
-      // Edit count check
+      
       const key   = `closr-edits-${currentUser.uid}`;
-      const month = new Date().toISOString().slice(0,7); // "2026-05"
+      const month = new Date().toISOString().slice(0,7); 
       const stored = JSON.parse(localStorage.getItem(key) || '{"month":"","count":0}');
       const edits  = stored.month === month ? stored.count : 0;
       const remaining = 3 - edits;
-      document.getElementById('edit-limit-note').innerText =
-        remaining > 0
-          ? `${remaining} edit${remaining===1?'':'s'} remaining this month`
-          : '⚠️ Edit limit reached for this month';
+      document.getElementById('edit-limit-note').innerText = remaining > 0 ? `${remaining} edit${remaining===1?'':'s'} remaining this month` : '⚠️ Edit limit reached for this month';
       document.getElementById('save-profile-btn').disabled = remaining <= 0;
 
       openModal('profile-modal');
@@ -1053,7 +1052,6 @@
       profileDropdownOpen = false;
     }
 
-    // Avatar file input → localStorage
     document.getElementById('avatar-file-input').addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -1070,8 +1068,7 @@
     document.getElementById('save-profile-btn').addEventListener('click', async () => {
       const btn = document.getElementById('save-profile-btn');
       btn.disabled = true; btn.innerText = 'Saving…';
-
-      // Check monthly limit
+      
       const key   = `closr-edits-${currentUser.uid}`;
       const month = new Date().toISOString().slice(0,7);
       const stored = JSON.parse(localStorage.getItem(key) || '{"month":"","count":0}');
@@ -1081,7 +1078,6 @@
       try {
         const name = document.getElementById('edit-profile-name').value.trim() || userProfile.name;
         const bio  = document.getElementById('edit-profile-bio').value.trim();
-        // If avatar is a dataUrl, store locally; otherwise use existing
         const avatarUrl = userProfile.avatarUrl;
         if (avatarUrl && avatarUrl.startsWith('data:')) {
           localStorage.setItem(`closr-avatar-${currentUser.uid}`, avatarUrl);
@@ -1090,8 +1086,6 @@
         await setDoc(doc(db, "users", currentUser.uid), { name, bio });
         userProfile = newProfile;
         updateProfileUI();
-
-        // Increment edit count
         localStorage.setItem(key, JSON.stringify({ month, count: edits + 1 }));
         closeModal('profile-modal');
       } catch (err) { console.error(err); alert("Failed to update profile."); }
@@ -1099,7 +1093,7 @@
     });
 
     /* ============================================================
-       COMPOSE — media & duration
+       COMPOSE — visibility, media & duration
     ============================================================ */
     window.toggleMediaInput = () => {
       const box = document.getElementById('media-url-box');
@@ -1112,19 +1106,21 @@
       document.getElementById('tab-photo').classList.toggle('active', tab==='photo');
       document.getElementById('tab-video').classList.toggle('active', tab==='video');
       const input = document.getElementById('post-media-url');
-      const hint  = document.getElementById('media-hint-text');
       if (tab === 'photo') {
         input.placeholder = 'Paste image URL (.jpg / .png / .webp)…';
-        hint.innerHTML = '💡 Use <strong>Imgur</strong> or <strong>Google Photos</strong> for best results. From Google Photos, tap Share → Copy Link. Avoid postimg.cc — it may be blocked on iPhone.';
       } else {
         input.placeholder = 'Paste YouTube or direct video URL…';
-        hint.innerHTML = '🎬 YouTube links work great! Paste the full URL (e.g. youtube.com/watch?v=…) and it will embed automatically.';
       }
       input.value = '';
     };
     window.setDuration = (days, btn) => {
       selectedDuration = days;
       document.querySelectorAll('.dtab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    };
+    window.setVisibility = (vis, btn) => {
+      selectedVisibility = vis;
+      document.querySelectorAll('.vtab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     };
 
@@ -1143,7 +1139,6 @@
           finalUrl  = yt ? yt[1] : rawUrl;
           finalType = yt ? 'youtube' : 'video';
         } else {
-          // Attempt to coerce image URL to direct link
           finalUrl  = sanitiseImageUrl(rawUrl);
           finalType = 'image';
         }
@@ -1159,25 +1154,32 @@
           text, authorName: userProfile.name, authorAvatar: userProfile.avatarUrl,
           authorUid: currentUser.uid, createdAt: serverTimestamp(),
           mediaUrl: finalUrl, mediaType: finalType,
+          visibility: selectedVisibility, // Added visibility 
           likedBy: [], reactions: {}, userReactions: {},
           expiresAt: expires.toISOString(), keepDays: selectedDuration
         });
+        
+        // Reset compose modal
         document.getElementById('postInput').value = '';
         document.getElementById('post-media-url').value = '';
         document.getElementById('media-url-box').style.display = 'none';
+        
         selectedDuration = 1;
         document.querySelectorAll('.dtab').forEach(b=>b.classList.remove('active'));
         document.getElementById('dur-1').classList.add('active');
+
+        selectedVisibility = 'inner';
+        document.querySelectorAll('.vtab').forEach(b=>b.classList.remove('active'));
+        document.getElementById('vis-inner').classList.add('active');
+        
         closeModal('compose-modal');
       } catch(e) { console.error(e); alert("Couldn't post. Please try again."); }
       finally { btn.disabled = false; btn.innerHTML = `${I.send} Share`; }
     });
 
-    // Attempt to coerce common image hosts to a direct link
     function sanitiseImageUrl(url) {
       try {
         const u = new URL(url);
-        // Imgur album → direct
         if (u.hostname.includes('imgur.com') && !url.match(/\.(jpg|jpeg|png|gif|webp)/i)) {
           const id = u.pathname.replace(/\//g,'');
           return `https://i.imgur.com/${id}.jpg`;
@@ -1187,7 +1189,7 @@
     }
 
     /* ============================================================
-       LOAD FEED
+       LOAD FEED (WITH VISIBILITY & EXPIRY FILTERS)
     ============================================================ */
     function loadPosts() {
       const q = query(collection(db,"posts"), orderBy("createdAt","desc"));
@@ -1198,26 +1200,46 @@
           feed.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px 0;font-weight:700;">No posts yet — be the first! 💙</p>';
           return;
         }
+        
+        let visiblePostsCount = 0;
+
         snap.forEach(docSnap => {
           const data = docSnap.data();
           const id   = docSnap.id;
-          allPostsData[id] = data;
+          
+          // 1. Expiry Check - Do not render if post has expired
           if (data.expiresAt && new Date(data.expiresAt) < new Date()) return;
+
+          // 2. Visibility Check - Filter out posts not meant for current user's circle
+          if (currentUserRole !== 'admin') {
+             if (data.visibility === 'inner' && currentUserRole === 'outer') return;
+             if (data.visibility === 'outer' && currentUserRole === 'inner') return;
+          }
+
+          allPostsData[id] = data;
+          visiblePostsCount++;
 
           const time   = data.createdAt ? fmtTime(data.createdAt.toDate()) : 'Just now';
           const media  = buildMedia(data);
           const rCount = Object.values(data.reactions||{}).reduce((a,b)=>a+b,0);
-          const cCount = ''; // shown on open
           const topR   = topReaction(data.reactions);
           const av     = data.authorAvatar || defaultAv(data.authorName);
           const keepL  = data.keepDays > 1 ? `${data.keepDays}d` : '24h';
+          
+          let visBadgeText = '';
+          if (data.visibility === 'outer') visBadgeText = '👁️ Outer Circle';
+          else if (data.visibility === 'both') visBadgeText = '👁️ Everyone';
+          else visBadgeText = '👁️ Inner Circle';
 
           feed.insertAdjacentHTML('beforeend', `
             <div class="post glass" onclick="openPostModal('${id}')">
               <div class="post-header">
                 <img src="${av}" class="avatar-sm" onerror="this.src='${defaultAv(data.authorName)}'">
                 <div class="post-author-info">
-                  <span class="author-name">${esc(data.authorName)}<span class="exp-badge">⏳ ${keepL}</span></span>
+                  <span class="author-name">${esc(data.authorName)}
+                    <span class="exp-badge">⏳ ${keepL}</span>
+                    <span class="vis-badge">${visBadgeText}</span>
+                  </span>
                   <span class="timestamp">${time}</span>
                 </div>
               </div>
@@ -1229,6 +1251,10 @@
               </div>
             </div>`);
         });
+
+        if (visiblePostsCount === 0) {
+           feed.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:40px 0;font-weight:700;">No posts visible for your circle right now. 💙</p>';
+        }
       });
     }
 
@@ -1283,7 +1309,7 @@
       }
 
       document.getElementById('pm-content').innerHTML = `
-        <div class="post glass" style="cursor:default;margin-bottom:16px;box-shadow:none;border:1.5px solid var(--card-border);">
+        <div class="post glass" style="cursor:default;margin-bottom:16px;box-shadow:none;">
           <div class="post-header">
             <img src="${av}" class="avatar-sm" onerror="this.src='${defaultAv(data.authorName)}'">
             <div class="post-author-info">
@@ -1386,17 +1412,8 @@
       document.querySelectorAll('.emoji-bar').forEach(b => b.classList.remove('visible'));
     }
 
-    // Global listener to dismiss the emoji bar if tapping outside
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.reaction-wrap')) {
-        hideAllEmojiBars();
-      }
-    });
-    document.addEventListener('touchstart', (e) => {
-      if (!e.target.closest('.reaction-wrap')) {
-        hideAllEmojiBars();
-      }
-    }, { passive: true });
+    document.addEventListener('click', (e) => { if (!e.target.closest('.reaction-wrap')) hideAllEmojiBars(); });
+    document.addEventListener('touchstart', (e) => { if (!e.target.closest('.reaction-wrap')) hideAllEmojiBars(); }, { passive: true });
 
     /* ============================================================
        REACTIONS
