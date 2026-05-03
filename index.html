@@ -821,7 +821,7 @@
 
       commentsUnsub = onSnapshot(query(collection(db,"posts",id,"comments"), orderBy("createdAt","asc")), snap => {
         const div = document.getElementById('pm-comments'); div.innerHTML = '';
-        if (snap.empty) { div.innerHTML = '<p style="text-align:center;">No comments yet.</p>'; return; }
+        if (snap.empty) { div.innerHTML = '<p style="text-align:center;">No comments yet - be the first 👋</p>'; return; }
         snap.forEach(cs => { const c=cs.data(), ci=cs.id;
           const ownerBtns = (c.authorUid===currentUser.uid || currentUserRole==='admin') ? `<div class="comment-owner-actions"><button class="comment-action-btn del-btn" onclick="openDeleteComment('${id}','${ci}')">${I.trash}</button></div>`:'';
           div.insertAdjacentHTML('beforeend', `<div class="comment-box glass"><img src="${c.authorAvatar||defaultAv(c.authorName)}" class="avatar-xs"><div class="comment-content"><div class="comment-author">${esc(c.authorName)}</div><div class="comment-text">${esc(c.text)}</div><div class="comment-actions">${ownerBtns}</div></div></div>`);
