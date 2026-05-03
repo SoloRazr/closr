@@ -6,7 +6,7 @@
   <title>CLOSR</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Quicksand:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     /* ============================================================
        CSS VARIABLES
@@ -57,7 +57,7 @@
     ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Nunito', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       background-color: var(--bg);
       background-image:
         radial-gradient(ellipse at 10% 10%, var(--blob-1) 0, transparent 55%),
@@ -83,9 +83,9 @@
       padding: env(safe-area-inset-top) 0 0;
     }
     .header-full { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 10px; }
-    .nav-title { font-family: 'Sora', sans-serif; font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; line-height: 1; }
+    .nav-title { font-family: 'Quicksand', sans-serif; font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; line-height: 1; }
     .logo-dot { color: var(--primary); }
-    #user-badge { font-size: 11px; font-weight: 800; color: var(--primary); background: var(--primary-soft); padding: 2px 8px; border-radius: 6px; font-family: 'Nunito', sans-serif; letter-spacing: 0.3px; text-transform: uppercase; }
+    #user-badge { font-size: 11px; font-weight: 700; color: var(--primary); background: var(--primary-soft); padding: 2px 8px; border-radius: 6px; font-family: 'Inter', sans-serif; letter-spacing: 0.3px; text-transform: uppercase; }
     .nav-actions { display: flex; gap: 8px; align-items: center; }
 
     /* PERSONALITY ENHANCEMENTS: TINT & GLOW */
@@ -111,8 +111,8 @@
     }
     
     .header-profile-info { flex: 1; min-width: 0; }
-    .header-profile-name { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.05em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .header-profile-bio { color: var(--text-muted); font-size: 0.85em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; margin-top: 2px; }
+    .header-profile-name { font-family: 'Quicksand', sans-serif; font-weight: 800; font-size: 1.05em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .header-profile-bio { color: var(--text-muted); font-size: 0.85em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; margin-top: 2px; }
 
     .profile-menu-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 6px; border-radius: 50%; display: flex; align-items: center; transition: background .18s; }
     .profile-menu-btn:active { background: var(--primary-soft); }
@@ -124,7 +124,7 @@
       animation: dropIn .18s ease;
     }
     @keyframes dropIn { from { opacity: 0; transform: translateY(-6px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .profile-dropdown button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 13px 16px; background: none; border: none; cursor: pointer; color: var(--text); font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 14px; transition: background .15s; text-align: left; }
+    .profile-dropdown button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 13px 16px; background: none; border: none; cursor: pointer; color: var(--text); font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; transition: background .15s; text-align: left; }
     .profile-dropdown button:hover { background: var(--primary-soft); }
     .profile-dropdown button.danger { color: var(--danger); }
     .profile-dropdown hr { border: none; border-top: 1px solid var(--card-border); }
@@ -142,13 +142,13 @@
     /* Login Screen */
     #login-screen { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; padding: 24px; }
     .login-card { padding: 34px 28px 36px; text-align: center; max-width: 340px; width: 100%; }
-    .login-logo { font-family: 'Sora', sans-serif; font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 4px; }
+    .login-logo { font-family: 'Quicksand', sans-serif; font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 4px; }
     .login-logo span { color: var(--primary); }
     .login-tagline { font-size: .95rem; color: var(--text-muted); font-weight: 600; margin-bottom: 22px; }
     .login-info-box { background: var(--hint-bg); border: 1px solid var(--hint-border); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 20px; text-align: left; }
-    .login-info-box p { font-size: .85rem; color: var(--text); line-height: 1.65; font-weight: 600; margin-bottom: 10px; }
+    .login-info-box p { font-size: .85rem; color: var(--text); line-height: 1.65; font-weight: 500; margin-bottom: 10px; }
     .login-info-divider { border: none; border-top: 1px dashed var(--hint-border); margin: 8px 0; }
-    .login-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; background: var(--primary); color: #fff; border: none; padding: 15px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 800; font-size: 15px; font-family: 'Nunito', sans-serif; box-shadow: 0 6px 22px rgba(79,121,246,.35); transition: transform .18s; }
+    .login-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; background: var(--primary); color: #fff; border: none; padding: 15px; border-radius: var(--radius-sm); cursor: pointer; font-weight: 700; font-size: 15px; font-family: 'Inter', sans-serif; box-shadow: 0 6px 22px rgba(79,121,246,.35); transition: transform .18s; }
     .login-btn:active { transform: scale(.96); }
 
     .avatar-sm { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--input-bg); flex-shrink: 0; }
@@ -158,27 +158,27 @@
     .fab:active { transform: scale(.88); }
 
     /* Inputs & Buttons */
-    textarea { width: 100%; background: transparent; color: var(--text); border: none; outline: none; resize: none; font-size: 16px; font-family: 'Nunito', sans-serif; line-height: 1.6; }
+    textarea { width: 100%; background: transparent; color: var(--text); border: none; outline: none; resize: none; font-size: 16px; font-family: 'Inter', sans-serif; line-height: 1.6; }
     textarea::placeholder { color: var(--text-muted); }
-    .input-field { width: 100%; background: var(--input-bg); color: var(--text); border: 1.5px solid var(--card-border); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 15px; margin-bottom: 12px; outline: none; font-family: 'Nunito', sans-serif; transition: border-color .2s; }
+    .input-field { width: 100%; background: var(--input-bg); color: var(--text); border: 1.5px solid var(--card-border); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 15px; margin-bottom: 12px; outline: none; font-family: 'Inter', sans-serif; transition: border-color .2s; }
     .input-field:focus { border-color: var(--primary); }
-    .btn { background: linear-gradient(135deg, var(--primary), #7b5fe8); color: #fff; border: none; padding: 12px 22px; border-radius: 9999px; cursor: pointer; font-weight: 800; font-size: 14px; font-family: 'Nunito', sans-serif; display: flex; align-items: center; justify-content: center; gap: 7px; box-shadow: 0 4px 14px rgba(79,121,246,.28); transition: transform .18s; }
+    .btn { background: linear-gradient(135deg, var(--primary), #7b5fe8); color: #fff; border: none; padding: 12px 22px; border-radius: 9999px; cursor: pointer; font-weight: 700; font-size: 14px; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 7px; box-shadow: 0 4px 14px rgba(79,121,246,.28); transition: transform .18s; }
     .btn:active { transform: scale(.95); }
     .btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
-    .btn-ghost { background: var(--input-bg); color: var(--text); border: 1.5px solid var(--card-border); padding: 10px 16px; border-radius: 9999px; cursor: pointer; font-weight: 700; font-size: 13px; font-family: 'Nunito', sans-serif; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background .2s; }
+    .btn-ghost { background: var(--input-bg); color: var(--text); border: 1.5px solid var(--card-border); padding: 10px 16px; border-radius: 9999px; cursor: pointer; font-weight: 600; font-size: 13px; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background .2s; }
     .btn-ghost:active { background: var(--primary-soft); }
-    .btn-danger { background: rgba(229,57,53,.1); color: var(--danger); border: 1.5px solid rgba(229,57,53,.25); padding: 12px 22px; border-radius: 9999px; cursor: pointer; font-weight: 800; font-size: 14px; font-family: 'Nunito', sans-serif; display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; }
+    .btn-danger { background: rgba(229,57,53,.1); color: var(--danger); border: 1.5px solid rgba(229,57,53,.25); padding: 12px 22px; border-radius: 9999px; cursor: pointer; font-weight: 700; font-size: 14px; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; }
 
     /* Feed & Posts */
     .post { padding: 18px 18px 14px; margin-bottom: 14px; cursor: pointer; transition: transform .15s; }
     .post:active { transform: scale(.985); }
     .post-header { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
     .post-author-info { flex: 1; min-width: 0; }
-    .author-name { font-family: 'Sora', sans-serif; font-weight: 700; font-size: .95em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .timestamp { color: var(--text-muted); font-size: .78em; font-weight: 600; margin-top: 1px; }
+    .author-name { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: .95em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .timestamp { color: var(--text-muted); font-size: .78em; font-weight: 500; margin-top: 1px; }
     .post-content { line-height: 1.65; margin-bottom: 12px; white-space: pre-wrap; font-size: .97rem; }
     .post-media { width: 100%; border-radius: var(--radius-sm); margin-bottom: 12px; max-height: 360px; object-fit: cover; background: var(--input-bg); border: 1.5px solid var(--card-border); display: block; }
-    .post-stats { display: flex; gap: 16px; color: var(--text-muted); font-weight: 700; font-size: .85em; border-top: 1px solid var(--card-border); padding-top: 11px; align-items: center; }
+    .post-stats { display: flex; gap: 16px; color: var(--text-muted); font-weight: 600; font-size: .85em; border-top: 1px solid var(--card-border); padding-top: 11px; align-items: center; }
     .c-action { cursor: pointer; user-select: none; display: flex; align-items: center; gap: 5px; transition: color .15s; }
     .c-action:active { opacity: .7; }
 
@@ -195,7 +195,7 @@
     #edit-modal, #delete-modal, #edit-comment-modal, #delete-comment-modal { z-index: 1050; }
     .modal-card { width: 100%; max-width: 400px; background: var(--card-bg); backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4); border: none; box-shadow: var(--glass-shadow); border-radius: 22px; padding: 24px 22px; animation: popIn .22s cubic-bezier(.34,1.4,.64,1); }
     @keyframes popIn { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
-    .modal-title { font-family: 'Sora', sans-serif; font-size: 1.05rem; font-weight: 800; margin-bottom: 16px; color: var(--text); }
+    .modal-title { font-family: 'Quicksand', sans-serif; font-size: 1.05rem; font-weight: 800; margin-bottom: 16px; color: var(--text); }
 
     /* Color Swatches */
     .c-swatch { width: 28px; height: 28px; border-radius: 50%; background: var(--sw); cursor: pointer; border: 2.5px solid transparent; transition: transform .15s, border-color .15s; }
@@ -205,27 +205,27 @@
     #post-detail-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; padding: 16px; }
     #post-detail-modal.active { display: flex; }
     .post-modal-card { width: 100%; max-width: 500px; height: min(90vh, 720px); display: flex; flex-direction: column; background: var(--bg); border-radius: 22px; border: none; box-shadow: var(--glass-shadow); overflow: hidden; animation: popIn .25s cubic-bezier(.34,1.3,.64,1); }
-    .pm-header { padding: 16px 18px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1em; background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); flex-shrink: 0; }
+    .pm-header { padding: 16px 18px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 1em; background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); flex-shrink: 0; }
     .pm-close { width: 30px; height: 30px; border-radius: 50%; background: var(--input-bg); border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); transition: background .18s; }
     .pm-close:active { background: var(--primary-soft); }
     .pm-body { flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
     .pm-footer { padding: 10px 14px; padding-bottom: calc(env(safe-area-inset-bottom) + 10px); border-top: 1px solid var(--card-border); background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
-    .comment-input { flex: 1; border: 1.5px solid var(--card-border); padding: 11px 16px; border-radius: 9999px; outline: none; background: var(--input-bg); color: var(--text); font-size: 14px; font-family: 'Nunito', sans-serif; transition: border-color .2s; font-size: max(16px, 14px); }
+    .comment-input { flex: 1; border: 1.5px solid var(--card-border); padding: 11px 16px; border-radius: 9999px; outline: none; background: var(--input-bg); color: var(--text); font-size: 14px; font-family: 'Inter', sans-serif; transition: border-color .2s; font-size: max(16px, 14px); }
     .comment-input:focus { border-color: var(--primary); }
     .comment-send { background: linear-gradient(135deg, var(--primary), #7b5fe8); color: #fff; border: none; border-radius: 50%; width: 44px; height: 44px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 4px 12px rgba(79,121,246,.35); transition: transform .18s; }
     .comment-send:active { transform: scale(.88); }
     
     .comment-box { padding: 12px 14px; margin-bottom: 8px; display: flex; gap: 10px; }
     .comment-content { flex: 1; min-width: 0; }
-    .comment-author { font-family: 'Sora', sans-serif; font-weight: 700; font-size: .88em; margin-bottom: 2px; }
+    .comment-author { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: .88em; margin-bottom: 2px; }
     .comment-text { font-size: .9em; line-height: 1.5; margin-bottom: 7px; }
-    .comment-actions { display: flex; gap: 12px; font-size: .8em; color: var(--text-muted); font-weight: 700; align-items: center; flex-wrap: wrap; }
+    .comment-actions { display: flex; gap: 12px; font-size: .8em; color: var(--text-muted); font-weight: 600; align-items: center; flex-wrap: wrap; }
     .comment-owner-actions { display: flex; gap: 6px; margin-left: auto; }
-    .comment-action-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 3px 7px; border-radius: 7px; display: flex; align-items: center; gap: 4px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: .82em; transition: color .15s, background .15s; }
+    .comment-action-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 3px 7px; border-radius: 7px; display: flex; align-items: center; gap: 4px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: .82em; transition: color .15s, background .15s; }
     .comment-action-btn:hover, .comment-action-btn:active { color: var(--primary); background: var(--primary-soft); }
     
     .admin-tools { display: flex; gap: 8px; margin-top: 12px; border-top: 1px dashed var(--card-border); padding-top: 12px; }
-    .tool-btn { background: var(--input-bg); color: var(--text); border: 1.5px solid var(--card-border); padding: 7px 14px; border-radius: 9px; font-size: .8em; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 5px; font-family: 'Nunito', sans-serif; }
+    .tool-btn { background: var(--input-bg); color: var(--text); border: 1.5px solid var(--card-border); padding: 7px 14px; border-radius: 9px; font-size: .8em; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 5px; font-family: 'Inter', sans-serif; }
     .tool-btn.del { color: var(--danger); border-color: rgba(229,57,53,.25); background: rgba(229,57,53,.07); }
 
     /* Compose & Edit Modals */
@@ -235,15 +235,15 @@
 
     .media-url-box { display: none; margin-bottom: 12px; }
     .media-tabs { display: flex; gap: 6px; margin-bottom: 8px; }
-    .mtab { flex: 1; padding: 8px 10px; border-radius: 10px; border: 1.5px solid var(--card-border); background: var(--input-bg); color: var(--text-muted); font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; font-family: 'Nunito', sans-serif; transition: all .18s; }
+    .mtab { flex: 1; padding: 8px 10px; border-radius: 10px; border: 1.5px solid var(--card-border); background: var(--input-bg); color: var(--text-muted); font-weight: 600; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; font-family: 'Inter', sans-serif; transition: all .18s; }
     .mtab.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
     
     .upload-area { border: 2px dashed var(--card-border); background: var(--input-bg); border-radius: var(--radius-sm); padding: 20px; text-align: center; cursor: pointer; transition: border-color .2s; margin-bottom: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .upload-area:hover { border-color: var(--primary); }
-    .upload-prompt { color: var(--text-muted); font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .upload-prompt { color: var(--text-muted); font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; }
 
     .dur-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px;}
-    .dtab, .vtab { padding: 6px 12px; border-radius: 9px; border: 1.5px solid var(--card-border); background: var(--input-bg); color: var(--text-muted); font-weight: 800; font-size: 12px; cursor: pointer; font-family: 'Nunito', sans-serif; transition: all .18s; }
+    .dtab, .vtab { padding: 6px 12px; border-radius: 9px; border: 1.5px solid var(--card-border); background: var(--input-bg); color: var(--text-muted); font-weight: 700; font-size: 12px; cursor: pointer; font-family: 'Inter', sans-serif; transition: all .18s; }
     .dtab.active, .vtab.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
     .compose-actions { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
 
@@ -255,11 +255,11 @@
     .avatar-upload-ring:hover .avatar-upload-overlay, .avatar-upload-ring:active .avatar-upload-overlay { opacity: 1; }
     #avatar-file-input { display: none; }
     
-    .edit-limit-note { text-align: center; font-size: 11px; font-weight: 800; color: var(--text-muted); margin-top: 14px; font-family: 'Nunito', sans-serif; }
+    .edit-limit-note { text-align: center; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-top: 14px; font-family: 'Inter', sans-serif; }
     .edit-limit-note.error { color: var(--danger); }
     
-    .exp-badge { display: inline-block; background: var(--primary-soft); color: var(--primary); font-size: .7em; font-weight: 800; border-radius: 6px; padding: 1px 6px; margin-left: 5px; vertical-align: middle; }
-    .vis-badge { display: inline-block; background: rgba(180,120,255,0.15); color: #8e5de8; font-size: .7em; font-weight: 800; border-radius: 6px; padding: 1px 6px; margin-left: 5px; vertical-align: middle; }
+    .exp-badge { display: inline-block; background: var(--primary-soft); color: var(--primary); font-size: .7em; font-weight: 700; border-radius: 6px; padding: 1px 6px; margin-left: 5px; vertical-align: middle; }
+    .vis-badge { display: inline-block; background: rgba(180,120,255,0.15); color: #8e5de8; font-size: .7em; font-weight: 700; border-radius: 6px; padding: 1px 6px; margin-left: 5px; vertical-align: middle; }
   </style>
 </head>
 <body>
@@ -289,6 +289,7 @@
     <div class="login-card glass">
       <div class="login-logo">CLOS<span>R</span></div>
       <div class="login-tagline">Family, kept close. 💙</div>
+      
       <div class="login-info-box">
         <p>👋 <strong>Welcome!</strong> CLOSR is a private space for our family and close friends to share moments together.</p>
         <hr class="login-info-divider">
@@ -296,6 +297,7 @@
         <hr class="login-info-divider">
         <p>⏳ Posts stay for <strong>24 hours by default</strong>. When composing, you can extend it up to <strong>15 days</strong>. After that, they're quietly removed to keep things fresh.</p>
       </div>
+
       <button class="login-btn" id="google-signin-btn">
         <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
         Continue with Google
