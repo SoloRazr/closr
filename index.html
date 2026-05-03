@@ -171,6 +171,13 @@
     .c-action { cursor: pointer; user-select: none; display: flex; align-items: center; gap: 5px; transition: color .15s; }
     .c-action:active { opacity: .7; }
 
+    /* RESTORED EMOJIS CSS */
+    .reaction-wrap { position: relative; display: inline-flex; align-items: center; }
+    .emoji-bar { position: absolute; bottom: calc(100% + 8px); left: 0; background: var(--card-bg); backdrop-filter: blur(20px) saturate(1.5); -webkit-backdrop-filter: blur(20px) saturate(1.5); border: none; border-radius: 999px; padding: 7px 12px; display: flex; gap: 2px; box-shadow: var(--glass-shadow); pointer-events: none; opacity: 0; transition: opacity .18s, transform .18s; transform: scale(.88); transform-origin: bottom left; z-index: 9999; white-space: nowrap; }
+    .emoji-bar.visible { opacity: 1; pointer-events: auto; transform: scale(1); }
+    .emoji-opt { font-size: 1.45rem; cursor: pointer; padding: 3px 6px; border-radius: 50%; transition: transform .15s; line-height: 1; }
+    .emoji-opt:hover, .emoji-opt:active { transform: scale(1.4); }
+
     /* Modals & Z-Index Fix */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
     .modal-overlay.active { display: flex; }
@@ -442,8 +449,6 @@
       <input type="text" id="edit-profile-bio" class="input-field">
       
       <button class="btn" id="save-profile-btn" style="width:100%;">Save Profile</button>
-      
-      <!-- RESTORED: Profile Edit Limit Tracker -->
       <p class="edit-limit-note" id="edit-limit-note"></p>
     </div>
   </div>
@@ -508,7 +513,13 @@
     themeBtn.addEventListener('click', () => { document.body.classList.toggle('dark'); const d = document.body.classList.contains('dark'); localStorage.setItem('closr-theme', d?'dark':'light'); themeBtn.innerHTML = d?I.sun:I.moon; });
     let ddOpen = false;
     document.getElementById('profile-menu-btn').addEventListener('click', (e) => { e.stopPropagation(); ddOpen = !ddOpen; document.getElementById('profile-dropdown').style.display = ddOpen?'block':'none'; });
-    document.addEventListener('click', () => { if(ddOpen) { document.getElementById('profile-dropdown').style.display = 'none'; ddOpen = false; }});
+    
+    // Close dropdowns and emoji bars when clicking outside
+    document.addEventListener('click', () => { 
+      if(ddOpen) { document.getElementById('profile-dropdown').style.display = 'none'; ddOpen = false; }
+      document.querySelectorAll('.emoji-bar').forEach(b => b.classList.remove('visible'));
+    });
+    
     window.signOutUser = () => signOut(auth);
 
     document.getElementById('google-signin-btn').addEventListener('click', () => signInWithPopup(auth, new GoogleAuthProvider()));
@@ -549,7 +560,6 @@
     window.handlePostModalClick = (e) => { if (e.target === document.getElementById('post-detail-modal')) closePostModal(); };
     window.openComposeModal = () => openModal('compose-modal');
 
-    // RESTORED PROFILE EDIT LIMIT LOGIC
     window.openProfileModal = () => { 
       document.getElementById('edit-profile-name').value = userProfile.name; 
       document.getElementById('edit-profile-bio').value = userProfile.bio || ''; 
@@ -687,6 +697,47 @@
       }
     });
 
+    /* ============================================================
+       RESTORED REACTION LOGIC
+    ============================================================ */
+    window.toggleReactionBar = (e, id) => { 
+      e.stopPropagation(); 
+      document.querySelectorAll('.emoji-bar').forEach(b => b.classList.remove('visible')); 
+      document.getElementById(`emoji-bar-${id}`).classList.add('visible'); 
+    };
+    
+    window.closeReactionBar = (id) => { 
+      const el = document.getElementById(`emoji-bar-${id}`);
+      if(el) el.classList.remove('visible'); 
+    };
+
+    window.addReaction = async (e, id, emoji) => {
+      e.stopPropagation(); 
+      if (!currentUser) return; 
+      closeReactionBar(id);
+      
+      const postRef = doc(db, "posts", id); 
+      const postData = allPostsData[id];
+      const oldReaction = postData.userReactions?.[currentUser.uid];
+      
+      let newReactions = { ...(postData.reactions || {}) };
+      let newUserReactions = { ...(postData.userReactions || {}) };
+
+      if (oldReaction) { 
+        newReactions[oldReaction] = Math.max(0, (newReactions[oldReaction] || 1) - 1); 
+        if (newReactions[oldReaction] === 0) delete newReactions[oldReaction]; 
+      }
+      
+      if (oldReaction === emoji) { 
+        delete newUserReactions[currentUser.uid]; 
+      } else { 
+        newReactions[emoji] = (newReactions[emoji] || 0) + 1; 
+        newUserReactions[currentUser.uid] = emoji; 
+      }
+      
+      await updateDoc(postRef, { reactions: newReactions, userReactions: newUserReactions });
+    };
+
     function loadPosts() {
       const q = query(collection(db,"posts"), orderBy("createdAt","desc"));
       onSnapshot(q, (snap) => {
@@ -711,6 +762,7 @@
           const keepL = data.keepDays > 1 ? `${data.keepDays}d` : '24h';
           const visBadge = data.visibility === 'outer' ? '👁️ Outer' : (data.visibility === 'both' ? '👁️ Everyone' : '👁️ Inner');
 
+          // RESTORED: Reaction Wrapper in the HTML Injection
           feed.insertAdjacentHTML('beforeend', `
             <div class="post glass" onclick="openPostModal('${id}')">
               <div class="post-header">
@@ -723,7 +775,16 @@
               ${data.text ? `<div class="post-content">${esc(data.text)}</div>` : ''}
               ${media}
               <div class="post-stats">
-                <span class="c-action">${topR||'🤍'} ${rCount}</span>
+                <div class="reaction-wrap" onmouseleave="closeReactionBar('${id}')">
+                  <span class="c-action" onclick="toggleReactionBar(event, '${id}')">${topR||'🤍'} ${rCount}</span>
+                  <div class="emoji-bar" id="emoji-bar-${id}">
+                    <span class="emoji-opt" onclick="addReaction(event, '${id}', '❤️')">❤️</span>
+                    <span class="emoji-opt" onclick="addReaction(event, '${id}', '😂')">😂</span>
+                    <span class="emoji-opt" onclick="addReaction(event, '${id}', '😮')">😮</span>
+                    <span class="emoji-opt" onclick="addReaction(event, '${id}', '😢')">😢</span>
+                    <span class="emoji-opt" onclick="addReaction(event, '${id}', '🙏')">🙏</span>
+                  </div>
+                </div>
                 <span class="c-action">${I.bubble} Comments</span>
               </div>
             </div>`);
