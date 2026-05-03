@@ -347,7 +347,7 @@
         </div>
         
         <div id="compose-photo-ui">
-          <input type="file" id="post-file-input" accept="image/*" style="display:none;" onchange="previewMedia(this, 'compose-img-preview', 'compose-upload-prompt')">
+          <input type="file" id="post-file-input" accept="image/jpeg, image/png, image/webp" style="display:none;" onchange="previewMedia(this, 'compose-img-preview', 'compose-upload-prompt')">
           <div class="upload-area" onclick="document.getElementById('post-file-input').click()">
              <span class="upload-prompt" id="compose-upload-prompt">📷 Tap to select photo</span>
              <img id="compose-img-preview" src="" style="display:none; width:100%; border-radius:8px;">
@@ -403,7 +403,7 @@
         </div>
         
         <div id="edit-photo-ui">
-          <input type="file" id="edit-file-input" accept="image/*" style="display:none;" onchange="previewMedia(this, 'edit-img-preview', 'edit-upload-prompt')">
+          <input type="file" id="edit-file-input" accept="image/jpeg, image/png, image/webp" style="display:none;" onchange="previewMedia(this, 'edit-img-preview', 'edit-upload-prompt')">
           <div class="upload-area" onclick="document.getElementById('edit-file-input').click()">
              <span class="upload-prompt" id="edit-upload-prompt" style="display:none;">📷 Tap to select new photo</span>
              <img id="edit-img-preview" src="" style="width:100%; border-radius:8px;">
@@ -454,7 +454,7 @@
         <div class="avatar-upload-ring" onclick="document.getElementById('avatar-file-input').click()">
           <img id="profile-avatar-preview" src=""><div class="avatar-upload-overlay"><span id="cam-icon"></span></div>
         </div>
-        <input type="file" id="avatar-file-input" accept="image/*">
+        <input type="file" id="avatar-file-input" accept="image/jpeg, image/png, image/webp">
       </div>
       <label style="font-size:12px;font-weight:800;color:var(--text-muted);display:block;">Display Name</label>
       <input type="text" id="edit-profile-name" class="input-field">
