@@ -92,7 +92,6 @@
     .header-profile {
       display: flex; align-items: center; gap: 14px;
       margin: 8px 16px 14px; padding: 14px 18px; 
-      /* Accent Tint Background */
       background: color-mix(in srgb, var(--u-color, var(--primary)) 6%, var(--card-bg));
       border-radius: var(--radius);
       box-shadow: var(--glass-shadow); border: none; 
@@ -100,7 +99,6 @@
     }
     .header-profile-avatar { 
       width: 80px; height: 80px; border-radius: 50%; object-fit: cover; background: var(--input-bg); 
-      /* Avatar Glow */
       box-shadow: 0 4px 18px color-mix(in srgb, var(--u-color, var(--primary)) 45%, transparent);
       border: 2px solid color-mix(in srgb, var(--u-color, var(--primary)) 80%, transparent); 
       flex-shrink: 0; transition: width .25s, height .25s; 
@@ -177,10 +175,15 @@
     .author-name { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: .95em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .timestamp { color: var(--text-muted); font-size: .78em; font-weight: 500; margin-top: 1px; }
     .post-content { line-height: 1.65; margin-bottom: 12px; white-space: pre-wrap; font-size: .97rem; }
-    .post-media { width: 100%; border-radius: var(--radius-sm); margin-bottom: 12px; max-height: 360px; object-fit: cover; background: var(--input-bg); border: 1.5px solid var(--card-border); display: block; }
-    /* Tappable media — image gets its own click handler */
-    img.post-media { cursor: zoom-in; transition: opacity .15s; }
-    img.post-media:active { opacity: .85; }
+    
+    /* Media Galleries */
+    .post-media { width: 100%; border-radius: var(--radius-sm); margin-bottom: 12px; max-height: 360px; object-fit: cover; background: var(--input-bg); display: block; box-shadow: var(--glass-shadow); cursor: zoom-in; transition: opacity .15s; }
+    .post-media:active { opacity: .85; }
+    
+    .media-gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; border-radius: var(--radius-sm); overflow: hidden; }
+    .gallery-img { width: 100%; height: 180px; object-fit: cover; background: var(--input-bg); box-shadow: var(--glass-shadow); cursor: zoom-in; transition: transform .2s, opacity .15s; }
+    .gallery-img:active { opacity: .85; transform: scale(.98); }
+
     .post-stats { display: flex; gap: 16px; color: var(--text-muted); font-weight: 600; font-size: .85em; border-top: 1px solid var(--card-border); padding-top: 11px; align-items: center; }
     .c-action { cursor: pointer; user-select: none; display: flex; align-items: center; gap: 5px; transition: color .15s; }
     .c-action:active { opacity: .7; }
@@ -199,7 +202,6 @@
       display: none; position: fixed; inset: 0; z-index: 2000;
       background: rgba(0,0,0,0.96);
       flex-direction: column;
-      /* entrance */
       opacity: 0; transition: opacity .22s ease;
     }
     #lightbox.active { display: flex; opacity: 1; }
@@ -221,39 +223,21 @@
       transition: background .18s;
     }
     #lb-back:active { background: rgba(255,255,255,0.25); }
-    #lb-author {
-      flex: 1; min-width: 0;
-    }
-    #lb-author-name {
-      color: #fff; font-family: 'Quicksand', sans-serif;
-      font-weight: 700; font-size: .92em;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    #lb-author-time {
-      color: rgba(255,255,255,.55); font-size: .75em; font-weight: 500; margin-top: 1px;
-    }
+    #lb-author { flex: 1; min-width: 0; }
+    #lb-author-name { color: #fff; font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: .92em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #lb-author-time { color: rgba(255,255,255,.55); font-size: .75em; font-weight: 500; margin-top: 1px; }
 
-    /* Media stage — pinch-zoom and pan via native browser */
-    #lb-stage {
-      flex: 1; display: flex; align-items: center; justify-content: center;
-      overflow: hidden; position: relative;
-      touch-action: pinch-zoom pan-x pan-y;
-    }
-    #lb-img {
-      max-width: 100%; max-height: 100%;
-      object-fit: contain; display: block;
-      /* allow browser native pinch-zoom */
-      touch-action: pinch-zoom;
-      user-select: none; -webkit-user-select: none;
-      /* pop-in */
-      transform: scale(0.94); transition: transform .25s cubic-bezier(.34,1.4,.64,1);
-    }
+    /* Navigation Arrows */
+    .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); border: none; color: white; width: 44px; height: 44px; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background 0.2s; z-index: 20; }
+    .lb-nav:active { background: rgba(255,255,255,0.3); }
+    #lb-prev { left: 16px; }
+    #lb-next { right: 16px; }
+
+    /* Media stage */
+    #lb-stage { flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; touch-action: pinch-zoom pan-x pan-y; }
+    #lb-img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; touch-action: pinch-zoom; user-select: none; -webkit-user-select: none; transform: scale(0.94); transition: transform .25s cubic-bezier(.34,1.4,.64,1); }
     #lightbox.active #lb-img { transform: scale(1); }
-
-    #lb-video {
-      max-width: 100%; max-height: 100%;
-      display: none; border-radius: 8px;
-    }
+    #lb-video { max-width: 100%; max-height: 100%; display: none; border-radius: 8px; }
 
     /* Bottom bar */
     #lb-bottom {
@@ -263,22 +247,8 @@
       display: flex; align-items: center; justify-content: space-between;
       z-index: 10;
     }
-    #lb-caption {
-      color: rgba(255,255,255,.85); font-size: .88em; font-weight: 500;
-      flex: 1; line-height: 1.5; white-space: pre-wrap;
-      margin-right: 12px; max-height: 72px; overflow: hidden;
-    }
-    #lb-comments-btn {
-      display: flex; align-items: center; gap: 7px;
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,.2);
-      color: #fff; border-radius: 9999px;
-      padding: 10px 18px; cursor: pointer;
-      font-family: 'Inter', sans-serif; font-weight: 700; font-size: 13px;
-      white-space: nowrap; flex-shrink: 0;
-      transition: background .18s;
-    }
+    #lb-caption { color: rgba(255,255,255,.85); font-size: .88em; font-weight: 500; flex: 1; line-height: 1.5; white-space: pre-wrap; margin-right: 12px; max-height: 72px; overflow: hidden; }
+    #lb-comments-btn { display: flex; align-items: center; gap: 7px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.2); color: #fff; border-radius: 9999px; padding: 10px 18px; cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 13px; white-space: nowrap; flex-shrink: 0; transition: background .18s; }
     #lb-comments-btn:active { background: rgba(255,255,255,0.28); }
 
     /* Modals & Z-Index Fix */
@@ -289,9 +259,12 @@
     @keyframes popIn { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
     .modal-title { font-family: 'Quicksand', sans-serif; font-size: 1.05rem; font-weight: 800; margin-bottom: 16px; color: var(--text); }
 
-    /* Color Swatches */
-    .c-swatch { width: 28px; height: 28px; border-radius: 50%; background: var(--sw); cursor: pointer; border: 2.5px solid transparent; transition: transform .15s, border-color .15s; }
-    .c-swatch.active { border-color: var(--text); transform: scale(1.15); box-shadow: 0 4px 10px color-mix(in srgb, var(--sw) 40%, transparent); }
+    /* Compose & Preview Additions */
+    .preview-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; margin-top: 10px; }
+    .preview-item { position: relative; width: 100%; aspect-ratio: 1; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .preview-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .preview-remove { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: transform 0.15s; }
+    .preview-remove:active { transform: scale(0.85); }
 
     /* Post Detail */
     #post-detail-modal { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 1000; flex-direction: column; }
@@ -351,6 +324,10 @@
     .edit-limit-note { text-align: center; font-size: 11px; font-weight: 700; color: var(--text-muted); margin-top: 14px; font-family: 'Inter', sans-serif; }
     .edit-limit-note.error { color: var(--danger); }
     
+    /* Color Swatches */
+    .c-swatch { width: 28px; height: 28px; border-radius: 50%; background: var(--sw); cursor: pointer; border: 2.5px solid transparent; transition: transform .15s, border-color .15s; }
+    .c-swatch.active { border-color: var(--text); transform: scale(1.15); box-shadow: 0 4px 10px color-mix(in srgb, var(--sw) 40%, transparent); }
+
     .exp-badge { display: inline-block; background: var(--primary-soft); color: var(--primary); font-size: .7em; font-weight: 700; border-radius: 6px; padding: 1px 6px; margin-left: 5px; vertical-align: middle; }
     .vis-badge { display: inline-block; background: rgba(180,120,255,0.15); color: #8e5de8; font-size: .7em; font-weight: 700; border-radius: 6px; padding: 1px 6px; margin-left: 5px; vertical-align: middle; }
   </style>
@@ -373,7 +350,9 @@
     video:   `<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>`,
     link2:   `<svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`,
     user:    `<svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
-    signout: `<svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`
+    signout: `<svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`,
+    chevronLeft: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>`,
+    chevronRight: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`
   };
   </script>
 
@@ -382,7 +361,6 @@
     <div class="login-card glass">
       <div class="login-logo">CLOS<span>R</span></div>
       <div class="login-tagline">Family, kept close. 💙</div>
-      
       <div class="login-info-box">
         <p>👋 <strong>Welcome!</strong> CLOSR is a private space for our family and close friends to share moments together.</p>
         <hr class="login-info-divider">
@@ -390,7 +368,6 @@
         <hr class="login-info-divider">
         <p>⏳ Posts stay for <strong>24 hours by default</strong>. When composing, you can extend it up to <strong>15 days</strong>. After that, they're quietly removed to keep things fresh.</p>
       </div>
-
       <button class="login-btn" id="google-signin-btn">
         <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
         Continue with Google
@@ -435,16 +412,18 @@
 
       <div class="media-url-box" id="media-url-box">
         <div class="media-tabs">
-          <button class="mtab active" id="tab-photo" onclick="setMediaTab('photo')"><span id="mtab-img-icon"></span>Upload Photo</button>
+          <button class="mtab active" id="tab-photo" onclick="setMediaTab('photo')"><span id="mtab-img-icon"></span>Photos</button>
           <button class="mtab" id="tab-video" onclick="setMediaTab('video')"><span id="mtab-vid-icon"></span>YouTube</button>
         </div>
         
         <div id="compose-photo-ui">
-          <input type="file" id="post-file-input" accept="image/jpeg, image/png, image/webp" style="display:none;" onchange="previewMedia(this, 'compose-img-preview', 'compose-upload-prompt')">
+          <!-- Added "multiple" attribute here -->
+          <input type="file" id="post-file-input" accept="image/jpeg, image/png, image/webp" multiple style="display:none;" onchange="previewMedia(this, 'compose-preview-grid', 'compose-upload-prompt')">
           <div class="upload-area" onclick="document.getElementById('post-file-input').click()">
-             <span class="upload-prompt" id="compose-upload-prompt">📷 Tap to select photo</span>
-             <img id="compose-img-preview" src="" style="display:none; width:100%; border-radius:8px;">
+             <span class="upload-prompt" id="compose-upload-prompt">📷 Tap to select up to 7 photos</span>
           </div>
+          <!-- New grid for rendering multi-image previews -->
+          <div id="compose-preview-grid" class="preview-grid" style="display:none;"></div>
         </div>
 
         <div id="compose-video-ui" style="display:none;">
@@ -495,8 +474,9 @@
           <button class="mtab" id="edit-tab-video" onclick="setEditMediaTab('video')"><span id="edit-mtab-vid-icon"></span>YouTube</button>
         </div>
         
+        <!-- Currently kept simple for editing single existing images - can be upgraded later -->
         <div id="edit-photo-ui">
-          <input type="file" id="edit-file-input" accept="image/jpeg, image/png, image/webp" style="display:none;" onchange="previewMedia(this, 'edit-img-preview', 'edit-upload-prompt')">
+          <input type="file" id="edit-file-input" accept="image/jpeg, image/png, image/webp" style="display:none;" onchange="previewEditMedia(this)">
           <div class="upload-area" onclick="document.getElementById('edit-file-input').click()">
              <span class="upload-prompt" id="edit-upload-prompt" style="display:none;">📷 Tap to select new photo</span>
              <img id="edit-img-preview" src="" style="width:100%; border-radius:8px;">
@@ -523,7 +503,6 @@
 
   <!-- LIGHTBOX -->
   <div id="lightbox">
-    <!-- Top bar: back + author -->
     <div id="lb-topbar">
       <button id="lb-back" onclick="closeLightbox()" aria-label="Back">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -534,13 +513,15 @@
       </div>
     </div>
 
-    <!-- Media stage -->
+    <!-- Navigation Arrows -->
+    <button id="lb-prev" class="lb-nav" onclick="lbNavPrev(event)"></button>
+    <button id="lb-next" class="lb-nav" onclick="lbNavNext(event)"></button>
+
     <div id="lb-stage">
       <img id="lb-img" src="" alt="Full photo" draggable="false">
       <video id="lb-video" controls playsinline></video>
     </div>
 
-    <!-- Bottom bar: caption + comments button -->
     <div id="lb-bottom">
       <div id="lb-caption"></div>
       <button id="lb-comments-btn" onclick="openPostModalFromLightbox()">
@@ -583,7 +564,6 @@
       <label style="font-size:12px;font-weight:800;color:var(--text-muted);display:block;">Bio</label>
       <input type="text" id="edit-profile-bio" class="input-field">
       
-      <!-- Theme Color Selector -->
       <label style="font-size:12px;font-weight:800;color:var(--text-muted);display:block;margin-top:10px;">Theme Color</label>
       <div style="display:flex; gap:12px; margin-bottom:18px; margin-top:6px;" id="theme-color-picker">
         <div class="c-swatch active" style="--sw:#4f79f6;" data-c="#4f79f6" onclick="selectThemeColor(this)"></div>
@@ -614,7 +594,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, signInWithPopup, signOut, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, deleteDoc, updateDoc, setDoc, getDoc, getDocs, increment } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, doc, deleteDoc, updateDoc, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
     import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js";
 
     const firebaseConfig = {
@@ -641,6 +621,9 @@
     let currEditId = null, editSelectedVisibility = 'inner', editActiveMediaTab = 'photo';
     let currCPostId = null, currDelCId = null, currDeleteId = null;
     
+    // NEW array to hold files + thumbnails for the compose box
+    let selectedFilesForUpload = [];
+    
     const defaultAv = n => `https://ui-avatars.com/api/?background=4f79f6&color=fff&name=${encodeURIComponent(n||'User')}`;
 
     function injectIcons() {
@@ -653,6 +636,7 @@
       document.getElementById('edit-mtab-img-icon').innerHTML = I.image; document.getElementById('edit-mtab-vid-icon').innerHTML = I.video;
       document.getElementById('dd-user-icon').innerHTML = I.user; document.getElementById('dd-signout-icon').innerHTML = I.signout;
       document.getElementById('cam-icon').innerHTML = I.camera;
+      document.getElementById('lb-prev').innerHTML = I.chevronLeft; document.getElementById('lb-next').innerHTML = I.chevronRight;
     }
     injectIcons();
 
@@ -686,10 +670,7 @@
           userProfile = { 
             name: user.displayName || user.email.split('@')[0], 
             bio: "Happy to be here! 💙", 
-            avatarUrl: defaultAv(user.displayName),
-            themeColor: '#4f79f6',
-            editsThisMonth: 0,
-            lastEditMonth: new Date().toISOString().slice(0, 7)
+            avatarUrl: defaultAv(user.displayName), themeColor: '#4f79f6', editsThisMonth: 0, lastEditMonth: new Date().toISOString().slice(0, 7)
           }; 
           await setDoc(doc(db, "users", user.uid), userProfile); 
         }
@@ -710,96 +691,108 @@
     window.closeModal = (id) => document.getElementById(id).classList.remove('active');
     window.handleOverlayClick = (e, id) => { if (e.target === document.getElementById(id)) closeModal(id); };
     window.handlePostModalClick = (e) => { if (e.target === document.getElementById('post-detail-modal')) closePostModal(); };
-    window.openComposeModal = () => openModal('compose-modal');
-
-    // Theme Color Selection Logic
-    let tempThemeColor = '#4f79f6';
-    window.selectThemeColor = (el) => {
-      document.querySelectorAll('.c-swatch').forEach(s => s.classList.remove('active'));
-      el.classList.add('active');
-      tempThemeColor = el.getAttribute('data-c');
+    
+    window.openComposeModal = () => {
+      // Reset compose state
+      selectedFilesForUpload = [];
+      renderPreviewGrid('compose-preview-grid');
+      document.getElementById('postInput').value = '';
+      openModal('compose-modal');
     };
 
-    window.openProfileModal = () => { 
-      document.getElementById('edit-profile-name').value = userProfile.name; 
-      document.getElementById('edit-profile-bio').value = userProfile.bio || ''; 
-      
-      tempThemeColor = userProfile.themeColor || '#4f79f6';
-      document.querySelectorAll('.c-swatch').forEach(s => {
-        s.classList.toggle('active', s.getAttribute('data-c') === tempThemeColor);
+    // Client-side Canvas Thumbnail Generator
+    async function generateThumbnailDataURL(file, maxWidth = 800) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const scale = maxWidth / img.width;
+            
+            // Don't upscale if already small
+            if (scale >= 1) { resolve(event.target.result); return; }
+            
+            canvas.width = maxWidth;
+            canvas.height = img.height * scale;
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            
+            // Output as compressed WebP for blazing fast loads
+            resolve(canvas.toDataURL('image/webp', 0.8));
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
       });
+    }
 
-      const currentMonth = new Date().toISOString().slice(0, 7);
-      let editsUsed = (userProfile.lastEditMonth === currentMonth) ? (userProfile.editsThisMonth || 0) : 0;
-      let editsLeft = 3 - editsUsed;
+    // Helper to turn the DataURL back into a Blob for Firebase Storage
+    async function generateThumbnailBlob(file, maxWidth = 800) {
+        const dataUrl = await generateThumbnailDataURL(file, maxWidth);
+        const res = await fetch(dataUrl);
+        return await res.blob();
+    }
 
-      const noteEl = document.getElementById('edit-limit-note');
-      const saveBtn = document.getElementById('save-profile-btn');
-
-      if (editsLeft > 0) {
-        noteEl.innerText = `You can edit your profile ${editsLeft} more time${editsLeft > 1 ? 's' : ''} this month.`;
-        noteEl.classList.remove('error');
-        saveBtn.disabled = false;
-      } else {
-        noteEl.innerText = `You have reached your profile edit limit for this month.`;
-        noteEl.classList.add('error');
-        saveBtn.disabled = true;
+    window.previewMedia = async (input, gridId, promptId) => {
+      if (!input.files || input.files.length === 0) return;
+      const newFiles = Array.from(input.files);
+      
+      if (selectedFilesForUpload.length + newFiles.length > 7) {
+        alert("You can only upload a maximum of 7 photos.");
+        return;
       }
+      
+      document.getElementById(promptId).style.display = 'none';
+      const grid = document.getElementById(gridId);
+      grid.style.display = 'grid';
 
-      openModal('profile-modal'); 
-      document.getElementById('profile-dropdown').style.display='none'; 
-      ddOpen=false; 
+      for (const file of newFiles) {
+        if (file.size > 5 * 1024 * 1024) { alert(`${file.name} exceeds the 5MB limit and was skipped.`); continue; }
+        // Generate a fast low-res thumbnail just for the preview UI
+        const thumbDataUrl = await generateThumbnailDataURL(file, 400); 
+        selectedFilesForUpload.push({ file, thumbDataUrl });
+      }
+      
+      renderPreviewGrid(gridId);
     };
 
-    document.getElementById('avatar-file-input').addEventListener('change', (e) => {
-      const file = e.target.files[0]; if (!file || file.size > 800*1024) return alert("Photo must be under 800 KB");
-      const reader = new FileReader(); reader.onload = ev => { userProfile.avatarUrl = ev.target.result; document.getElementById('profile-avatar-preview').src = userProfile.avatarUrl; }; reader.readAsDataURL(file);
-    });
+    window.renderPreviewGrid = (gridId) => {
+      const grid = document.getElementById(gridId);
+      grid.innerHTML = '';
+      selectedFilesForUpload.forEach((item, index) => {
+        grid.insertAdjacentHTML('beforeend', `
+          <div class="preview-item">
+            <img src="${item.thumbDataUrl}">
+            <button class="preview-remove" onclick="removeSelectedFile(${index}, '${gridId}', event)">${I.x}</button>
+          </div>
+        `);
+      });
+      if(selectedFilesForUpload.length === 0) {
+         grid.style.display = 'none';
+         document.getElementById('compose-upload-prompt').style.display = 'flex';
+      }
+    };
 
-    document.getElementById('save-profile-btn').addEventListener('click', async () => {
-      const btn = document.getElementById('save-profile-btn'); btn.disabled = true;
-      try { 
-        const name = document.getElementById('edit-profile-name').value.trim() || userProfile.name; 
-        const bio = document.getElementById('edit-profile-bio').value.trim();
-        const currentMonth = new Date().toISOString().slice(0, 7);
-        
-        let newEditsCount = (userProfile.lastEditMonth === currentMonth) ? (userProfile.editsThisMonth || 0) + 1 : 1;
+    window.removeSelectedFile = (index, gridId, e) => {
+       e.stopPropagation();
+       selectedFilesForUpload.splice(index, 1);
+       renderPreviewGrid(gridId);
+       document.getElementById('post-file-input').value = ''; // Reset so same file can be re-selected
+    };
 
-        await setDoc(doc(db, "users", currentUser.uid), { 
-          name, 
-          bio, 
-          themeColor: tempThemeColor,
-          avatarUrl: userProfile.avatarUrl,
-          editsThisMonth: newEditsCount,
-          lastEditMonth: currentMonth
-        }, { merge: true });
-
-        userProfile.name = name; 
-        userProfile.bio = bio; 
-        userProfile.themeColor = tempThemeColor;
-        userProfile.editsThisMonth = newEditsCount;
-        userProfile.lastEditMonth = currentMonth;
-        
-        updateProfileUI(); 
-        closeModal('profile-modal');
-      } catch(e) { 
-        alert("Failed to save"); 
-        btn.disabled = false;
-      } 
-    });
-
-    window.previewMedia = (input, imgId, promptId) => {
-      if (input.files && input.files[0]) {
+    window.previewEditMedia = (input) => {
+       if (input.files && input.files[0]) {
         if (input.files[0].size > 5 * 1024 * 1024) return alert("File exceeds 5MB limit");
         const reader = new FileReader();
         reader.onload = (e) => {
-          document.getElementById(imgId).src = e.target.result;
-          document.getElementById(imgId).style.display = 'block';
-          document.getElementById(promptId).style.display = 'none';
+          document.getElementById('edit-img-preview').src = e.target.result;
+          document.getElementById('edit-img-preview').style.display = 'block';
+          document.getElementById('edit-upload-prompt').style.display = 'none';
         }
         reader.readAsDataURL(input.files[0]);
       }
-    };
+    }
 
     window.toggleMediaInput = () => { const b = document.getElementById('media-url-box'); b.style.display = b.style.display==='block'?'none':'block'; };
     window.setMediaTab = (tab) => {
@@ -812,55 +805,72 @@
     window.setDuration = (days, btn) => { selectedDuration = days; document.querySelectorAll('#compose-modal .dtab').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); };
     window.setVisibility = (vis, btn) => { selectedVisibility = vis; document.querySelectorAll('#compose-modal .vtab').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); };
 
+    // UPDATED FIREBASE UPLOAD: Handles array of files & generates thumbnails for Firestore
     document.getElementById('share-btn').addEventListener('click', async () => {
       const btn = document.getElementById('share-btn');
       const text = document.getElementById('postInput').value.trim();
       const videoUrl = document.getElementById('post-video-url').value.trim();
-      const file = document.getElementById('post-file-input').files[0];
 
-      if (!text && !videoUrl && !file) return;
+      if (!text && !videoUrl && selectedFilesForUpload.length === 0) return;
       btn.disabled = true; 
 
-      let finalUrl = null, finalType = null;
-
-      const savePostToFirestore = async (mediaUrl, mediaType) => {
+      const savePostToFirestore = async (mediaUrls, thumbnailUrls, mediaType) => {
         const expires = new Date(); expires.setDate(expires.getDate() + selectedDuration);
         try {
           await addDoc(collection(db, "posts"), {
             text, authorName: userProfile.name, authorAvatar: userProfile.avatarUrl, authorTheme: userProfile.themeColor || '#4f79f6', authorUid: currentUser.uid, createdAt: serverTimestamp(),
-            mediaUrl, mediaType, visibility: selectedVisibility, edited: false, likedBy: [], reactions: {}, userReactions: {}, commentCount: 0,
+            // Arrays for multi-image logic
+            mediaUrls: mediaUrls || [],
+            thumbnailUrls: thumbnailUrls || [],
+            // Fallbacks for older structure logic
+            mediaUrl: (mediaUrls && mediaUrls.length > 0) ? mediaUrls[0] : null,
+            mediaType, visibility: selectedVisibility, edited: false, likedBy: [], reactions: {}, userReactions: {}, commentCount: 0,
             expiresAt: expires.toISOString(), keepDays: selectedDuration
           });
-          document.getElementById('postInput').value = '';
-          document.getElementById('post-video-url').value = '';
-          document.getElementById('post-file-input').value = '';
-          document.getElementById('compose-img-preview').style.display = 'none';
-          document.getElementById('compose-upload-prompt').style.display = 'flex';
-          document.getElementById('media-url-box').style.display = 'none';
           closeModal('compose-modal');
         } catch(e) { console.error(e); alert("Failed to post."); }
         finally { btn.disabled = false; btn.innerHTML = `${I.send} Share`; }
       };
 
-      if (activeMediaTab === 'photo' && file) {
-        if (file.size > 5 * 1024 * 1024) { alert("File is larger than 5MB"); btn.disabled=false; return; }
-        const storageRef = ref(storage, `posts/${Date.now()}_${file.name}`);
-        const uploadTask = uploadBytesResumable(storageRef, file);
+      if (activeMediaTab === 'photo' && selectedFilesForUpload.length > 0) {
+        btn.innerHTML = `${I.send} Processing...`;
+        let finalHiresUrls = [];
+        let finalThumbUrls = [];
 
-        uploadTask.on('state_changed', 
-          (snapshot) => { const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100; btn.innerHTML = `${I.send} Uploading ${Math.round(progress)}%...`; }, 
-          (error) => { console.error(error); alert("Upload failed"); btn.disabled = false; btn.innerHTML = `${I.send} Share`; }, 
-          async () => { finalUrl = await getDownloadURL(uploadTask.snapshot.ref); await savePostToFirestore(finalUrl, 'image'); }
-        );
+        try {
+           // We process sequentially to not overwhelm client devices
+           for(let i = 0; i < selectedFilesForUpload.length; i++) {
+              const file = selectedFilesForUpload[i].file;
+              btn.innerHTML = `${I.send} Uploading ${i+1}/${selectedFilesForUpload.length}...`;
+              
+              // 1. Upload high-res original
+              const hrRef = ref(storage, `posts/hires/${Date.now()}_${file.name}`);
+              await uploadBytesResumable(hrRef, file);
+              const hrUrl = await getDownloadURL(hrRef);
+              finalHiresUrls.push(hrUrl);
+
+              // 2. Generate 800px thumbnail Blob and upload to save bandwidth in feeds
+              const thumbBlob = await generateThumbnailBlob(file, 800);
+              const thRef = ref(storage, `posts/thumbs/${Date.now()}_thumb_${file.name}`);
+              await uploadBytesResumable(thRef, thumbBlob);
+              const thUrl = await getDownloadURL(thRef);
+              finalThumbUrls.push(thUrl);
+           }
+           await savePostToFirestore(finalHiresUrls, finalThumbUrls, 'image');
+
+        } catch (err) {
+           console.error(err); alert("Upload failed"); 
+           btn.disabled = false; btn.innerHTML = `${I.send} Share`;
+        }
       } else if (activeMediaTab === 'video' && videoUrl) {
         const yt = videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
-        finalUrl = yt ? yt[1] : videoUrl;
-        finalType = yt ? 'youtube' : 'video';
+        const finalUrl = yt ? yt[1] : videoUrl;
+        const finalType = yt ? 'youtube' : 'video';
         btn.innerHTML = `${I.send} Posting...`;
-        await savePostToFirestore(finalUrl, finalType);
+        await savePostToFirestore([finalUrl], null, finalType);
       } else {
         btn.innerHTML = `${I.send} Posting...`;
-        await savePostToFirestore(null, null);
+        await savePostToFirestore([], null, null);
       }
     });
 
@@ -879,26 +889,16 @@
       e.stopPropagation(); 
       if (!currentUser) return; 
       closeReactionBar(id);
-      
       const postRef = doc(db, "posts", id); 
       const postData = allPostsData[id];
       const oldReaction = postData.userReactions?.[currentUser.uid];
-      
       let newReactions = { ...(postData.reactions || {}) };
       let newUserReactions = { ...(postData.userReactions || {}) };
-
       if (oldReaction) { 
         newReactions[oldReaction] = Math.max(0, (newReactions[oldReaction] || 1) - 1); 
         if (newReactions[oldReaction] === 0) delete newReactions[oldReaction]; 
       }
-      
-      if (oldReaction === emoji) { 
-        delete newUserReactions[currentUser.uid]; 
-      } else { 
-        newReactions[emoji] = (newReactions[emoji] || 0) + 1; 
-        newUserReactions[currentUser.uid] = emoji; 
-      }
-      
+      if (oldReaction === emoji) { delete newUserReactions[currentUser.uid]; } else { newReactions[emoji] = (newReactions[emoji] || 0) + 1; newUserReactions[currentUser.uid] = emoji; }
       await updateDoc(postRef, { reactions: newReactions, userReactions: newUserReactions });
     };
 
@@ -928,7 +928,6 @@
           const visBadge = data.visibility === 'outer' ? '👁️ Outer' : (data.visibility === 'both' ? '👁️ Everyone' : '👁️ Inner');
           const authorTheme = data.authorTheme || '#4f79f6';
 
-          // Card: text/header area opens post modal; image taps open lightbox (handled in buildMedia)
           feed.insertAdjacentHTML('beforeend', `
             <div class="post glass">
               <div class="post-header" onclick="openPostModal('${id}')" style="cursor:pointer;">
@@ -960,15 +959,27 @@
     }
 
     function buildMedia(d, context) {
-      if (!d.mediaUrl) return '';
-      if (d.mediaType==='youtube') return `<iframe class="post-media" src="https://www.youtube.com/embed/${d.mediaUrl}" frameborder="0" allowfullscreen></iframe>`;
-      if (d.mediaType==='video') return `<video class="post-media" src="${d.mediaUrl}" controls playsinline onclick="event.stopPropagation()"></video>`;
-      // image — in feed context, tap opens lightbox; in modal context, tap opens lightbox too
-      const clickAttr = context === 'modal'
-        ? `onclick="openLightbox('${d._id}', event)"`
-        : `onclick="openLightbox('${d._id}', event)"`;
-      return `<img class="post-media" src="${d.mediaUrl}" loading="lazy" ${clickAttr}>`;
+      if ((!d.mediaUrl) && (!d.mediaUrls || d.mediaUrls.length === 0)) return '';
+      if (d.mediaType==='youtube') return `<iframe class="post-media" src="https://www.youtube.com/embed/${d.mediaUrls[0]||d.mediaUrl}" frameborder="0" allowfullscreen></iframe>`;
+      if (d.mediaType==='video') return `<video class="post-media" src="${d.mediaUrls[0]||d.mediaUrl}" controls playsinline onclick="event.stopPropagation()"></video>`;
+      
+      // Determine array to pull from (thumbnails for feed, high-res fallback)
+      const imgArray = (d.thumbnailUrls && d.thumbnailUrls.length > 0) ? d.thumbnailUrls : 
+                       ((d.mediaUrls && d.mediaUrls.length > 0) ? d.mediaUrls : [d.mediaUrl]);
+
+      if (imgArray.length === 1) {
+          return `<img class="post-media" src="${imgArray[0]}" loading="lazy" onclick="openLightbox('${d._id}', 0, event)">`;
+      }
+      
+      // Multi-image gallery logic
+      let html = `<div class="media-gallery">`;
+      imgArray.forEach((url, idx) => {
+          html += `<img class="gallery-img" src="${url}" loading="lazy" onclick="openLightbox('${d._id}', ${idx}, event)">`;
+      });
+      html += `</div>`;
+      return html;
     }
+    
     function topReaction(r) { if(!r)return null; const e=Object.entries(r).sort((a,b)=>b[1]-a[1]); return e.length?e[0][0]:null; }
     function fmtTime(d) { const s=(Date.now()-d)/1000; if(s<60)return 'Just now'; if(s<3600)return `${Math.floor(s/60)}m`; if(s<86400)return `${Math.floor(s/3600)}h`; return `${Math.floor(s/86400)}d`; }
     function esc(s='') { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -1001,70 +1012,50 @@
     };
     window.closePostModal = () => { document.getElementById('post-detail-modal').classList.remove('active'); if(commentsUnsub)commentsUnsub(); activePostId=null; };
 
-    // ── Swipe-to-go-back on post detail (iOS-style) ──────────────────
-(function () {
-  const modal   = document.getElementById('post-detail-modal');
-  const card    = modal.querySelector('.post-modal-card');
-  const THRESH  = 80;   // px of horizontal travel to trigger close
-  const MAX_Y   = 60;   // max vertical drift before we ignore the gesture
+    // Swipe-to-go-back on post detail (iOS-style)
+    (function () {
+      const modal   = document.getElementById('post-detail-modal');
+      const card    = modal.querySelector('.post-modal-card');
+      const THRESH  = 80;
+      const MAX_Y   = 60;
+      let startX = 0, startY = 0, tracking = false;
 
-  let startX = 0, startY = 0, tracking = false;
+      modal.addEventListener('touchstart', (e) => {
+        if (e.touches[0].clientX > 28) return;
+        startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+        tracking = true; card.style.transition = 'none';
+      }, { passive: true });
 
-  modal.addEventListener('touchstart', (e) => {
-    // Only begin tracking if the touch starts in the left 28px edge zone
-    if (e.touches[0].clientX > 28) return;
-    startX   = e.touches[0].clientX;
-    startY   = e.touches[0].clientY;
-    tracking = true;
-    card.style.transition = 'none';
-  }, { passive: true });
+      modal.addEventListener('touchmove', (e) => {
+        if (!tracking) return;
+        const dx = e.touches[0].clientX - startX;
+        const dy = Math.abs(e.touches[0].clientY - startY);
+        if (dy > MAX_Y) { resetCard(); return; }
+        if (dx > 0) { card.style.transform = `translateX(${dx}px)`; card.style.opacity = `${Math.max(0, 1 - dx / 320)}`; }
+      }, { passive: true });
 
-  modal.addEventListener('touchmove', (e) => {
-    if (!tracking) return;
-    const dx = e.touches[0].clientX - startX;
-    const dy = Math.abs(e.touches[0].clientY - startY);
+      modal.addEventListener('touchend', (e) => {
+        if (!tracking) return;
+        const dx = e.changedTouches[0].clientX - startX;
+        if (dx > THRESH) {
+          card.style.transition = 'transform .22s ease, opacity .22s ease';
+          card.style.transform  = 'translateX(100%)'; card.style.opacity = '0';
+          setTimeout(() => { closePostModal(); resetCard(); }, 220);
+        } else { resetCard(); }
+        tracking = false;
+      }, { passive: true });
 
-    // If the user is scrolling vertically, cancel the gesture
-    if (dy > MAX_Y) { resetCard(); return; }
-
-    // Only follow rightward drags
-    if (dx > 0) {
-      card.style.transform = `translateX(${dx}px)`;
-      card.style.opacity   = `${Math.max(0, 1 - dx / 320)}`;
-    }
-  }, { passive: true });
-
-  modal.addEventListener('touchend', (e) => {
-    if (!tracking) return;
-    const dx = e.changedTouches[0].clientX - startX;
-
-    if (dx > THRESH) {
-      // Commit the close with a quick slide-out animation
-      card.style.transition = 'transform .22s ease, opacity .22s ease';
-      card.style.transform  = 'translateX(100%)';
-      card.style.opacity    = '0';
-      setTimeout(() => { closePostModal(); resetCard(); }, 220);
-    } else {
-      // Snap back
-      resetCard();
-    }
-    tracking = false;
-  }, { passive: true });
-
-  function resetCard() {
-    card.style.transition = '';
-    card.style.transform  = '';
-    card.style.opacity    = '';
-    tracking = false;
-  }
-})();
+      function resetCard() { card.style.transition = ''; card.style.transform = ''; card.style.opacity = ''; tracking = false; }
+    })();
 
     /* ============================================================
-       LIGHTBOX
+       LIGHTBOX (UPDATED FOR ARRAYS)
     ============================================================ */
     let lightboxPostId = null;
+    let lbImageUrls = [];
+    let currentLbIndex = 0;
 
-    window.openLightbox = (id, event) => {
+    window.openLightbox = (id, startIndex = 0, event) => {
       if (event) event.stopPropagation();
       lightboxPostId = id;
       const d = allPostsData[id];
@@ -1073,40 +1064,76 @@
       const lb = document.getElementById('lightbox');
       const img = document.getElementById('lb-img');
       const vid = document.getElementById('lb-video');
-
-      // Reset
-      img.style.display = 'none';
-      vid.style.display = 'none';
-      vid.pause && vid.pause();
-
-      if (d.mediaType === 'image') {
-        img.src = d.mediaUrl;
-        img.style.display = 'block';
-      } else if (d.mediaType === 'video') {
-        vid.src = d.mediaUrl;
-        vid.style.display = 'block';
-      }
+      const btnPrev = document.getElementById('lb-prev');
+      const btnNext = document.getElementById('lb-next');
 
       document.getElementById('lb-author-name').textContent = d.authorName || '';
       document.getElementById('lb-author-time').textContent = d.createdAt ? fmtTime(d.createdAt.toDate()) : '';
       document.getElementById('lb-caption').textContent = d.text || '';
-
       const cCount = d.commentCount || 0;
       document.getElementById('lb-comment-count').textContent = `${cCount} ${cCount === 1 ? 'Comment' : 'Comments'}`;
 
-      // Show
-      lb.style.display = 'flex';
-      // Trigger CSS transition
-      requestAnimationFrame(() => { requestAnimationFrame(() => { lb.classList.add('active'); }); });
+      vid.style.display = 'none'; vid.pause && vid.pause();
+      img.style.display = 'none';
+      btnPrev.style.display = 'none'; btnNext.style.display = 'none';
 
-      // Block body scroll
+      if (d.mediaType === 'image') {
+        // Fallback checks for old code compatibility vs new array structure
+        lbImageUrls = (d.mediaUrls && d.mediaUrls.length > 0) ? d.mediaUrls : (d.mediaUrl ? [d.mediaUrl] : []);
+        currentLbIndex = startIndex;
+        
+        if (lbImageUrls.length > 0) {
+            updateLightboxView();
+        }
+      } else if (d.mediaType === 'video' || d.mediaType === 'youtube') {
+        vid.src = d.mediaUrls ? d.mediaUrls[0] : d.mediaUrl;
+        vid.style.display = 'block';
+      }
+
+      lb.style.display = 'flex';
+      requestAnimationFrame(() => { requestAnimationFrame(() => { lb.classList.add('active'); }); });
       document.body.style.overflow = 'hidden';
+    };
+
+    window.updateLightboxView = () => {
+        const img = document.getElementById('lb-img');
+        img.src = lbImageUrls[currentLbIndex];
+        img.style.display = 'block';
+
+        // Toggle arrows
+        document.getElementById('lb-prev').style.display = currentLbIndex > 0 ? 'flex' : 'none';
+        document.getElementById('lb-next').style.display = currentLbIndex < lbImageUrls.length - 1 ? 'flex' : 'none';
+
+        // Background Pre-fetching for silky smooth swipes
+        if (currentLbIndex + 1 < lbImageUrls.length) {
+            const nextImg = new Image();
+            nextImg.src = lbImageUrls[currentLbIndex + 1];
+        }
+        if (currentLbIndex - 1 >= 0) {
+            const prevImg = new Image();
+            prevImg.src = lbImageUrls[currentLbIndex - 1];
+        }
+    }
+
+    window.lbNavNext = (e) => {
+        e.stopPropagation();
+        if (currentLbIndex < lbImageUrls.length - 1) {
+            currentLbIndex++;
+            updateLightboxView();
+        }
+    };
+
+    window.lbNavPrev = (e) => {
+        e.stopPropagation();
+        if (currentLbIndex > 0) {
+            currentLbIndex--;
+            updateLightboxView();
+        }
     };
 
     window.closeLightbox = () => {
       const lb = document.getElementById('lightbox');
       lb.classList.remove('active');
-      // Wait for fade-out then hide
       setTimeout(() => {
         lb.style.display = 'none';
         document.getElementById('lb-img').src = '';
@@ -1121,7 +1148,6 @@
       if (!lightboxPostId) return;
       const id = lightboxPostId;
       closeLightbox();
-      // Open post modal after lightbox begins closing
       setTimeout(() => openPostModal(id), 120);
     };
 
@@ -1129,7 +1155,11 @@
     (function() {
       let startY = 0, dragging = false;
       const lb = document.getElementById('lightbox');
-      lb.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; dragging = true; }, { passive: true });
+      lb.addEventListener('touchstart', (e) => { 
+          // Avoid triggering on side arrows
+          if(e.target.closest('.lb-nav')) return;
+          startY = e.touches[0].clientY; dragging = true; 
+      }, { passive: true });
       lb.addEventListener('touchmove', (e) => {
         if (!dragging) return;
         const dy = e.touches[0].clientY - startY;
@@ -1138,6 +1168,7 @@
         }
       }, { passive: true });
       lb.addEventListener('touchend', (e) => {
+        if (!dragging) return;
         const dy = e.changedTouches[0].clientY - startY;
         document.getElementById('lb-img').style.transform = '';
         if (dy > 90) closeLightbox();
@@ -1145,44 +1176,36 @@
       }, { passive: true });
     })();
 
+    // ... Standard Firebase modal listeners & comments (unchanged)
     window.submitComment = async () => {
       if (!activePostId) return; 
       const inp = document.getElementById('comment-input');
       const text = inp.value.trim(); 
       if (!text) return; 
       inp.value = '';
-      
       try {
         await addDoc(collection(db, "posts", activePostId, "comments"), { text, authorName: userProfile.name, authorAvatar: userProfile.avatarUrl, authorUid: currentUser.uid, createdAt: serverTimestamp(), expiresAt: allPostsData[activePostId].expiresAt||null });
         const cSnap = await getDocs(collection(db,"posts",activePostId,"comments"));
         await updateDoc(doc(db, "posts", activePostId), { commentCount: cSnap.size });
-
-      } catch (e) {
-        console.error("Failed to add comment: ", e);
-      }
+      } catch (e) { console.error(e); }
     };
 
-    window.setEditMediaTab = (tab) => {
-      editActiveMediaTab = tab;
-      document.getElementById('edit-tab-photo').classList.toggle('active', tab==='photo');
-      document.getElementById('edit-tab-video').classList.toggle('active', tab==='video');
-      document.getElementById('edit-photo-ui').style.display = tab==='photo'?'block':'none';
-      document.getElementById('edit-video-ui').style.display = tab==='video'?'block':'none';
-    };
+    window.setEditMediaTab = (tab) => { editActiveMediaTab = tab; document.getElementById('edit-tab-photo').classList.toggle('active', tab==='photo'); document.getElementById('edit-tab-video').classList.toggle('active', tab==='video'); document.getElementById('edit-photo-ui').style.display = tab==='photo'?'block':'none'; document.getElementById('edit-video-ui').style.display = tab==='video'?'block':'none'; };
     window.setEditVisibility = (vis, btn) => { editSelectedVisibility = vis; document.querySelectorAll('#edit-modal .vtab').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); };
 
     window.openEditPost = (id) => {
       currEditId = id; const d = allPostsData[id];
       document.getElementById('edit-textarea').value = d.text || '';
-      
       if (d.mediaType === 'youtube' || d.mediaType === 'video') {
         setEditMediaTab('video');
-        document.getElementById('edit-video-url').value = d.mediaType==='youtube' ? `https://youtube.com/watch?v=${d.mediaUrl}` : d.mediaUrl;
+        // fallbacks to access arrays
+        let url = d.mediaUrls ? d.mediaUrls[0] : d.mediaUrl;
+        document.getElementById('edit-video-url').value = d.mediaType==='youtube' ? `https://youtube.com/watch?v=${url}` : url;
         document.getElementById('edit-img-preview').style.display = 'none';
         document.getElementById('edit-upload-prompt').style.display = 'flex';
       } else if (d.mediaType === 'image') {
         setEditMediaTab('photo');
-        document.getElementById('edit-img-preview').src = d.mediaUrl;
+        document.getElementById('edit-img-preview').src = d.mediaUrls ? d.mediaUrls[0] : d.mediaUrl;
         document.getElementById('edit-img-preview').style.display = 'block';
         document.getElementById('edit-upload-prompt').style.display = 'none';
       } else {
@@ -1194,6 +1217,7 @@
       openModal('edit-modal');
     };
 
+    // Note: Edit post logic remains single-image focused for simplicity for now
     document.getElementById('save-edit-btn').addEventListener('click', async () => {
       if (!currEditId) return;
       const btn = document.getElementById('save-edit-btn'); btn.disabled = true; btn.innerText = "Saving...";
@@ -1204,13 +1228,21 @@
       const existingData = allPostsData[currEditId];
       
       const updateFirestore = async (url, type) => {
-        await updateDoc(doc(db,"posts",currEditId), { text, mediaUrl: url, mediaType: type, visibility: editSelectedVisibility, edited: true });
+        await updateDoc(doc(db,"posts",currEditId), { 
+           text, 
+           mediaUrl: url, 
+           mediaUrls: [url], 
+           thumbnailUrls: [url], // simplistic fallback for editing
+           mediaType: type, 
+           visibility: editSelectedVisibility, 
+           edited: true 
+        });
         closeModal('edit-modal'); window.openPostModal(currEditId); btn.disabled = false; btn.innerText = "Save Changes";
       };
 
       if (editActiveMediaTab === 'photo' && file) {
         if (file.size > 5 * 1024 * 1024) { alert("File is larger than 5MB"); btn.disabled=false; btn.innerText="Save Changes"; return; }
-        const storageRef = ref(storage, `posts/${Date.now()}_${file.name}`);
+        const storageRef = ref(storage, `posts/hires/${Date.now()}_${file.name}`);
         const uploadTask = uploadBytesResumable(storageRef, file);
         uploadTask.on('state_changed', 
           (snap) => { btn.innerText = `Uploading ${Math.round((snap.bytesTransferred/snap.totalBytes)*100)}%...`; }, 
@@ -1221,7 +1253,8 @@
         const yt = videoUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
         await updateFirestore(yt ? yt[1] : videoUrl, yt ? 'youtube' : 'video');
       } else {
-        await updateFirestore(existingData.mediaUrl, existingData.mediaType);
+        // Fallbacks for arrays
+        await updateFirestore(existingData.mediaUrls ? existingData.mediaUrls[0] : existingData.mediaUrl, existingData.mediaType);
       }
     });
 
@@ -1242,13 +1275,9 @@
         await deleteDoc(doc(db,"posts",currCPostId,"comments",currDelCId)); 
         const cSnap = await getDocs(collection(db,"posts",currCPostId,"comments"));
         await updateDoc(doc(db, "posts", currCPostId), { commentCount: cSnap.size });
-
         closeModal('delete-comment-modal'); 
-      } catch (e) {
-        console.error("Failed to delete comment: ", e);
-      }
+      } catch (e) { console.error(e); }
     });
-
   </script>
 </body>
 </html>
